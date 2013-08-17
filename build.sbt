@@ -1,4 +1,4 @@
-organization  := "com.example"
+organization  := "tud.robolab"
 
 version       := "0.1"
 
@@ -11,6 +11,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "org.scala-lang"      %   "scala-swing"   % "2.10.2",
   "io.spray"            %   "spray-can"     % "1.1-M8",
   "io.spray"            %   "spray-routing" % "1.1-M8",
   "io.spray"            %%  "spray-json"    % "1.2.5",
@@ -21,3 +22,5 @@ libraryDependencies ++= Seq(
 )
 
 seq(Revolver.settings: _*)
+
+mainClass in Compile := Some("tud.robolab.Boot")

@@ -4,6 +4,8 @@ import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import spray.can.Http
 import com.typesafe.config.ConfigFactory
+import tud.robolab.view.Interface
+import tud.robolab.utils.IOUtils
 
 object Boot extends App {
   val conf = ConfigFactory.load("application.conf")
@@ -18,4 +20,12 @@ object Boot extends App {
 
   // start a new HTTP server on port 8080 with our service actor as the handler
   IO(Http) ! Http.Bind(service, interface = IP, port = PORT)
+
+  Interface.startup(Array.empty)
+
+  def terminate {
+    println("[" + IOUtils.now + "] Shutting server down ...")
+    IO(Http) ! Http.Unbind
+    println("[" + IOUtils.now + "] Done.")
+  }
 }
