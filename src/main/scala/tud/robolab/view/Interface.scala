@@ -4,14 +4,20 @@ import scala.swing._
 import javax.swing._
 import tud.robolab.Boot
 import javax.swing.border.BevelBorder
+import scala.swing.TabbedPane.Page
+import java.awt.{BorderLayout, LayoutManager, FlowLayout}
+import scala.swing.event.ButtonClicked
+import java.awt.event.{ActionEvent, ActionListener}
 
 object Interface extends SimpleSwingApplication {
-  val status = new Label("Waiting for connections ...");
+  private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
+  val status = new Label("Waiting for connections ...")
+  val tabbed = new JTabbedPane
 
   def top = new MainFrame {
     //Look and Feel
     try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName);
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
     } catch {
       case e: Throwable => println(e)
     }
@@ -34,6 +40,7 @@ object Interface extends SimpleSwingApplication {
     }
     var mainPanel = new BorderPanel()
     mainPanel.layout(statusPanel) = BorderPanel.Position.South
+    mainPanel.peer.add(tabbed, BorderLayout.CENTER)
 
     contents = mainPanel
 
@@ -43,5 +50,35 @@ object Interface extends SimpleSwingApplication {
         super.closeOperation()
       }
     }
+  }
+
+  def addTab(c: JComponent, title: String) {
+    tabbed.addTab(null, c)
+    val pos = tabbed.indexOfComponent(c)
+
+    val pnlTab = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0))
+    pnlTab.setOpaque(false)
+    pnlTab.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0))
+
+    val lblTitle = new JLabel(title)
+
+    val btnClose = new JButton()
+    btnClose.setOpaque(false)
+    btnClose.setIcon(CLOSE_TAB_ICON)
+    btnClose.setBorder(null)
+    btnClose.setFocusable(false)
+
+    pnlTab.add(lblTitle)
+    pnlTab.add(btnClose)
+
+    tabbed.setTabComponentAt(pos, pnlTab)
+
+    btnClose.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        if (Dialogs.confirmation("Do you really want to close this tab?"))
+          tabbed.remove(c)
+      }
+    })
+    tabbed.setSelectedComponent(c)
   }
 }
