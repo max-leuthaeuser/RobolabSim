@@ -6,7 +6,6 @@ import PointJsonProtocol._
 case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   assert(data != null && data(0) != null)
   assert(data != None && data(0) != None)
-  assert(!data.isEmpty && !data(0).isEmpty)
 
   def width: Int = data(0).size
 

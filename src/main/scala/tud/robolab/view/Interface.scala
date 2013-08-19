@@ -41,14 +41,7 @@ object Interface extends SimpleSwingApplication {
     var mainPanel = new BorderPanel()
     mainPanel.layout(statusPanel) = BorderPanel.Position.South
     mainPanel.peer.add(tabbed, BorderLayout.CENTER)
-
-    val gpanel = new JPanel(new GridLayout(8,8,5,5))
-    var i = 0
-    while (i < 64) {
-      gpanel.add(new Tile())
-      i+=1
-    }
-    addTab(new JScrollPane(gpanel), "Tiletest")
+    addTab(new MazeGenerator, "MazeGenerator")
 
     contents = mainPanel
 
@@ -77,7 +70,7 @@ object Interface extends SimpleSwingApplication {
     btnClose.setFocusable(false)
 
     pnlTab.add(lblTitle)
-    pnlTab.add(btnClose)
+    if(!title.equals("MazeGenerator")) pnlTab.add(btnClose)
 
     tabbed.setTabComponentAt(pos, pnlTab)
 

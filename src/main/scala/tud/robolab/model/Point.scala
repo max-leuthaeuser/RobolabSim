@@ -3,17 +3,32 @@ package tud.robolab.model
 import Direction._
 import spray.json._
 
-case class Point(private val data: Seq[Direction]) {
+case class Point(private var data: Seq[Direction]) {
   assert(data != null)
   assert(data != None)
   assert(!data.isEmpty)
 
   def has(dir: Direction): Boolean = data.contains(dir)
 
+  def +(dir: Direction) {
+    has(dir) match {
+      case false => data = data :+ dir
+      case _ =>
+    }
+  }
+
+  def -(dir: Direction) {
+    has(dir) match {
+      case true => data = data diff Seq(dir)
+      case _ =>
+    }
+  }
+
   def directions: Seq[Direction] = data
 }
 
 object PointJsonProtocol extends DefaultJsonProtocol {
+
   implicit object PointJsonFormat extends RootJsonFormat[Point] {
     def write(p: Point) = {
       val dirs = p.directions.map(s => JsString(s.toString))
@@ -28,4 +43,5 @@ object PointJsonProtocol extends DefaultJsonProtocol {
       case _ => throw new IllegalArgumentException("Point expected!")
     }
   }
+
 }

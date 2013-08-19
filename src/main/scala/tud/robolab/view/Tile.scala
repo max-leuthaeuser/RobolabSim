@@ -3,8 +3,10 @@ package tud.robolab.view
 import javax.swing.JPanel
 import java.awt.{Color, Dimension, Graphics}
 import java.awt.event.{MouseListener, MouseEvent, MouseMotionListener}
+import tud.robolab.model.Point
+import tud.robolab.model.Direction._
 
-class Tile extends JPanel {
+class Tile(private val model: Point) extends JPanel {
   private def dim = getSize()
 
   setPreferredSize(new Dimension(60, 60))
@@ -38,7 +40,7 @@ class Tile extends JPanel {
 
   sealed abstract class NodeTile {
     var sx, sy, width, height = 0
-    private var enabled = true
+    var enabled = true
     private var hover = false
 
     def repaint(g: Graphics) {
@@ -78,6 +80,14 @@ class Tile extends JPanel {
       height = dim.height / 2 - (dim.height / 12)
       super.repaint(g)
     }
+
+    override def handleClick(x: Int, y: Int) {
+      super.handleClick(x, y)
+      enabled match {
+        case true => model + NORTH
+        case false => model - NORTH
+      }
+    }
   }
 
   class East extends NodeTile {
@@ -87,6 +97,14 @@ class Tile extends JPanel {
       width = dim.width
       height = dim.height / 6
       super.repaint(g)
+    }
+
+    override def handleClick(x: Int, y: Int) {
+      super.handleClick(x, y)
+      enabled match {
+        case true => model + EAST
+        case false => model - EAST
+      }
     }
   }
 
@@ -98,6 +116,14 @@ class Tile extends JPanel {
       height = dim.height
       super.repaint(g)
     }
+
+    override def handleClick(x: Int, y: Int) {
+      super.handleClick(x, y)
+      enabled match {
+        case true => model + SOUTH
+        case false => model - SOUTH
+      }
+    }
   }
 
   class West extends NodeTile {
@@ -107,13 +133,17 @@ class Tile extends JPanel {
       height = dim.height / 6
       super.repaint(g)
     }
+
+    override def handleClick(x: Int, y: Int) {
+      super.handleClick(x, y)
+      enabled match {
+        case true => model + WEST
+        case false => model - WEST
+      }
+    }
   }
 
-  val north = new North()
-  val east = new East()
-  val south = new South()
-  val west = new West()
-  val dirs = Seq(north, east, south, west)
+  val dirs = Seq(new North(), new East(), new South(), new West())
 
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
