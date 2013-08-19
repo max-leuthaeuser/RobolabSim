@@ -74,6 +74,7 @@ class Tile(private val model: Point) extends JPanel {
   }
 
   class North extends NodeTile {
+    enabled = model.has(NORTH)
     override def repaint(g: Graphics) {
       sx = dim.width / 2 - (dim.width / 12)
       width = dim.width / 6
@@ -91,6 +92,7 @@ class Tile(private val model: Point) extends JPanel {
   }
 
   class East extends NodeTile {
+    enabled = model.has(EAST)
     override def repaint(g: Graphics) {
       sx = dim.width / 2 + (dim.width / 12)
       sy = dim.height / 2 - (dim.height / 12)
@@ -109,6 +111,7 @@ class Tile(private val model: Point) extends JPanel {
   }
 
   class South extends NodeTile {
+    enabled = model.has(SOUTH)
     override def repaint(g: Graphics) {
       sx = dim.width / 2 - (dim.width / 12)
       sy = dim.height / 2 + (dim.height / 12)
@@ -127,6 +130,7 @@ class Tile(private val model: Point) extends JPanel {
   }
 
   class West extends NodeTile {
+    enabled = model.has(WEST)
     override def repaint(g: Graphics) {
       sy = dim.height / 2 - (dim.height / 12)
       width = dim.width / 2 - (dim.width / 12)

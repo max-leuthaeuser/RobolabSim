@@ -1,8 +1,9 @@
 package tud.robolab.utils
 
-import java.io.{ IOException, File, PrintWriter, FileWriter }
+import java.io.{IOException, File, PrintWriter, FileWriter}
 import java.util.Calendar
 import java.text.SimpleDateFormat
+import io.Source._
 
 object IOUtils {
   /**
@@ -10,7 +11,7 @@ object IOUtils {
    * Code From the book "Beginning Scala"
    * http://www.amazon.com/Beginning-Scala-David-Pollak/dp/1430219890
    */
-  def using[A <: { def close() }, B](param: A)(f: A => B): B =
+  def using[A <: {def close()}, B](param: A)(f: A => B): B =
     try {
       f(param)
     } finally {
@@ -40,8 +41,23 @@ object IOUtils {
   }
 
   def createDirectory(dir: File) {
-    if (dir.exists && !dir.isDirectory)
-      throw new IOException(dir + " exists and is not a directory.")
-    else dir.mkdirs()
+    if (!dir.exists && !dir.isDirectory)
+      dir.mkdirs()
+  }
+
+  def getFileTree(f: File): Stream[File] =
+    f #:: (if (f.isDirectory) f.listFiles().toStream.flatMap(getFileTree)
+    else Stream.empty)
+
+  def getFileTreeFilter(f: File, str: String): Array[String] = getFileTree(f).filter(_.getName.endsWith(str)).map(_.getName.replaceAll(".maze", "")).toArray
+
+  def readFromFile(f: File): String = {
+    val src = fromFile(f)
+    try {
+      src.getLines().mkString("\n")
+    }
+    finally src match {
+      case b: scala.io.BufferedSource => b.close()
+    }
   }
 }

@@ -6,7 +6,6 @@ import spray.json._
 case class Point(private var data: Seq[Direction]) {
   assert(data != null)
   assert(data != None)
-  assert(!data.isEmpty)
 
   def has(dir: Direction): Boolean = data.contains(dir)
 
