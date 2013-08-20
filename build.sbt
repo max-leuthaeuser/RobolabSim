@@ -1,3 +1,7 @@
+import AssemblyKeys._
+
+assemblySettings
+
 organization  := "tud.robolab"
 
 version       := "0.1"
@@ -24,3 +28,7 @@ libraryDependencies ++= Seq(
 seq(Revolver.settings: _*)
 
 mainClass in Compile := Some("tud.robolab.Boot")
+
+mainClass in assembly := Some("tud.robolab.Boot")
+
+jarName in assembly := "RobolabSim.jar"
