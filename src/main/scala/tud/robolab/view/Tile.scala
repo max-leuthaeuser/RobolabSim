@@ -6,7 +6,7 @@ import java.awt.event.{MouseListener, MouseEvent, MouseMotionListener}
 import tud.robolab.model.Point
 import tud.robolab.model.Direction._
 
-class Tile(private val model: Point) extends JPanel {
+class Tile(private val model: Point, private val readOnly: Boolean = false) extends JPanel {
   private def dim = getSize()
 
   setPreferredSize(new Dimension(60, 60))
@@ -14,29 +14,31 @@ class Tile(private val model: Point) extends JPanel {
 
   setBackground(Color.WHITE)
 
-  addMouseMotionListener(new MouseMotionListener {
-    def mouseMoved(e: MouseEvent) {
-      dirs.foreach(_ handleHover(e.getX, e.getY))
-    }
+  if (!readOnly) {
+    addMouseMotionListener(new MouseMotionListener {
+      def mouseMoved(e: MouseEvent) {
+        dirs.foreach(_ handleHover(e.getX, e.getY))
+      }
 
-    def mouseDragged(e: MouseEvent) {}
-  })
+      def mouseDragged(e: MouseEvent) {}
+    })
 
-  addMouseListener(new MouseListener {
-    def mouseExited(e: MouseEvent) {
-      dirs.foreach(_ handleHover(-1, -1))
-    }
+    addMouseListener(new MouseListener {
+      def mouseExited(e: MouseEvent) {
+        dirs.foreach(_ handleHover(-1, -1))
+      }
 
-    def mouseClicked(e: MouseEvent) {}
+      def mouseClicked(e: MouseEvent) {}
 
-    def mouseEntered(e: MouseEvent) {}
+      def mouseEntered(e: MouseEvent) {}
 
-    def mousePressed(e: MouseEvent) {
-      dirs.foreach(_ handleClick(e.getX, e.getY))
-    }
+      def mousePressed(e: MouseEvent) {
+        dirs.foreach(_ handleClick(e.getX, e.getY))
+      }
 
-    def mouseReleased(e: MouseEvent) {}
-  })
+      def mouseReleased(e: MouseEvent) {}
+    })
+  }
 
   sealed abstract class NodeTile {
     var sx, sy, width, height = 0
@@ -75,6 +77,7 @@ class Tile(private val model: Point) extends JPanel {
 
   class North extends NodeTile {
     enabled = model.has(NORTH)
+
     override def repaint(g: Graphics) {
       sx = dim.width / 2 - (dim.width / 12)
       width = dim.width / 6
@@ -93,6 +96,7 @@ class Tile(private val model: Point) extends JPanel {
 
   class East extends NodeTile {
     enabled = model.has(EAST)
+
     override def repaint(g: Graphics) {
       sx = dim.width / 2 + (dim.width / 12)
       sy = dim.height / 2 - (dim.height / 12)
@@ -112,6 +116,7 @@ class Tile(private val model: Point) extends JPanel {
 
   class South extends NodeTile {
     enabled = model.has(SOUTH)
+
     override def repaint(g: Graphics) {
       sx = dim.width / 2 - (dim.width / 12)
       sy = dim.height / 2 + (dim.height / 12)
@@ -131,6 +136,7 @@ class Tile(private val model: Point) extends JPanel {
 
   class West extends NodeTile {
     enabled = model.has(WEST)
+
     override def repaint(g: Graphics) {
       sy = dim.height / 2 - (dim.height / 12)
       width = dim.width / 2 - (dim.width / 12)

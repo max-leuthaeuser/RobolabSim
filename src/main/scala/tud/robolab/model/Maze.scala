@@ -2,6 +2,8 @@ package tud.robolab.model
 
 import spray.json._
 import PointJsonProtocol._
+import java.awt.Dimension
+import tud.robolab.view.Tile
 
 case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   assert(data != null && data(0) != null)
@@ -14,6 +16,17 @@ case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   def apply(x: Int)(y: Int): Option[Point] = data(x)(y)
 
   def points: Seq[Seq[Option[Point]]] = data
+}
+
+object Maze {
+  def empty(width: Int, height: Int): Maze =
+    Maze((0 to width - 1).map(x =>
+      (0 to height - 1).map(y =>
+        Option(Point(Direction.values.toSeq))
+      ).toSeq
+    ).toSeq)
+
+  def empty: Maze = empty(6, 6)
 }
 
 object MazeJsonProtocol extends DefaultJsonProtocol {
