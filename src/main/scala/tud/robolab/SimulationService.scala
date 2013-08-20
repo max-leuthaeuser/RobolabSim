@@ -59,10 +59,11 @@ trait SimulationService extends HttpService {
                 println("[" + IOUtils.now + "] Incoming Request... ")
                 // TODO visualize
 
+                val ip = ctx.request.headers.filter(_.name.equals("Remote-Address"))(0).value
                 val req = values.asJson.convertTo[Request]
                 // TODO handle request
                 // ...
-                println("[" + IOUtils.now + "] " + req)
+                println("[" + IOUtils.now + "] from [" + ip +  "] " + req)
                 println("[" + IOUtils.now + "] Completed!")
 
                 // TODO answer with proper Response
