@@ -5,19 +5,19 @@ import javax.swing._
 import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{ChangeEvent, ChangeListener}
-import tud.robolab.model.{Direction, Point, Maze}
+import tud.robolab.model.{MazePool, Observer, Maze}
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
-class MazeGenerator extends JPanel {
+class MazeGenerator extends JPanel with Observer[MazePool] {
   private var model: Maze = null
 
   private var curr_width = 6
   private var curr_height = 6
 
   private val name = new JTextField("maze")
-  private val box = new JComboBox(IOUtils.getFileTreeFilter(new File("maps/"), ".maze"))
+  private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 12, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 12, 1))
 
@@ -31,16 +31,6 @@ class MazeGenerator extends JPanel {
   add(settings, BorderLayout.WEST)
   add(content, BorderLayout.CENTER)
   add(mapsPanel, BorderLayout.EAST)
-
-  IOUtils.createDirectory(new File("maps/"))
-
-  private def refresh {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    IOUtils.getFileTreeFilter(new File("maps/"), ".maze").foreach(box.addItem(_))
-    box.addActionListener(listeners(0))
-  }
 
   private def buildMapsPanel: JPanel = {
     val result = new JPanel()
@@ -63,15 +53,7 @@ class MazeGenerator extends JPanel {
       }
     })
 
-    val reloadBtn = new JButton("Reload maps")
-    reloadBtn.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
-        refresh
-      }
-    })
-
     result.add(box, BorderLayout.NORTH)
-    result.add(reloadBtn, BorderLayout.SOUTH)
     result
   }
 
@@ -109,7 +91,7 @@ class MazeGenerator extends JPanel {
     okbtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
         IOUtils.writeToFile("maps/" + name.getText + ".maze", model.toJson.prettyPrint)
-        refresh
+        Interface.mazePool + (name.getText, model)
       }
     })
 
@@ -136,5 +118,13 @@ class MazeGenerator extends JPanel {
     model.points.flatten.foreach(p => result.add(new Tile(p.get)))
 
     result
+  }
+
+  override def receiveUpdate(subject: MazePool) {
+    val listeners = box.getActionListeners
+    box.removeActionListener(listeners(0))
+    box.removeAllItems()
+    subject.mazeNames.foreach(box.addItem)
+    box.addActionListener(listeners(0))
   }
 }

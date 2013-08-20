@@ -1,9 +1,7 @@
 package tud.robolab.model
 
-import spray.json._
 import PointJsonProtocol._
-import java.awt.Dimension
-import tud.robolab.view.Tile
+import spray.json._
 
 case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   assert(data != null && data(0) != null)

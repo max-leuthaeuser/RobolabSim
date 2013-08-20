@@ -5,16 +5,16 @@ import tud.robolab.utils.IOUtils
 import java.io.File
 import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.Maze
+import tud.robolab.model.{MazePool, Observer, Maze}
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
-class SimulationView extends JPanel {
+class SimulationView extends JPanel with Observer[MazePool] {
   private var model: Maze = Maze.empty
 
   private val nameLabel = new JLabel()
   private val ipLabel = new JLabel()
-  private val box = new JComboBox(IOUtils.getFileTreeFilter(new File("maps/"), ".maze"))
+  private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
 
   private val settings = buildSettingsPanel
 
@@ -26,16 +26,6 @@ class SimulationView extends JPanel {
   add(settings, BorderLayout.WEST)
   add(content, BorderLayout.CENTER)
   add(mapsPanel, BorderLayout.EAST)
-
-  IOUtils.createDirectory(new File("maps/"))
-
-  private def refresh {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    IOUtils.getFileTreeFilter(new File("maps/"), ".maze").foreach(box.addItem(_))
-    box.addActionListener(listeners(0))
-  }
 
   private def buildMapsPanel: JPanel = {
     val result = new JPanel()
@@ -54,15 +44,7 @@ class SimulationView extends JPanel {
       }
     })
 
-    val reloadBtn = new JButton("Reload maps")
-    reloadBtn.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
-        refresh
-      }
-    })
-
     result.add(box, BorderLayout.NORTH)
-    result.add(reloadBtn, BorderLayout.SOUTH)
     result
   }
 
@@ -95,6 +77,14 @@ class SimulationView extends JPanel {
     result.setLayout(new GridLayout(model.width, model.height, 5, 5))
     model.points.flatten.foreach(p => result.add(new Tile(p.get, readOnly = true)))
     result
+  }
+
+  override def receiveUpdate(subject: MazePool) {
+    val listeners = box.getActionListeners
+    box.removeActionListener(listeners(0))
+    box.removeAllItems()
+    subject.mazeNames.foreach(box.addItem)
+    box.addActionListener(listeners(0))
   }
 }
 

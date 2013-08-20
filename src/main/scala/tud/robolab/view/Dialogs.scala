@@ -1,6 +1,5 @@
 package tud.robolab.view
 
-import javax.swing.{JFrame, JOptionPane}
 import scala.swing.Dialog
 
 object Dialogs {

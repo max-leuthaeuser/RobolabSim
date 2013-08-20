@@ -1,6 +1,6 @@
 package tud.robolab.utils
 
-import java.io.{IOException, File, PrintWriter, FileWriter}
+import java.io.{File, PrintWriter, FileWriter}
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import io.Source._

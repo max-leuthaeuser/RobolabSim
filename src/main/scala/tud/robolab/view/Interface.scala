@@ -4,15 +4,15 @@ import scala.swing._
 import javax.swing._
 import tud.robolab.Boot
 import javax.swing.border.BevelBorder
-import scala.swing.TabbedPane.Page
-import java.awt.{GridLayout, BorderLayout, LayoutManager, FlowLayout}
-import scala.swing.event.ButtonClicked
+import java.awt.{BorderLayout, FlowLayout}
 import java.awt.event.{ActionEvent, ActionListener}
+import tud.robolab.model.MazePool
 
 object Interface extends SimpleSwingApplication {
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
   val status = new Label("Waiting for connections ...")
   val tabbed = new JTabbedPane
+  var mazePool: MazePool = null
 
   def top = new MainFrame {
     //Look and Feel
@@ -41,7 +41,20 @@ object Interface extends SimpleSwingApplication {
     var mainPanel = new BorderPanel()
     mainPanel.layout(statusPanel) = BorderPanel.Position.South
     mainPanel.peer.add(tabbed, BorderLayout.CENTER)
-    addTab(new MazeGenerator, "MazeGenerator")
+
+    /** Initialize MazePool and MazeGenerator **/
+    mazePool = new MazePool
+    val mazeGenerator = new MazeGenerator
+    // example View for testing
+    val sim = new SimulationView
+
+    /** Add tabs here **/
+    addTab(mazeGenerator, "MazeGenerator")
+    addTab(sim, "Example Sim")
+
+    /** Attach Observers here **/
+    mazePool.addObserver(mazeGenerator)
+    mazePool.addObserver(sim)
 
     contents = mainPanel
 
@@ -70,7 +83,7 @@ object Interface extends SimpleSwingApplication {
     btnClose.setFocusable(false)
 
     pnlTab.add(lblTitle)
-    if(!title.equals("MazeGenerator")) pnlTab.add(btnClose)
+    if (!title.equals("MazeGenerator")) pnlTab.add(btnClose)
 
     tabbed.setTabComponentAt(pos, pnlTab)
 
