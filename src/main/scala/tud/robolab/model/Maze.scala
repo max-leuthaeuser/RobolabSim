@@ -2,6 +2,7 @@ package tud.robolab.model
 
 import PointJsonProtocol._
 import spray.json._
+import Direction._
 
 case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   assert(data != null && data(0) != null)
@@ -17,12 +18,26 @@ case class Maze(private val data: Seq[Seq[Option[Point]]]) {
 }
 
 object Maze {
-  def empty(width: Int, height: Int): Maze =
-    Maze((0 to width - 1).map(x =>
-      (0 to height - 1).map(y =>
-        Option(Point(Direction.values.toSeq))
-      ).toSeq
+  def empty(width: Int, height: Int): Maze = {
+    val max_x = width - 1
+    val max_y = height - 1
+    Maze((0 to max_x).map(x =>
+      (0 to max_y).map(y => {
+        val p = (x, y) match {
+          case (0, 0) => Point(Seq(SOUTH, EAST))
+          case (xs, xy) if xs == max_x && xy == max_y => Point(Seq(NORTH, WEST))
+          case (xs, xy) if xs == 0 && xy == max_y => Point(Seq(WEST, SOUTH))
+          case (xs, xy) if xs == max_x && xy == 0 => Point(Seq(EAST, NORTH))
+          case (xs, xy) if xs == max_x => Point(Seq(NORTH, EAST, WEST))
+          case (xs, xy) if xy == max_y => Point(Seq(SOUTH, WEST, NORTH))
+          case (xs, xy) if xs == 0 => Point(Seq(SOUTH, EAST, WEST))
+          case (xs, xy) if xy == 0 => Point(Seq(SOUTH, EAST, NORTH))
+          case _ => Point()
+        }
+        Option(p)
+      }).toSeq
     ).toSeq)
+  }
 
   def empty: Maze = empty(6, 6)
 }

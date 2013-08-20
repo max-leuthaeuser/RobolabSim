@@ -3,7 +3,7 @@ package tud.robolab.model
 import Direction._
 import spray.json._
 
-case class Point(private var data: Seq[Direction]) {
+case class Point(private var data: Seq[Direction] = Direction.values.toSeq) {
   assert(data != null)
   assert(data != None)
 
