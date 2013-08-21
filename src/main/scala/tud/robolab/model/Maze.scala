@@ -4,9 +4,10 @@ import PointJsonProtocol._
 import spray.json._
 import Direction._
 
-case class Maze(private val data: Seq[Seq[Option[Point]]]) {
+case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) {
   assert(data != null && data(0) != null)
   assert(data != None && data(0) != None)
+  robotPosition(robot.x, robot.y)
 
   def width: Int = data(0).size
 
@@ -15,6 +16,13 @@ case class Maze(private val data: Seq[Seq[Option[Point]]]) {
   def apply(x: Int)(y: Int): Option[Point] = data(x)(y)
 
   def points: Seq[Seq[Option[Point]]] = data
+
+  def robotPosition(x: Int, y: Int) {
+    data(robot.x)(robot.y).get.robot = false
+    robot.x = x
+    robot.y = y
+    data(x)(y).get.robot = true
+  }
 }
 
 object Maze {

@@ -91,7 +91,7 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     okbtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
         IOUtils.writeToFile("maps/" + name.getText + ".maze", model.toJson.prettyPrint)
-        Interface.mazePool + (name.getText, model)
+        Interface.mazePool +(name.getText, model)
       }
     })
 
@@ -116,7 +116,6 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
       model = Maze.empty(curr_width, curr_height)
 
     model.points.flatten.foreach(p => result.add(new Tile(p.get)))
-
     result
   }
 

@@ -4,6 +4,8 @@ import Direction._
 import spray.json._
 
 case class Point(private var data: Seq[Direction] = Direction.values.toSeq) {
+  var robot = false
+
   assert(data != null)
   assert(data != None)
 

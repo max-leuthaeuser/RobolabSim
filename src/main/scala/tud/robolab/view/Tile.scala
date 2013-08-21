@@ -7,7 +7,9 @@ import tud.robolab.model.Point
 import tud.robolab.model.Direction._
 
 class Tile(private val model: Point, private val readOnly: Boolean = false) extends JPanel {
-  private def dim = getSize()
+  private def dim_width = this.getWidth
+
+  private def dim_height = this.getHeight
 
   setPreferredSize(new Dimension(60, 60))
   setMinimumSize(new Dimension(60, 60))
@@ -79,9 +81,9 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     enabled = model.has(NORTH)
 
     override def repaint(g: Graphics) {
-      sx = dim.width / 2 - (dim.width / 12)
-      width = dim.width / 6
-      height = dim.height / 2 - (dim.height / 12)
+      sx = dim_width / 2 - (dim_width / 12)
+      width = dim_width / 6
+      height = dim_height / 2 - (dim_height / 12)
       super.repaint(g)
     }
 
@@ -98,10 +100,10 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     enabled = model.has(EAST)
 
     override def repaint(g: Graphics) {
-      sx = dim.width / 2 + (dim.width / 12)
-      sy = dim.height / 2 - (dim.height / 12)
-      width = dim.width
-      height = dim.height / 6
+      sx = dim_width / 2 + (dim_width / 12)
+      sy = dim_height / 2 - (dim_height / 12)
+      width = dim_width
+      height = dim_height / 6
       super.repaint(g)
     }
 
@@ -118,10 +120,10 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     enabled = model.has(SOUTH)
 
     override def repaint(g: Graphics) {
-      sx = dim.width / 2 - (dim.width / 12)
-      sy = dim.height / 2 + (dim.height / 12)
-      width = dim.width / 6
-      height = dim.height
+      sx = dim_width / 2 - (dim_width / 12)
+      sy = dim_height / 2 + (dim_height / 12)
+      width = dim_width / 6
+      height = dim_height
       super.repaint(g)
     }
 
@@ -138,9 +140,9 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     enabled = model.has(WEST)
 
     override def repaint(g: Graphics) {
-      sy = dim.height / 2 - (dim.height / 12)
-      width = dim.width / 2 - (dim.width / 12)
-      height = dim.height / 6
+      sy = dim_height / 2 - (dim_height / 12)
+      width = dim_width / 2 - (dim_width / 12)
+      height = dim_height / 6
       super.repaint(g)
     }
 
@@ -158,5 +160,13 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
     dirs.foreach(_ repaint g)
+    if (model.robot) {
+      g.setColor(Color.red)
+      val radius_w = dim_width / 6
+      val radius_h = dim_height / 6
+      val x = dim_width / 2 - dim_width / 12
+      val y = dim_height / 2 - dim_height / 12
+      g.fillOval(x, y, radius_w, radius_h)
+    }
   }
 }
