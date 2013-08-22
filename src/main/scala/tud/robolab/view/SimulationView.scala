@@ -48,6 +48,11 @@ class SimulationView extends JPanel with Observer[MazePool] {
     result
   }
 
+  def close(block: Boolean = false) {
+    println("Close and block (" + block + ")")
+    // TODO handle close and / or block
+  }
+
   private def buildSettingsPanel: JPanel = {
     val labelname = new JLabel("Maze ")
     val labelip = new JLabel("Client IP ")

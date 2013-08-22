@@ -1,6 +1,7 @@
 package tud.robolab.view
 
 import scala.swing.Dialog
+import scala.swing.Dialog.Result
 
 object Dialogs {
   def confirmation(question: String): Boolean =
@@ -8,4 +9,9 @@ object Dialogs {
       case Dialog.Result.Ok => true
       case _ => false
     }
+
+  def closeOrBlock(): Result.Value = {
+    val options = Seq("Close", "No", "Close and block")
+    Dialog.showOptions(parent = null, title = "Confirmation", message = "Close and / or block this connection?", entries = options, initial = 0)
+  }
 }

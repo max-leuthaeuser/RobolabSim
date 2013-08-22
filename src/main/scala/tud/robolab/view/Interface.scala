@@ -49,8 +49,8 @@ object Interface extends SimpleSwingApplication {
     val sim = new SimulationView
 
     /** Add tabs here **/
-    addTab(mazeGenerator, "MazeGenerator")
-    addTab(sim, "Example Sim")
+    tabbed.addTab("MazeGenerator", mazeGenerator)
+    addSimTab(sim, "Example Sim")
 
     /** Attach Observers here **/
     mazePool.addObserver(mazeGenerator)
@@ -66,7 +66,7 @@ object Interface extends SimpleSwingApplication {
     }
   }
 
-  def addTab(c: JComponent, title: String) {
+  def addSimTab(c: SimulationView, title: String) {
     tabbed.addTab(null, c)
     val pos = tabbed.indexOfComponent(c)
 
@@ -83,14 +83,23 @@ object Interface extends SimpleSwingApplication {
     btnClose.setFocusable(false)
 
     pnlTab.add(lblTitle)
-    if (!title.equals("MazeGenerator")) pnlTab.add(btnClose)
+    pnlTab.add(btnClose)
 
     tabbed.setTabComponentAt(pos, pnlTab)
 
     btnClose.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        if (Dialogs.confirmation("Do you really want to close this tab?"))
-          tabbed.remove(c)
+        Dialogs.closeOrBlock() match {
+          case Dialog.Result.Yes => {
+            c.close()
+            tabbed.remove(c)
+          }
+          case Dialog.Result.Cancel => {
+            c.close(block = true)
+            tabbed.remove(c)
+          }
+          case _ =>
+        }
       }
     })
     tabbed.setSelectedComponent(c)
