@@ -26,6 +26,13 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq) {
   }
 
   def directions: Seq[Direction] = data
+
+  def asTuple: (Boolean, Boolean, Boolean, Boolean) = (
+    has(NORTH),
+    has(EAST),
+    has(SOUTH),
+    has(WEST)
+    )
 }
 
 object PointJsonProtocol extends DefaultJsonProtocol {

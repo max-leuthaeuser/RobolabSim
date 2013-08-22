@@ -45,16 +45,12 @@ object Interface extends SimpleSwingApplication {
     /** Initialize MazePool and MazeGenerator **/
     mazePool = new MazePool
     val mazeGenerator = new MazeGenerator
-    // example View for testing
-    val sim = new SimulationView
 
     /** Add tabs here **/
     tabbed.addTab("MazeGenerator", mazeGenerator)
-    addSimTab(sim, "Example Sim")
 
     /** Attach Observers here **/
     mazePool.addObserver(mazeGenerator)
-    mazePool.addObserver(sim)
 
     contents = mainPanel
 
@@ -66,7 +62,8 @@ object Interface extends SimpleSwingApplication {
     }
   }
 
-  def addSimTab(c: SimulationView, title: String) {
+  private def _addSimTap(c: SimulationView, title: String) {
+    mazePool.addObserver(c)
     tabbed.addTab(null, c)
     val pos = tabbed.indexOfComponent(c)
 
@@ -103,5 +100,17 @@ object Interface extends SimpleSwingApplication {
       }
     })
     tabbed.setSelectedComponent(c)
+  }
+
+  def addSimTab(c: SimulationView, title: String) {
+    Dialogs.addOrBlock(title) match {
+      case Dialog.Result.Yes => {
+        _addSimTap(c, title)
+      }
+      case Dialog.Result.Cancel => {
+        c.close(block = true)
+      }
+      case _ =>
+    }
   }
 }

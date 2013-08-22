@@ -5,15 +5,14 @@ import tud.robolab.utils.IOUtils
 import java.io.File
 import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.{MazePool, Observer, Maze}
+import tud.robolab.model.{Session, MazePool, Observer, Maze}
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
+import tud.robolab.controller.SessionManager
 
-class SimulationView extends JPanel with Observer[MazePool] {
-  private var model: Maze = Maze.empty
-
+class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
   private val nameLabel = new JLabel()
-  private val ipLabel = new JLabel()
+  private val ipLabel = new JLabel(session.client.ip)
   private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
 
   private val settings = buildSettingsPanel
@@ -27,6 +26,12 @@ class SimulationView extends JPanel with Observer[MazePool] {
   add(content, BorderLayout.CENTER)
   add(mapsPanel, BorderLayout.EAST)
 
+  def updateSession() {
+    content.repaint()
+    // val p = session.latestPosition
+    // TODO render listview with points
+  }
+
   private def buildMapsPanel: JPanel = {
     val result = new JPanel()
     result.setLayout(new BorderLayout())
@@ -37,7 +42,7 @@ class SimulationView extends JPanel with Observer[MazePool] {
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
           val n = box.getSelectedItem.asInstanceOf[String]
-          model = IOUtils.readFromFile(new File("maps/" + n + ".maze")).asJson.convertTo[Maze]
+          session.maze = IOUtils.readFromFile(new File("maps/" + n + ".maze")).asJson.convertTo[Maze]
           nameLabel.setText(n)
           rebuild()
         }
@@ -49,8 +54,8 @@ class SimulationView extends JPanel with Observer[MazePool] {
   }
 
   def close(block: Boolean = false) {
-    println("Close and block (" + block + ")")
-    // TODO handle close and / or block
+    SessionManager.blockSession(session.client.ip, block)
+    SessionManager.removeSession(session)
   }
 
   private def buildSettingsPanel: JPanel = {
@@ -79,8 +84,8 @@ class SimulationView extends JPanel with Observer[MazePool] {
 
   private def buildMazePanel(): JPanel = {
     val result = new JPanel()
-    result.setLayout(new GridLayout(model.width, model.height, 5, 5))
-    model.points.flatten.foreach(p => result.add(new Tile(p.get, readOnly = true)))
+    result.setLayout(new GridLayout(session.maze.width, session.maze.height, 5, 5))
+    session.maze.points.flatten.foreach(p => result.add(new Tile(p.get, readOnly = true)))
     result
   }
 

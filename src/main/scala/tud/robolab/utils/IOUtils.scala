@@ -33,7 +33,7 @@ object IOUtils {
     }
   }
 
-  def now = {
+  def now: String = {
     val DATE_FORMAT_NOW = "HH:mm:ss:SSS"
     val cal = Calendar.getInstance()
     val sdf = new SimpleDateFormat(DATE_FORMAT_NOW)

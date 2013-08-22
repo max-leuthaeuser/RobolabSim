@@ -5,8 +5,11 @@ import spray.routing._
 import spray.http._
 import MediaTypes._
 import tud.robolab.utils.IOUtils
-import tud.robolab.model.{Response, Request}
+import tud.robolab.model.{Message, Request, Response, ErrorMessage}
 import spray.json._
+import tud.robolab.controller.SessionManager
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 // we don't implement our route structure directly in the service actor because
 // we want to be able to test it independently, without having to spin up an actor
@@ -23,14 +26,38 @@ class SimulationServiceActor extends Actor with SimulationService {
 }
 
 object RequestProtocol extends DefaultJsonProtocol {
-  implicit val requestFormat = jsonFormat3(Request)
+  implicit val requestFormat = jsonFormat2(Request)
 }
 
 object ResponseProtocol extends DefaultJsonProtocol {
-  implicit val responseFormat = jsonFormat3(Response)
+  implicit val responseFormat = jsonFormat4(Response)
+}
+
+object ErrorMessageProtocol extends DefaultJsonProtocol {
+  implicit val ErrorMessageormat = jsonFormat1(ErrorMessage)
 }
 
 import RequestProtocol._
+import ResponseProtocol._
+import ErrorMessageProtocol._
+
+object MessageJsonProtocol extends DefaultJsonProtocol {
+
+  implicit object MessageJsonFormat extends RootJsonFormat[Message] {
+    def write(p: Message) = {
+      p match {
+        case r: Response => r.toJson
+        case b: ErrorMessage => b.toJson
+        case _ => throw new NotImplementedError()
+      }
+    }
+
+    def read(value: JsValue) = {
+      throw new NotImplementedError()
+    }
+  }
+
+}
 
 // this trait defines our service behavior independently from the service actor
 trait SimulationService extends HttpService {
@@ -56,18 +83,19 @@ trait SimulationService extends HttpService {
           values =>
             (get | put) {
               ctx =>
-                println("[" + IOUtils.now + "] Incoming Request... ")
-                // TODO visualize
-
                 val ip = ctx.request.headers.filter(_.name.equals("Remote-Address"))(0).value
                 val req = values.asJson.convertTo[Request]
-                // TODO handle request
-                // ...
-                println("[" + IOUtils.now + "] from [" + ip +  "] " + req)
+
+                println("[" + IOUtils.now + "] Incoming Request... ")
+                println("[" + IOUtils.now + "] from [" + ip + "] " + req)
                 println("[" + IOUtils.now + "] Completed!")
 
-                // TODO answer with proper Response
-                ctx.complete("...")
+                import MessageJsonProtocol._
+                ctx.complete {
+                  Future[String] {
+                    SessionManager.handleRequest(ip, req).toJson.compactPrint
+                  }
+                }
             }
         }
       }

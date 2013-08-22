@@ -17,11 +17,13 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
 
   def points: Seq[Seq[Option[Point]]] = data
 
-  def robotPosition(x: Int, y: Int) {
+  def robotPosition(x: Int, y: Int): Boolean = {
+    if (x >= width || y >= height || x < 0 || y < 0) return false
     data(robot.x)(robot.y).get.robot = false
     robot.x = x
     robot.y = y
     data(x)(y).get.robot = true
+    true
   }
 }
 
