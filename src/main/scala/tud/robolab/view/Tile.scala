@@ -162,11 +162,11 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     dirs.foreach(_ repaint g)
     if (model.robot) {
       g.setColor(Color.red)
-      val radius_w = dim_width / 6
-      val radius_h = dim_height / 6
+      val _w = dim_width / 6
+      val _h = dim_height / 6
       val x = dim_width / 2 - dim_width / 12
       val y = dim_height / 2 - dim_height / 12
-      g.fillOval(x, y, radius_w, radius_h)
+      g.fillRect(x, y, _w, _h)
     }
   }
 }

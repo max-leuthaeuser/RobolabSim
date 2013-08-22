@@ -6,12 +6,13 @@ import tud.robolab.view.{Interface, SimulationView}
 import tud.robolab.model.{Request, Session}
 import tud.robolab.model.Client
 
+// TODO implement view for managing connections and sessions
 object SessionManager {
   private val sessions = TrieMap[Session, SimulationView]()
 
   private def getSession(ip: String): Option[Session] = sessions.keys.find(_.client.ip.equals(ip))
 
-  private def hasSession(ip: String): Boolean = sessions.keys.find(_.client.ip.equals(ip)).isDefined
+  private def hasSession(ip: String): Boolean = sessions.keys.exists(_.client.ip.equals(ip))
 
   private def sessionBlocked(ip: String): Boolean = if (hasSession(ip)) getSession(ip).get.client.blocked else false
 
@@ -28,11 +29,13 @@ object SessionManager {
 
   def addSession(ip: String) {
     if (!hasSession(ip) && !sessionBlocked(ip)) {
-      val s = Session(Client(ip), Maze.empty, TrieMap.empty)
+      val s = Session(Client(ip), Maze.empty, Seq.empty)
       val v = new SimulationView(s)
       sessions(s) = v
 
       Interface.addSimTab(v, ip)
+      s.addPoint(0, 0)
+      v.updateSession()
     }
   }
 
@@ -47,7 +50,6 @@ object SessionManager {
     if (!hasSession(ip)) {
       addSession(ip)
       val s = getSession(ip).get
-      s.addPoint(0, 0)
       n = s.maze(0)(0).get
     } else {
       val s = getSession(ip).get

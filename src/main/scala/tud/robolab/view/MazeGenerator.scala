@@ -90,6 +90,7 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     val okbtn = new JButton("Generate")
     okbtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
+        // TODO handle already exisiting files
         IOUtils.writeToFile("maps/" + name.getText + ".maze", model.toJson.prettyPrint)
         Interface.mazePool +(name.getText, model)
       }

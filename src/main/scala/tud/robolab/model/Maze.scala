@@ -9,9 +9,9 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
   assert(data != None && data(0) != None)
   robotPosition(robot.x, robot.y)
 
-  def width: Int = data(0).size
+  def height: Int = data(0).size
 
-  def height: Int = data.size
+  def width: Int = data.size
 
   def apply(x: Int)(y: Int): Option[Point] = data(x)(y)
 
