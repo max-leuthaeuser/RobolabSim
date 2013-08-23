@@ -1,20 +1,33 @@
 package tud.robolab.view
 
-import tud.robolab.model.Observer
+import tud.robolab.model.{Maze, Client, Session, Observer}
 import javax.swing._
 import tud.robolab.controller.SessionManager.SessionPool
-import java.awt.BorderLayout
+import java.awt.{Color, GridLayout, BorderLayout}
 import javax.swing.table.AbstractTableModel
-import java.awt.event.ActionEvent
-import java.awt.event.KeyEvent
+import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
 import tud.robolab.controller.SessionManager
+import tud.robolab.utils.{IPUtils, SizeUtilities}
 
 class SessionsView extends JPanel with Observer[SessionPool] {
-  private var model: Option[SessionPool] = Option.empty
   private val tableModel = new TableModel()
+  private val addBtn = new JButton("Add session")
+  addBtn.addActionListener(new ActionListener {
+    def actionPerformed(e: ActionEvent) {
+      val r = SessionAddDialog.getSession
+      if (r.isDefined) {
+        SessionManager.addSession(r.get)
+        tableModel.fireTableDataChanged()
+      }
+    }
+  })
 
   setLayout(new BorderLayout())
   add(new JScrollPane(buildTable), BorderLayout.CENTER)
+
+  private val pa = new JPanel(new BorderLayout())
+  pa.add(addBtn, BorderLayout.EAST)
+  add(pa, BorderLayout.SOUTH)
 
   private def buildTable: JTable = {
     val table = new JTable(tableModel)
@@ -22,15 +35,29 @@ class SessionsView extends JPanel with Observer[SessionPool] {
 
     val condition = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
     val inputMap = table.getInputMap(condition)
-    val actionMap = table.getActionMap()
+    val actionMap = table.getActionMap
 
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete")
     actionMap.put("Delete", new AbstractAction() {
       def actionPerformed(e: ActionEvent) {
-        val row = table.getSelectedRow
-        if (row != -1 && model.isDefined && !model.get.all.isEmpty) {
-          model.get.remove(row)
+        SessionManager.removeSession(SessionManager.getSession(table.getSelectedRow))
+      }
+    })
+
+    table.getColumnModel.getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()) {
+      override def stopCellEditing(): Boolean = {
+        val b = IPUtils.isValidIPV4(getCellEditorValue.toString) && !SessionManager.hasSession(getCellEditorValue.toString)
+        if (!b) {
+          getComponent.setForeground(Color.red)
+        } else {
+          getComponent.setForeground(new Color(0, 100, 0))
+          val s = SessionManager.getSession(table.getSelectedRow)
+          val v = SessionManager.sessions.get(s)
+          SessionManager.removeSession(s)
+          s.client.ip = getCellEditorValue.toString
+          SessionManager.sessions.set(s, v)
         }
+        b
       }
     })
 
@@ -38,30 +65,27 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   }
 
   private class TableModel extends AbstractTableModel {
-    override def getRowCount: Int = if (model.isDefined) model.get.all.size else 1
+    override def getRowCount: Int = if (!SessionManager.sessions.all.isEmpty) SessionManager.sessions.all.size else 0
 
     override def getColumnCount: Int = 2
 
     override def getValueAt(rowIndex: Int, columnIndex: Int): AnyRef = {
-      if (model.isEmpty) columnIndex match {
+      if (SessionManager.sessions.all.isEmpty) columnIndex match {
         case 0 => ""
         case 1 => java.lang.Boolean.FALSE
       }
       else columnIndex match {
-        case 0 => model.get.all.keys.toSeq(rowIndex).client.ip
-        case 1 => java.lang.Boolean.valueOf(model.get.all.keys.toSeq(rowIndex).client.blocked)
+        case 0 => SessionManager.getSession(rowIndex).client.ip
+        case 1 => java.lang.Boolean.valueOf(SessionManager.getSession(rowIndex).client.blocked)
       }
     }
 
     override def setValueAt(aValue: scala.Any, rowIndex: Int, columnIndex: Int) {
       super.setValueAt(aValue, rowIndex, columnIndex)
-      if (model.isDefined && columnIndex == 1) model.get.all.keys.toSeq(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
+      if (columnIndex == 1) SessionManager.getSession(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
     }
 
-    override def isCellEditable(rowIndex: Int, columnIndex: Int): Boolean = columnIndex match {
-      case 1 => true
-      case _ => false
-    }
+    override def isCellEditable(rowIndex: Int, columnIndex: Int): Boolean = true
 
     override def getColumnName(column: Int): String = column match {
       case 0 => "Client IP"
@@ -75,7 +99,58 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   }
 
   def receiveUpdate(subject: SessionPool) {
-    model = Option(subject)
     tableModel.fireTableDataChanged()
   }
+
+  private object SessionAddDialog {
+    def getSession: Option[Session] = {
+      val d = new SessionAddDialog()
+      d.get()
+    }
+  }
+
+  private class SessionAddDialog {
+    private var session: Option[Session] = Option.empty
+    private val dialog = new JDialog()
+    private val okBtn = new JButton("Ok")
+    private val ipText = new JTextField()
+    private val blockedBox = new JCheckBox("blocked")
+
+    dialog.setTitle("New session")
+    dialog.setResizable(false)
+    dialog.setModal(true)
+    dialog.setLayout(new BorderLayout())
+    ipText.setToolTipText("Enter a valid IP address!")
+
+    private val content = new JPanel(new GridLayout(3, 1))
+    content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5))
+    content.add(new JLabel("IP"))
+    content.add(ipText)
+    content.add(blockedBox)
+
+    okBtn.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        if (IPUtils.isValidIPV4(ipText.getText)) {
+          session = Option(Session(Client(ipText.getText, blockedBox.isSelected), Maze.empty, Seq.empty))
+          dialog.setVisible(false)
+          dialog.dispose()
+        } else
+          ToolTipManager.sharedInstance().mouseMoved(new MouseEvent(ipText, 0, 0, 0, 0, 0, 0, false))
+      }
+    })
+
+
+    dialog.add(content, BorderLayout.CENTER)
+    dialog.add(okBtn, BorderLayout.SOUTH)
+
+    dialog.pack()
+    private val display = SizeUtilities.getDisplaySize
+    private val posX = display.width / 2 - (dialog.getSize.width / 2)
+    private val posY = display.height / 2 - (dialog.getSize.height / 2)
+    dialog.setLocation(posX, posY)
+    dialog.setVisible(true)
+
+    private def get(): Option[Session] = session
+  }
+
 }

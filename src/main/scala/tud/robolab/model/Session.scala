@@ -3,7 +3,7 @@ package tud.robolab.model
 import scala.collection.concurrent.TrieMap
 import tud.robolab.utils.IOUtils
 
-case class Client(ip: String, var blocked: Boolean = false)
+case class Client(var ip: String, var blocked: Boolean = false)
 
 case class Session(client: Client, var maze: Maze, var way: Seq[(Int, Int)]) {
   def clearWay {

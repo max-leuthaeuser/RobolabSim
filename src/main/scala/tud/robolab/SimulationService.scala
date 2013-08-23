@@ -34,7 +34,7 @@ object ResponseProtocol extends DefaultJsonProtocol {
 }
 
 object ErrorMessageProtocol extends DefaultJsonProtocol {
-  implicit val ErrorMessageormat = jsonFormat1(ErrorMessage)
+  implicit val ErrorMessageFormat = jsonFormat2(ErrorMessage)
 }
 
 import RequestProtocol._
