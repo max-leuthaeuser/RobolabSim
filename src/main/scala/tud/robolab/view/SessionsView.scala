@@ -25,9 +25,14 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   setLayout(new BorderLayout())
   add(new JScrollPane(buildTable), BorderLayout.CENTER)
 
-  private val pa = new JPanel(new BorderLayout())
-  pa.add(addBtn, BorderLayout.EAST)
-  add(pa, BorderLayout.SOUTH)
+  private val right = new JPanel(new BorderLayout())
+  private val desc = new JLabel("<html><div align=\"right\"><i>del</i> - delete the selected session<br /><i>o</i> - open the selected session</div></html>")
+  private val pa = new JPanel(new BorderLayout(0, 10))
+  pa.add(addBtn, BorderLayout.SOUTH)
+  pa.add(desc, BorderLayout.CENTER)
+  right.add(pa, BorderLayout.EAST)
+  right.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
+  add(right, BorderLayout.SOUTH)
 
   private def buildTable: JTable = {
     val table = new JTable(tableModel)
@@ -41,6 +46,18 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     actionMap.put("Delete", new AbstractAction() {
       def actionPerformed(e: ActionEvent) {
         SessionManager.removeSession(SessionManager.getSession(table.getSelectedRow))
+      }
+    })
+
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, 0), "Open")
+    actionMap.put("Open", new AbstractAction() {
+      def actionPerformed(e: ActionEvent) {
+        val s = SessionManager.getSession(table.getSelectedRow)
+        val v = SessionManager.sessions.get(s)
+        if (!v.isShown) {
+          v.isShown = true
+          Interface.addSimTab(v, s.client.ip, ask = false)
+        }
       }
     })
 
