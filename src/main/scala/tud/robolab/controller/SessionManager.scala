@@ -7,6 +7,7 @@ import tud.robolab.model.{Request, Session}
 import tud.robolab.model.Client
 
 // TODO handle multiple simultaneously connection requests
+// TODO allow to add sessions manually
 object SessionManager {
 
   class SessionPool extends Subject[SessionPool] {
