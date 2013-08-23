@@ -6,6 +6,10 @@ import tud.robolab.utils.IOUtils
 case class Client(ip: String, var blocked: Boolean = false)
 
 case class Session(client: Client, var maze: Maze, var way: Seq[(Int, Int)]) {
+  def clearWay {
+    way = Seq.empty
+  }
+
   def addPoint(x: Int, y: Int) {
     way = way :+ (x ,y)
   }

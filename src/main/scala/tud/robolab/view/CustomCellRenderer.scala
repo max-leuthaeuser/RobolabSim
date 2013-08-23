@@ -11,6 +11,7 @@ class CustomCellRenderer extends ListCellRenderer[String] {
 
   override def getListCellRendererComponent(list: JList[_ <: String], cell: String, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {
     val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus).asInstanceOf[JComponent]
+    component.setForeground(Color.black)
     if (index % 2 == 0)
       component.setBackground(color)
     else

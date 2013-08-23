@@ -7,6 +7,7 @@ import javax.swing.border.BevelBorder
 import java.awt.{BorderLayout, FlowLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import tud.robolab.model.MazePool
+import tud.robolab.controller.SessionManager
 
 object Interface extends SimpleSwingApplication {
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
@@ -45,12 +46,15 @@ object Interface extends SimpleSwingApplication {
     /** Initialize MazePool and MazeGenerator **/
     mazePool = new MazePool
     val mazeGenerator = new MazeGenerator
+    val sessionsEditor = new SessionsView
 
     /** Add tabs here **/
     tabbed.addTab("MazeGenerator", mazeGenerator)
+    tabbed.addTab("SessionsEditor", sessionsEditor)
 
     /** Attach Observers here **/
     mazePool.addObserver(mazeGenerator)
+    SessionManager.sessions.addObserver(sessionsEditor)
 
     contents = mainPanel
 
@@ -60,6 +64,11 @@ object Interface extends SimpleSwingApplication {
         super.closeOperation()
       }
     }
+  }
+
+  def removeSimTap(c: SimulationView) {
+    c.close()
+    tabbed.remove(c)
   }
 
   private def _addSimTap(c: SimulationView, title: String) {
@@ -102,15 +111,20 @@ object Interface extends SimpleSwingApplication {
     tabbed.setSelectedComponent(c)
   }
 
-  def addSimTab(c: SimulationView, title: String) {
-    Dialogs.addOrBlock(title) match {
-      case Dialog.Result.Yes => {
-        _addSimTap(c, title)
+  def addSimTab(c: SimulationView, title: String, ask: Boolean = true): Boolean = {
+    if (ask)
+      Dialogs.addOrBlock(title) match {
+        case Dialog.Result.Yes => {
+          _addSimTap(c, title)
+          return true
+        }
+        case Dialog.Result.Cancel => {
+          c.close(block = true)
+          return false
+        }
+        case _ => return false
       }
-      case Dialog.Result.Cancel => {
-        c.close(block = true)
-      }
-      case _ =>
-    }
+    else _addSimTap(c, title)
+    true
   }
 }

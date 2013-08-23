@@ -12,6 +12,7 @@ import tud.robolab.controller.SessionManager
 import tud.robolab.model.Session
 
 class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
+  var isShown = true
   private val nameLabel = new JLabel()
   private val ipLabel = new JLabel(session.client.ip)
   private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
@@ -57,6 +58,7 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
 
   def close(block: Boolean = false) {
     SessionManager.blockSession(session.client.ip, block)
+    isShown = false
   }
 
   private def buildSettingsPanel: JPanel = {
@@ -80,6 +82,15 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
     list.setLayoutOrientation(JList.VERTICAL)
     list.setVisibleRowCount(-1)
     result.add(new JScrollPane(list), BorderLayout.CENTER)
+    val clearBtn = new JButton("Clear")
+    clearBtn.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        listModel.removeAllElements()
+        session.clearWay
+      }
+    })
+
+    result.add(clearBtn, BorderLayout.SOUTH)
     result
   }
 
