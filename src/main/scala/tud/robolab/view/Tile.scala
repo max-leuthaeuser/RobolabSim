@@ -42,17 +42,20 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     })
   }
 
-  sealed abstract class NodeTile {
+  private sealed abstract class NodeTile {
     var sx, sy, width, height = 0
     var enabled = true
     private var hover = false
 
+    var hoverColor = Color.darkGray
+    var color = Color.lightGray
+
     def repaint(g: Graphics) {
       if (enabled)
         if (hover)
-          g.setColor(Color.darkGray)
+          g.setColor(hoverColor)
         else
-          g.setColor(Color.lightGray)
+          g.setColor(color)
       else
         g.setColor(Color.white)
       g.fillRect(sx, sy, width, height)
@@ -77,7 +80,26 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     }
   }
 
-  class North extends NodeTile {
+  private class Token extends NodeTile {
+    enabled = model.token
+    hoverColor = new Color(0, 100, 0)
+    color = Color.green
+
+    override def handleClick(x: Int, y: Int) {
+      super.handleClick(x, y)
+      if (!model.robot) model.token = enabled
+    }
+
+    override def repaint(g: Graphics) {
+      sx = dim_width / 2 - (dim_width / 12)
+      sy = dim_height / 2 - (dim_height / 12)
+      width = dim_width / 6
+      height = dim_height / 6
+      super.repaint(g)
+    }
+  }
+
+  private class North extends NodeTile {
     enabled = model.has(NORTH)
 
     override def repaint(g: Graphics) {
@@ -96,7 +118,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     }
   }
 
-  class East extends NodeTile {
+  private class East extends NodeTile {
     enabled = model.has(EAST)
 
     override def repaint(g: Graphics) {
@@ -116,7 +138,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     }
   }
 
-  class South extends NodeTile {
+  private class South extends NodeTile {
     enabled = model.has(SOUTH)
 
     override def repaint(g: Graphics) {
@@ -136,7 +158,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     }
   }
 
-  class West extends NodeTile {
+  private class West extends NodeTile {
     enabled = model.has(WEST)
 
     override def repaint(g: Graphics) {
@@ -155,7 +177,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     }
   }
 
-  val dirs = Seq(new North(), new East(), new South(), new West())
+  private val dirs = Seq(new North(), new East(), new South(), new West(), new Token())
 
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)

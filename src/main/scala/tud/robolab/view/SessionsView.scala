@@ -4,11 +4,10 @@ import tud.robolab.model.{Maze, Client, Session, Observer}
 import javax.swing._
 import tud.robolab.controller.SessionManager.SessionPool
 import java.awt.{Color, GridLayout, BorderLayout}
-import javax.swing.table.{DefaultTableCellRenderer, AbstractTableModel}
+import javax.swing.table.AbstractTableModel
 import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
 import tud.robolab.controller.SessionManager
 import tud.robolab.utils.{IPUtils, SizeUtilities}
-import sun.swing.table.DefaultTableCellHeaderRenderer
 
 class SessionsView extends JPanel with Observer[SessionPool] {
   private val tableModel = new TableModel()

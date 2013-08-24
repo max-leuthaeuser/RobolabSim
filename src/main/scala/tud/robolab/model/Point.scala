@@ -3,7 +3,7 @@ package tud.robolab.model
 import Direction._
 import spray.json._
 
-case class Point(private var data: Seq[Direction] = Direction.values.toSeq) {
+case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false) {
   var robot = false
 
   assert(data != null)
@@ -40,15 +40,12 @@ object PointJsonProtocol extends DefaultJsonProtocol {
   implicit object PointJsonFormat extends RootJsonFormat[Point] {
     def write(p: Point) = {
       val dirs = p.directions.map(s => JsString(s.toString))
-      JsArray(dirs.toList)
+      JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
     }
 
-    def read(value: JsValue) = value match {
-      case s: JsArray => {
-        val dirs = s.elements.map(s => Direction.from(s.toString().replaceAll("\"", "")))
-        Point(dirs)
-      }
-      case _ => throw new IllegalArgumentException("Point expected!")
+    def read(value: JsValue) = value.asJsObject.getFields("dirs", "token") match {
+      case Seq(JsArray(dirs), JsBoolean(token)) => Point(dirs.map(s => Direction.from(s.toString().replaceAll("\"", ""))), token)
+      case _ => deserializationError("Point expected!")
     }
   }
 
