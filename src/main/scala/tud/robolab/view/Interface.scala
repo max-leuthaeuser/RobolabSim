@@ -5,14 +5,16 @@ import javax.swing._
 import tud.robolab.Boot
 import javax.swing.border.BevelBorder
 import java.awt.{BorderLayout, FlowLayout}
-import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.{MouseEvent, MouseAdapter, ActionEvent, ActionListener}
 import tud.robolab.model.MazePool
 import tud.robolab.controller.SessionManager
+import tud.robolab.utils.SizeUtilities
 
 object Interface extends SimpleSwingApplication {
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
   val status = new Label("Waiting for connections ...")
-  val tabbed = new JTabbedPane
+  val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
+  val menu = createMenu()
   var mazePool: MazePool = null
 
   def top = new MainFrame {
@@ -23,13 +25,15 @@ object Interface extends SimpleSwingApplication {
       case e: Throwable => println(e)
     }
 
-    val width = 700
-    val height = 540
-    val screenSize = java.awt.Toolkit.getDefaultToolkit.getScreenSize
-    location = new java.awt.Point((screenSize.width - width) / 2, (screenSize.height - height) / 2)
-    minimumSize = new java.awt.Dimension(width, height)
-    preferredSize = new java.awt.Dimension(width, height)
-    maximumSize = new java.awt.Dimension(width, height)
+    val width = SizeUtilities.std_width
+    val height = SizeUtilities.std_height
+    val screenSize = SizeUtilities.getDisplaySize
+    val dim = new java.awt.Dimension(width, height)
+    val pos = new java.awt.Point((screenSize.width - width) / 2, (screenSize.height - height) / 2)
+    location = pos
+    minimumSize = dim
+    preferredSize = dim
+    maximumSize = dim
     peer.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
     title = "RobolabSim"
 
@@ -43,7 +47,6 @@ object Interface extends SimpleSwingApplication {
     mainPanel.layout(statusPanel) = BorderPanel.Position.South
     mainPanel.peer.add(tabbed, BorderLayout.CENTER)
 
-    /** Initialize MazePool and MazeGenerator **/
     mazePool = new MazePool
     val mazeGenerator = new MazeGenerator
     val sessionsEditor = new SessionsView
@@ -54,14 +57,53 @@ object Interface extends SimpleSwingApplication {
 
     /** Attach Observers here **/
     mazePool.addObserver(mazeGenerator)
-    SessionManager.sessions.addObserver(sessionsEditor)
+    SessionManager.getSessions().addObserver(sessionsEditor)
 
+    tabbed.addMouseListener(new PopupListener())
     contents = mainPanel
 
     override def closeOperation() {
       if (Dialogs.confirmation("Do you really want to exit the application and shut down the server?")) {
         Boot.terminate
         super.closeOperation()
+      }
+    }
+  }
+
+  private def createMenu(): JPopupMenu = {
+    val result = new JPopupMenu("Tabs")
+    val item = new JMenuItem("Change layout")
+    item.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        tabbed.getTabPlacement match {
+          case SwingConstants.TOP => tabbed.setTabPlacement(SwingConstants.RIGHT)
+          case SwingConstants.RIGHT => tabbed.setTabPlacement(SwingConstants.BOTTOM)
+          case SwingConstants.BOTTOM => tabbed.setTabPlacement(SwingConstants.LEFT)
+          case SwingConstants.LEFT => tabbed.setTabPlacement(SwingConstants.TOP)
+        }
+      }
+    })
+    result.add(item)
+    result
+  }
+
+  private class PopupListener extends MouseAdapter {
+    override def mouseClicked(e: MouseEvent) {
+      checkForPopup(e)
+    }
+
+    override def mousePressed(e: MouseEvent) {
+      checkForPopup(e)
+    }
+
+    override def mouseReleased(e: MouseEvent) {
+      checkForPopup(e)
+    }
+
+    private def checkForPopup(e: MouseEvent) {
+      if (e.isPopupTrigger) {
+        val c = e.getComponent
+        menu.show(c, e.getX, e.getY)
       }
     }
   }

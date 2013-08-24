@@ -4,10 +4,11 @@ import tud.robolab.model.{Maze, Client, Session, Observer}
 import javax.swing._
 import tud.robolab.controller.SessionManager.SessionPool
 import java.awt.{Color, GridLayout, BorderLayout}
-import javax.swing.table.AbstractTableModel
+import javax.swing.table.{DefaultTableCellRenderer, AbstractTableModel}
 import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
 import tud.robolab.controller.SessionManager
 import tud.robolab.utils.{IPUtils, SizeUtilities}
+import sun.swing.table.DefaultTableCellHeaderRenderer
 
 class SessionsView extends JPanel with Observer[SessionPool] {
   private val tableModel = new TableModel()
@@ -37,7 +38,7 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   private def buildTable: JTable = {
     val table = new JTable(tableModel)
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-
+    table.getColumnModel.getColumn(1).setMaxWidth(100)
     val condition = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
     val inputMap = table.getInputMap(condition)
     val actionMap = table.getActionMap
@@ -53,7 +54,7 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     actionMap.put("Open", new AbstractAction() {
       def actionPerformed(e: ActionEvent) {
         val s = SessionManager.getSession(table.getSelectedRow)
-        val v = SessionManager.sessions.get(s)
+        val v = SessionManager.getView(s)
         if (!v.isShown) {
           v.isShown = true
           Interface.addSimTab(v, s.client.ip, ask = false)
@@ -69,10 +70,10 @@ class SessionsView extends JPanel with Observer[SessionPool] {
         } else {
           getComponent.setForeground(new Color(0, 100, 0))
           val s = SessionManager.getSession(table.getSelectedRow)
-          val v = SessionManager.sessions.get(s)
+          val v = SessionManager.getView(s)
           SessionManager.removeSession(s)
           s.client.ip = getCellEditorValue.toString
-          SessionManager.sessions.set(s, v)
+          SessionManager.set(s, v)
         }
         b
       }
@@ -82,12 +83,12 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   }
 
   private class TableModel extends AbstractTableModel {
-    override def getRowCount: Int = if (!SessionManager.sessions.all.isEmpty) SessionManager.sessions.all.size else 0
+    override def getRowCount: Int = if (!SessionManager.hasSessions()) SessionManager.numberOfSessions() else 0
 
     override def getColumnCount: Int = 2
 
     override def getValueAt(rowIndex: Int, columnIndex: Int): AnyRef = {
-      if (SessionManager.sessions.all.isEmpty) columnIndex match {
+      if (SessionManager.hasSessions()) columnIndex match {
         case 0 => ""
         case 1 => java.lang.Boolean.FALSE
       }

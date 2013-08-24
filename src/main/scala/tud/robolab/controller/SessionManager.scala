@@ -8,32 +8,43 @@ import tud.robolab.model.Client
 
 // TODO handle multiple simultaneous connection requests
 object SessionManager {
+  private val sessions = new SessionPool()
 
   class SessionPool extends Subject[SessionPool] {
     private val peer = TrieMap[Session, SimulationView]()
 
-    def get(s: Session) = peer(s)
+    private[SessionManager] def get(s: Session) = peer(s)
 
-    def all = peer
+    private[SessionManager] def all = peer
 
-    def set(s: Session, v: SimulationView) {
+    private[SessionManager] def set(s: Session, v: SimulationView) {
       peer(s) = v
       notifyObservers()
     }
 
-    def remove(s: Session) {
+    private[SessionManager] def remove(s: Session) {
       Interface.removeSimTap(get(s))
       peer.remove(s)
       notifyObservers()
     }
 
-    def block(s: Session, block: Boolean) {
+    private[SessionManager] def block(s: Session, block: Boolean) {
       s.client.blocked = block
       notifyObservers()
     }
   }
 
-  val sessions = new SessionPool()
+  def getSessions(): SessionPool = sessions
+
+  def numberOfSessions(): Int = sessions.all.size
+
+  def hasSessions(): Boolean = sessions.all.isEmpty
+
+  def getView(s: Session): SimulationView = sessions.get(s)
+
+  def set(s: Session, v: SimulationView) {
+    sessions.set(s, v)
+  }
 
   def getSession(ip: String): Option[Session] = sessions.all.keys.find(_.client.ip.equals(ip))
 
