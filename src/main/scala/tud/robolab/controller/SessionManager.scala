@@ -91,7 +91,7 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0)
+      s.addPoint(0, 0, false)
     }
   }
 
@@ -101,7 +101,7 @@ object SessionManager {
       val v = new SimulationView(s)
       if (Interface.addSimTab(v, ip)) {
         sessions.set(s, v)
-        s.addPoint(0, 0)
+        s.addPoint(0, 0, false)
         v.updateSession()
         return true
       }
@@ -115,7 +115,7 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0)
+      s.addPoint(0, 0, false)
       v.updateSession()
     }
     sessions.block(getSession(ip).get, block)
@@ -129,12 +129,13 @@ object SessionManager {
       if (addSession(ip)) {
         val s = getSession(ip).get
         n = s.maze(0)(0).get
+        s.addPoint(0, 0, false)
       } else return ErrorType.DENIED
     } else {
       val s = getSession(ip).get
       if (!s.maze.robotPosition(r.x, r.y)) return ErrorType.INVALID
       n = s.maze(r.x)(r.y).get
-      s.addPoint(r.x, r.y)
+      s.addPoint(r.x, r.y, n.token)
       val v = sessions.get(s)
       v.updateSession()
       if (!v.isShown) {
@@ -143,6 +144,7 @@ object SessionManager {
       }
     }
     val t = n.asTuple
-    Response(t._1, t._2, t._3, t._4)
+    n.token = false
+    Response(t._1, t._2, t._3, t._4, t._5)
   }
 }

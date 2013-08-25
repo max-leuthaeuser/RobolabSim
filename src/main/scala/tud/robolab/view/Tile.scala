@@ -99,7 +99,6 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
   }
 
   private class Token extends NodeTile {
-    enabled = model.token
     hoverColor = new Color(0, 100, 0)
     color = Color.green
 
@@ -113,6 +112,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width / 6
       height = dim_height / 6
+      enabled = model.token
       super.repaint(g)
     }
   }

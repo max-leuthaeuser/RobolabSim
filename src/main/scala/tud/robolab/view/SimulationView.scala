@@ -50,7 +50,8 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
   def updateSession() {
     content.repaint()
     val p = session.latestPosition
-    listModel.addElement("  x = " + p._1 + "; y = " + p._2 + "  ")
+    val t = if (!p._3) "" else "(T)"
+    listModel.addElement("  x = " + p._1 + "; y = " + p._2 + "  " + t)
   }
 
   private def buildMapsPanel: JPanel = {
@@ -104,7 +105,7 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
     clearBtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
         listModel.removeAllElements()
-        session.clearWay
+        session.clearWay()
       }
     })
 

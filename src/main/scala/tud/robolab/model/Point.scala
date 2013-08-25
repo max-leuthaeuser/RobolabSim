@@ -30,26 +30,21 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
   def has(dir: Direction): Boolean = data.contains(dir)
 
   def +(dir: Direction) {
-    has(dir) match {
-      case false => data = data :+ dir
-      case _ =>
-    }
+    if (has(dir)) data = data :+ dir   
   }
 
   def -(dir: Direction) {
-    has(dir) match {
-      case true => data = data diff Seq(dir)
-      case _ =>
-    }
+    if (has(dir)) data = data diff Seq(dir)
   }
 
   def directions: Seq[Direction] = data
 
-  def asTuple: (Boolean, Boolean, Boolean, Boolean) = (
+  def asTuple: (Boolean, Boolean, Boolean, Boolean, Boolean) = (
     has(NORTH),
     has(EAST),
     has(SOUTH),
-    has(WEST)
+    has(WEST),
+    token
     )
 }
 

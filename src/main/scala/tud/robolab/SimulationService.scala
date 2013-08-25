@@ -48,7 +48,7 @@ object RequestProtocol extends DefaultJsonProtocol {
 }
 
 object ResponseProtocol extends DefaultJsonProtocol {
-  implicit val responseFormat = jsonFormat4(Response)
+  implicit val responseFormat = jsonFormat5(Response)
 }
 
 object ErrorMessageProtocol extends DefaultJsonProtocol {
