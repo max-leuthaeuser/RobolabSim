@@ -125,7 +125,11 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
   private def buildMazePanel(): JPanel = {
     val result = new JPanel()
     result.setLayout(new GridLayout(session.maze.width, session.maze.height, 5, 5))
-    session.maze.points.flatten.foreach(p => result.add(new Tile(p.get, readOnly = true)))
+    session.maze.points.view.zipWithIndex.foreach(xs => {
+      xs._1.view.zipWithIndex.foreach(p => {
+        result.add(new Tile(p._1.get, xs._2, p._2, readOnly = true))
+      })
+    })
     result
   }
 

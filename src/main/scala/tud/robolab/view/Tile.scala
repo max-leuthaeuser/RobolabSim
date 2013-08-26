@@ -19,15 +19,17 @@
 package tud.robolab.view
 
 import javax.swing.JPanel
-import java.awt.{Color, Dimension, Graphics}
+import java.awt._
 import java.awt.event.{MouseListener, MouseEvent, MouseMotionListener}
-import tud.robolab.model.Point
 import tud.robolab.model.Direction._
+import tud.robolab.model.Point
 
-class Tile(private val model: Point, private val readOnly: Boolean = false) extends JPanel {
+class Tile(private val model: Point, private val cx: Int, private val cy: Int, private val readOnly: Boolean = false) extends JPanel {
   private def dim_width = this.getWidth
 
   private def dim_height = this.getHeight
+
+  private var showHoverText = false
 
   setPreferredSize(new Dimension(60, 60))
   setMinimumSize(new Dimension(60, 60))
@@ -38,6 +40,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     addMouseMotionListener(new MouseMotionListener {
       def mouseMoved(e: MouseEvent) {
         dirs.foreach(_ handleHover(e.getX, e.getY))
+        showHoverText = true
       }
 
       def mouseDragged(e: MouseEvent) {}
@@ -46,6 +49,7 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
     addMouseListener(new MouseListener {
       def mouseExited(e: MouseEvent) {
         dirs.foreach(_ handleHover(-1, -1))
+        showHoverText = false
       }
 
       def mouseClicked(e: MouseEvent) {}
@@ -207,6 +211,15 @@ class Tile(private val model: Point, private val readOnly: Boolean = false) exte
       val x = dim_width / 2 - dim_width / 12
       val y = dim_height / 2 - dim_height / 12
       g.fillRect(x, y, _w, _h)
+    }
+    if (showHoverText) {
+      g match {
+        case g2: Graphics2D =>
+          g.setColor(Color.black)
+          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+          g2.drawString("x: " + cx + ", y: " + cy, 2, 10)
+        case _ =>
+      }
     }
   }
 }

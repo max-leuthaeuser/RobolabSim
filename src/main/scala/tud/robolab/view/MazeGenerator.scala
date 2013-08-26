@@ -108,7 +108,7 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     val okbtn = new JButton("Generate")
     okbtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        // TODO handle already exisiting files
+        // TODO handle already existing files
         IOUtils.writeToFile("maps/" + name.getText + ".maze", model.toJson.prettyPrint)
         Interface.mazePool +(name.getText, model)
       }
@@ -134,7 +134,12 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     if (model == null || curr_height != model.height || curr_width != model.width)
       model = Maze.empty(curr_width, curr_height)
 
-    model.points.flatten.foreach(p => result.add(new Tile(p.get)))
+    model.points.view.zipWithIndex.foreach(xs => {
+      xs._1.view.zipWithIndex.foreach(p => {
+        result.add(new Tile(p._1.get, xs._2, p._2))
+      })
+    })
+
     result
   }
 
