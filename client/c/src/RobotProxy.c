@@ -76,6 +76,11 @@ int Robot_Move(int x, int y) {
 		puts("Connection blocked!");
 		return ROBOT_FAIL;
 	}
+	
+	if (contains(response, "\"code\":3")) {
+		printf("Invalid position! (x=%d, y=%d)\n", x, y);
+		return ROBOT_FAIL;
+	}
 
 	int foundIntersection = 0;
 	bool token = false;
