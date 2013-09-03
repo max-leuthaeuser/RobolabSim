@@ -36,33 +36,31 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
 
   setBackground(Color.WHITE)
 
-  if (!readOnly) {
-    addMouseMotionListener(new MouseMotionListener {
-      def mouseMoved(e: MouseEvent) {
-        dirs.foreach(_ handleHover(e.getX, e.getY))
-        showHoverText = true
-      }
+  addMouseMotionListener(new MouseMotionListener {
+    def mouseMoved(e: MouseEvent) {
+      if (!readOnly) dirs.foreach(_ handleHover(e.getX, e.getY))
+      showHoverText = true
+    }
 
-      def mouseDragged(e: MouseEvent) {}
-    })
+    def mouseDragged(e: MouseEvent) {}
+  })
 
-    addMouseListener(new MouseListener {
-      def mouseExited(e: MouseEvent) {
-        dirs.foreach(_ handleHover(-1, -1))
-        showHoverText = false
-      }
+  addMouseListener(new MouseListener {
+    def mouseExited(e: MouseEvent) {
+      if (!readOnly) dirs.foreach(_ handleHover(-1, -1))
+      showHoverText = false
+    }
 
-      def mouseClicked(e: MouseEvent) {}
+    def mouseClicked(e: MouseEvent) {}
 
-      def mouseEntered(e: MouseEvent) {}
+    def mouseEntered(e: MouseEvent) {}
 
-      def mousePressed(e: MouseEvent) {
-        dirs.foreach(_ handleClick(e.getX, e.getY))
-      }
+    def mousePressed(e: MouseEvent) {
+      if (!readOnly) dirs.foreach(_ handleClick(e.getX, e.getY))
+    }
 
-      def mouseReleased(e: MouseEvent) {}
-    })
-  }
+    def mouseReleased(e: MouseEvent) {}
+  })
 
   private sealed abstract class NodeTile {
     var sx, sy, width, height = 0

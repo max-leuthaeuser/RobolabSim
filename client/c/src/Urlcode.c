@@ -1,4 +1,4 @@
-#include "../h/Configuration.h"
+#include "../h/Urlcode.h"
 
 char *concat(char* a, char* b) {
 	int len = strlen(a) + strlen(b) + 1;
@@ -8,6 +8,10 @@ char *concat(char* a, char* b) {
 	strncpy(n2a, a, len);
 	strncat(n2a, b, len - strlen(n2a));
 	return n2a;
+}
+
+bool contains(char* a, char* b) {
+	return strstr(a, b) != NULL;
 }
 
 /* Converts a hex character to its integer value */

@@ -1,14 +1,9 @@
 #include "../h/Configuration.h"
 
 int main(void) {
-	char* url = "http://localhost:8080/query?=";
-	char* query = url_encode("{\"x\":0,\"y\":0}");
-	char* r = sendAndRecieve(concat(url, query));
-	free(query);
-	if (r != NULL)
-		printf("Received:\n%s", r);
-	else
-		puts("Connection failed!");
-	free(r);
+	printf("Token: %d\n", Robot_Move(0, 0));
+	printf("Intersection: %d\n", Robot_GetIntersections());
+	printf("Token: %d\n", Robot_Move(1, 1));
+	printf("Intersection: %d\n", Robot_GetIntersections());
 	return EXIT_SUCCESS;
 }

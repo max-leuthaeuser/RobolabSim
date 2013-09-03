@@ -36,7 +36,9 @@ char* sendAndRecieve(const char* url) {
 	//Get a pointer to the function I just defined
 	pFunc = PyObject_GetAttrString(pNewMod, "get");
 	if (pFunc == NULL) {
+#ifdef DEBUG
 		PyErr_Print();
+#endif
 		return NULL;
 	}
 
@@ -48,14 +50,18 @@ char* sendAndRecieve(const char* url) {
 	//Call my function, passing it the number four
 	pValue = PyObject_CallObject(pFunc, pArgs);
 	if (pValue == NULL) {
+#ifdef DEBUG
 		PyErr_Print();
+#endif
 		return NULL;
 	}
 
 	Py_DECREF(pArgs);
 	char* result = PyString_AsString(pValue);
 	if (result == NULL) {
+#ifdef DEBUG
 		PyErr_Print();
+#endif
 		return NULL;
 	}
 
