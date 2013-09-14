@@ -28,6 +28,10 @@ object Dialogs {
       case _ => false
     }
 
+  def info(text: String) {
+    Dialog.showMessage(parent = null, title = "Information", message = text)
+  }
+
   def closeOrBlock(): Result.Value = {
     val options = Seq("Close", "No", "Close and block")
     Dialog.showOptions(parent = null, title = "Confirmation", message = "Close and / or block this connection?", entries = options, initial = 0)

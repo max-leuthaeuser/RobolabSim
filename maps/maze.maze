@@ -5,6 +5,15 @@
   "dirs": ["SOUTH", "EAST", "WEST"],
   "token": false
 }, {
+  "dirs": ["SOUTH", "EAST", "WEST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "EAST", "WEST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "EAST", "WEST"],
+  "token": false
+}, {
   "dirs": ["WEST", "SOUTH"],
   "token": false
 }], [{
@@ -14,15 +23,87 @@
   "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
   "token": false
 }, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "WEST", "NORTH"],
+  "token": false
+}], [{
+  "dirs": ["SOUTH", "EAST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "WEST", "NORTH"],
+  "token": false
+}], [{
+  "dirs": ["SOUTH", "EAST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "WEST", "NORTH"],
+  "token": false
+}], [{
+  "dirs": ["SOUTH", "EAST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
   "dirs": ["SOUTH", "WEST", "NORTH"],
   "token": false
 }], [{
   "dirs": ["EAST", "NORTH"],
-  "token": true
+  "token": false
 }, {
   "dirs": ["NORTH", "EAST", "WEST"],
-  "token": true
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "WEST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "WEST"],
+  "token": false
 }, {
   "dirs": ["NORTH", "WEST"],
-  "token": true
+  "token": false
 }]]

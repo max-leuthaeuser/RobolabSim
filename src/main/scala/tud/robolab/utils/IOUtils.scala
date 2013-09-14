@@ -22,6 +22,8 @@ import java.io.{File, PrintWriter, FileWriter}
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import io.Source._
+import javax.swing.{JFileChooser, JFrame}
+import java.awt.FileDialog
 
 object IOUtils {
   /**
@@ -76,6 +78,19 @@ object IOUtils {
     }
     finally src match {
       case b: scala.io.BufferedSource => b.close()
+    }
+  }
+
+  def letUserChooseFile(currentDirectory: String): Option[String] = {
+    val fc = new JFileChooser(currentDirectory)
+    val returnVal = fc.showOpenDialog(null)
+
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      val file = fc.getSelectedFile
+      return Option(file.getCanonicalPath)
+
+    } else {
+      return Option.empty
     }
   }
 }

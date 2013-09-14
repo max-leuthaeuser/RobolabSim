@@ -30,7 +30,7 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
   def has(dir: Direction): Boolean = data.contains(dir)
 
   def +(dir: Direction) {
-    if (has(dir)) data = data :+ dir   
+    if (!has(dir)) data = data :+ dir
   }
 
   def -(dir: Direction) {
@@ -53,6 +53,7 @@ object PointJsonProtocol extends DefaultJsonProtocol {
   implicit object PointJsonFormat extends RootJsonFormat[Point] {
     def write(p: Point) = {
       val dirs = p.directions.map(s => JsString(s.toString))
+      println(dirs)
       JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
     }
 

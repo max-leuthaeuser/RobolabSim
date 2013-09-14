@@ -105,12 +105,29 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     val result = new JPanel(new BorderLayout())
     result.add(edit, BorderLayout.NORTH)
 
-    val okbtn = new JButton("Generate")
+    val okbtn = new JButton("Save")
     okbtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        // TODO handle already existing files
-        IOUtils.writeToFile("maps/" + name.getText + ".maze", model.toJson.prettyPrint)
-        Interface.mazePool +(name.getText, model)
+        var filename = name.getText
+        val f = new File("maps/" + filename + ".maze")
+        if (!f.isFile) {
+          IOUtils.writeToFile(f.getCanonicalPath, model.toJson.prettyPrint)
+          Dialogs.info("Successfully written to file.")
+        }
+        else {
+          Dialogs.info("File exists already! Choose another one.")
+          IOUtils.letUserChooseFile(f.getCanonicalPath) match {
+            case None => Dialogs.info("Aborted. No file was written.")
+            case Some(p) => {
+              var n = p
+              if (!p.endsWith(".maze")) n = n + ".maze"
+              IOUtils.writeToFile(n, model.toJson.prettyPrint)
+              Dialogs.info("Successfully written to file.")
+              filename = new File(n).getName.replace(".maze", "")
+            }
+          }
+        }
+        Interface.mazePool +(filename, model)
       }
     })
 
