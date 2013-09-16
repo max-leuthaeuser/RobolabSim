@@ -21,9 +21,7 @@ package tud.robolab.model
 import Direction._
 import spray.json._
 
-case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false) {
-  var robot = false
-
+case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false, var robot: Boolean = false) {
   assert(data != null)
   assert(data != None)
 
@@ -53,7 +51,6 @@ object PointJsonProtocol extends DefaultJsonProtocol {
   implicit object PointJsonFormat extends RootJsonFormat[Point] {
     def write(p: Point) = {
       val dirs = p.directions.map(s => JsString(s.toString))
-      println(dirs)
       JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
     }
 

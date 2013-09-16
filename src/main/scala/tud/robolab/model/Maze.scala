@@ -77,7 +77,7 @@ object MazeJsonProtocol extends DefaultJsonProtocol {
       val points: List[List[JsValue]] = p.points.map(ys => {
         ys.map(_ match {
           case None => JsString("None")
-          case e => e.get.toJson
+          case Some(e) => e.toJson
         }).toList
       }).toList
 
@@ -91,12 +91,12 @@ object MazeJsonProtocol extends DefaultJsonProtocol {
             case e if e.compactPrint.contains("None") => Option.empty
             case e => Option(e.convertTo[Point])
           }).toSeq
-          case _ => throw new IllegalArgumentException
+          case _ => deserializationError("Maze expected!")
         }).toSeq
 
         Maze(points)
       }
-      case _ => throw new IllegalArgumentException("Maze expected!")
+      case _ => deserializationError("Maze expected!")
     }
   }
 

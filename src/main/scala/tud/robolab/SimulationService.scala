@@ -106,12 +106,13 @@ trait SimulationService extends HttpService {
 
                 println("[" + IOUtils.now + "] Incoming Request... ")
                 println("[" + IOUtils.now + "] from [" + ip + "] " + req)
-                println("[" + IOUtils.now + "] Completed!")
 
                 import MessageJsonProtocol._
                 ctx.complete {
                   Future[String] {
-                    SessionManager.handleRequest(ip, req).toJson.compactPrint
+                    val r = SessionManager.handleRequest(ip, req).toJson.compactPrint
+                    println("[" + IOUtils.now + "] Completed!")
+                    r
                   }
                 }
             }

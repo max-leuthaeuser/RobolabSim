@@ -29,8 +29,7 @@ import tud.robolab.model.MazeJsonProtocol._
 import tud.robolab.controller.SessionManager
 import tud.robolab.model.Session
 
-class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
-  var isShown = true
+class SimulationView(session: Session, var isShown: Boolean = true) extends JPanel with Observer[MazePool] {
   private val nameLabel = new JLabel()
   private val ipLabel = new JLabel(session.client.ip)
   private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
@@ -140,5 +139,21 @@ class SimulationView(session: Session) extends JPanel with Observer[MazePool] {
     subject.mazeNames.foreach(box.addItem)
     box.addActionListener(listeners(0))
   }
+
+  private class CustomCellRenderer extends ListCellRenderer[String] {
+    private val peerRenderer: ListCellRenderer[String] = (new DefaultListCellRenderer).asInstanceOf[ListCellRenderer[String]]
+    private val color = new Color(237, 237, 237)
+
+    override def getListCellRendererComponent(list: JList[_ <: String], cell: String, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {
+      val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus).asInstanceOf[JComponent]
+      component.setForeground(Color.black)
+      if (index % 2 == 0)
+        component.setBackground(color)
+      else
+        component.setBackground(Color.white)
+      component
+    }
+  }
+
 }
 

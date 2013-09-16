@@ -30,6 +30,7 @@ import tud.robolab.utils.{IPUtils, SizeUtilities}
 class SessionsView extends JPanel with Observer[SessionPool] {
   private val tableModel = new TableModel()
   private val addBtn = new JButton("Add session")
+
   addBtn.addActionListener(new ActionListener {
     def actionPerformed(e: ActionEvent) {
       val r = SessionAddDialog.getSession

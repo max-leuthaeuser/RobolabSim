@@ -30,9 +30,9 @@ import tud.robolab.utils.SizeUtilities
 
 object Interface extends SimpleSwingApplication {
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
-  val status = new Label("Waiting for connections ...")
-  val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
-  val menu = createMenu()
+  private val status = new Label("Waiting for connections ...")
+  private val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
+  private val menu = createMenu()
   var mazePool: MazePool = null
 
   def top = new MainFrame {
