@@ -101,12 +101,12 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   }
 
   private class TableModel extends AbstractTableModel {
-    override def getRowCount: Int = if (!SessionManager.hasSessions()) SessionManager.numberOfSessions() else 0
+    override def getRowCount: Int = if (!SessionManager.hasSessions) SessionManager.numberOfSessions() else 0
 
     override def getColumnCount: Int = 2
 
     override def getValueAt(rowIndex: Int, columnIndex: Int): AnyRef = {
-      if (SessionManager.hasSessions()) columnIndex match {
+      if (SessionManager.hasSessions) columnIndex match {
         case 0 => ""
         case 1 => java.lang.Boolean.FALSE
       }

@@ -41,7 +41,7 @@ object Boot extends App {
 
   Interface.startup(Array.empty)
 
-  def terminate {
+  def terminate() {
     println("[" + IOUtils.now + "] Shutting server down ...")
     IO(Http) ! Http.Unbind
     println("[" + IOUtils.now + "] Done.")

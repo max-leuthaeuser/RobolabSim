@@ -75,14 +75,14 @@ object Interface extends SimpleSwingApplication {
 
     /** Attach Observers here **/
     mazePool.addObserver(mazeGenerator)
-    SessionManager.getSessions().addObserver(sessionsEditor)
+    SessionManager.getSessions.addObserver(sessionsEditor)
 
     tabbed.addMouseListener(new PopupListener())
     contents = mainPanel
 
     override def closeOperation() {
       if (Dialogs.confirmation("Do you really want to exit the application and shut down the server?")) {
-        Boot.terminate
+        Boot.terminate()
         super.closeOperation()
       }
     }

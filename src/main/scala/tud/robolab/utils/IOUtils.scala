@@ -22,8 +22,8 @@ import java.io.{File, PrintWriter, FileWriter}
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import io.Source._
-import javax.swing.{JFileChooser, JFrame}
-import java.awt.FileDialog
+import javax.swing.JFileChooser
+
 
 object IOUtils {
   /**
@@ -87,10 +87,9 @@ object IOUtils {
 
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       val file = fc.getSelectedFile
-      return Option(file.getCanonicalPath)
-
+      Option(file.getCanonicalPath)
     } else {
-      return Option.empty
+      Option.empty
     }
   }
 }

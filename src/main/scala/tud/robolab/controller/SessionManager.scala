@@ -52,11 +52,11 @@ object SessionManager {
     }
   }
 
-  def getSessions(): SessionPool = sessions
+  def getSessions: SessionPool = sessions
 
   def numberOfSessions(): Int = sessions.all.size
 
-  def hasSessions(): Boolean = sessions.all.isEmpty
+  def hasSessions: Boolean = sessions.all.isEmpty
 
   def getView(s: Session): SimulationView = sessions.get(s)
 
@@ -91,7 +91,7 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0, false)
+      s.addPoint(0, 0, token = false)
     }
   }
 
@@ -101,7 +101,7 @@ object SessionManager {
       val v = new SimulationView(s)
       if (Interface.addSimTab(v, ip)) {
         sessions.set(s, v)
-        s.addPoint(0, 0, false)
+        s.addPoint(0, 0, token = false)
         v.updateSession()
         return true
       }
@@ -115,7 +115,7 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0, false)
+      s.addPoint(0, 0, token = false)
       v.updateSession()
     }
     sessions.block(getSession(ip).get, block)
@@ -129,7 +129,7 @@ object SessionManager {
       if (addSession(ip)) {
         val s = getSession(ip).get
         n = s.maze(0)(0).get
-        s.addPoint(0, 0, false)
+        s.addPoint(0, 0, token = false)
       } else return ErrorType.DENIED
     } else {
       val s = getSession(ip).get

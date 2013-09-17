@@ -25,8 +25,8 @@ case class Session(client: Client, var maze: Maze, var way: Seq[(Int, Int, Boole
     way = Seq.empty
   }
 
-  def addPoint(x: Int, y: Int, t: Boolean) {
-    way = way :+(x, y, t)
+  def addPoint(x: Int, y: Int, token: Boolean) {
+    way = way :+(x, y, token)
   }
 
   def latestPosition: (Int, Int, Boolean) = way.last
