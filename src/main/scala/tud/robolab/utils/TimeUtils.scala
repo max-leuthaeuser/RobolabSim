@@ -18,7 +18,11 @@
 
 package tud.robolab.utils
 
+import java.util.Calendar
+import java.text.SimpleDateFormat
+
 object TimeUtils {
+
   /**
    * Use apply method to measure time used
    * executing the given function block.
@@ -33,5 +37,12 @@ object TimeUtils {
         println("# " + name + " completed, time taken: " + diff + " ms (" + diff / 1000.0 + " s)")
       }
     }
+  }
+
+  def now: String = {
+    val DATE_FORMAT_NOW = "HH:mm:ss:SSS"
+    val cal = Calendar.getInstance()
+    val sdf = new SimpleDateFormat(DATE_FORMAT_NOW)
+    sdf.format(cal.getTime)
   }
 }

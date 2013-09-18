@@ -23,8 +23,9 @@ import tud.robolab.model._
 import tud.robolab.view.{Interface, SimulationView}
 import tud.robolab.model.{Request, Session}
 import tud.robolab.model.Client
+import tud.robolab.utils.TimeUtils
 
-// TODO handle multiple simultaneous connection requests
+// TODO handle multiple simultaneous connection requests from the same IP
 object SessionManager {
   private val sessions = new SessionPool()
 
@@ -91,7 +92,6 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0, token = false)
     }
   }
 
@@ -101,7 +101,7 @@ object SessionManager {
       val v = new SimulationView(s)
       if (Interface.addSimTab(v, ip)) {
         sessions.set(s, v)
-        s.addPoint(0, 0, token = false)
+        s.addPoint(WayElement(0, 0, token = false, time = TimeUtils.now))
         v.updateSession()
         return true
       }
@@ -115,7 +115,7 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(0, 0, token = false)
+      s.addPoint(WayElement(0, 0, token = false, time = TimeUtils.now))
       v.updateSession()
     }
     sessions.block(getSession(ip).get, block)
@@ -129,13 +129,12 @@ object SessionManager {
       if (addSession(ip)) {
         val s = getSession(ip).get
         n = s.maze(0)(0).get
-        s.addPoint(0, 0, token = false)
       } else return ErrorType.DENIED
     } else {
       val s = getSession(ip).get
       if (!s.maze.robotPosition(r.x, r.y)) return ErrorType.INVALID
       n = s.maze(r.x)(r.y).get
-      s.addPoint(r.x, r.y, n.token)
+      s.addPoint(WayElement(r.x, r.y, token = n.token, time = TimeUtils.now))
       val v = sessions.get(s)
       v.updateSession()
       if (!v.isShown) {

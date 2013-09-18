@@ -22,7 +22,7 @@ import akka.actor.Actor
 import spray.routing._
 import spray.http._
 import MediaTypes._
-import tud.robolab.utils.IOUtils
+import tud.robolab.utils.TimeUtils
 import tud.robolab.model.{Message, Request, Response, ErrorMessage}
 import spray.json._
 import tud.robolab.controller.SessionManager
@@ -104,14 +104,14 @@ trait SimulationService extends HttpService {
                 val ip = ctx.request.headers.filter(_.name.equals("Remote-Address"))(0).value
                 val req = values.asJson.convertTo[Request]
 
-                println("[" + IOUtils.now + "] Incoming Request... ")
-                println("[" + IOUtils.now + "] from [" + ip + "] " + req)
+                println("[%s] Incoming Request...".format(TimeUtils.now))
+                println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
 
                 import MessageJsonProtocol._
                 ctx.complete {
                   Future[String] {
                     val r = SessionManager.handleRequest(ip, req).toJson.compactPrint
-                    println("[" + IOUtils.now + "] Completed!")
+                    println("[%s] Completed!".format(TimeUtils.now))
                     r
                   }
                 }

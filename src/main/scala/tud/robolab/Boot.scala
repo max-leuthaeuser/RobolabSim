@@ -23,7 +23,7 @@ import akka.io.IO
 import spray.can.Http
 import com.typesafe.config.ConfigFactory
 import tud.robolab.view.Interface
-import tud.robolab.utils.IOUtils
+import tud.robolab.utils.TimeUtils
 
 object Boot extends App {
   val conf = ConfigFactory.load("application.conf")
@@ -42,8 +42,8 @@ object Boot extends App {
   Interface.startup(Array.empty)
 
   def terminate() {
-    println("[" + IOUtils.now + "] Shutting server down ...")
+    println("[" + TimeUtils.now + "] Shutting server down ...")
     IO(Http) ! Http.Unbind
-    println("[" + IOUtils.now + "] Done.")
+    println("[" + TimeUtils.now + "] Done.")
   }
 }

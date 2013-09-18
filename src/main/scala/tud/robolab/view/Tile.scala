@@ -38,7 +38,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
 
   addMouseMotionListener(new MouseMotionListener {
     def mouseMoved(e: MouseEvent) {
-      if (!readOnly) dirs.foreach(_ handleHover(e.getX, e.getY))
+      dirs.foreach(_ handleHover(e.getX, e.getY))
       showHoverText = true
     }
 
@@ -47,7 +47,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
 
   addMouseListener(new MouseListener {
     def mouseExited(e: MouseEvent) {
-      if (!readOnly) dirs.foreach(_ handleHover(-1, -1))
+      dirs.foreach(_ handleHover(-1, -1))
       showHoverText = false
     }
 
@@ -56,7 +56,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     def mouseEntered(e: MouseEvent) {}
 
     def mousePressed(e: MouseEvent) {
-      if (!readOnly) dirs.foreach(_ handleClick(e.getX, e.getY))
+      dirs.foreach(_ handleClick(e.getX, e.getY))
     }
 
     def mouseReleased(e: MouseEvent) {}
@@ -82,10 +82,12 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
 
     def handleClick(x: Int, y: Int) {
-      val ex = sx + width
-      val ey = sy + height
-      if (x >= sx && x <= ex && y >= sy && y <= ey)
-        enabled = !enabled
+      if (!readOnly) {
+        val ex = sx + width
+        val ey = sy + height
+        if (x >= sx && x <= ex && y >= sy && y <= ey)
+          enabled = !enabled
+      }
       Tile.this.repaint()
     }
 
@@ -210,6 +212,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       val y = dim_height / 2 - dim_height / 12
       g.fillRect(x, y, _w, _h)
     }
+
     if (showHoverText) {
       g match {
         case g2: Graphics2D =>

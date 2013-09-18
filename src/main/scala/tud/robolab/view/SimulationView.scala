@@ -49,8 +49,8 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
   def updateSession() {
     content.repaint()
     val p = session.latestPosition
-    val t = if (!p._3) "" else "(T)"
-    listModel.addElement("  x = " + p._1 + "; y = " + p._2 + "  " + t)
+    val t = if (!p.token) "" else "(T)"
+    listModel.addElement(" [%s] x = %s; y = %s %s ".format(p.time, p.x, p.y, t))
   }
 
   private def buildMapsPanel: JPanel = {
@@ -95,7 +95,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
 
     val list = new JList(listModel)
     list.setCellRenderer(new CustomCellRenderer())
-    list.setFixedCellWidth(80)
+    list.setFixedCellWidth(165)
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     list.setLayoutOrientation(JList.VERTICAL)
     list.setVisibleRowCount(-1)
@@ -142,7 +142,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
 
   private class CustomCellRenderer extends ListCellRenderer[String] {
     private val peerRenderer: ListCellRenderer[String] = (new DefaultListCellRenderer).asInstanceOf[ListCellRenderer[String]]
-    private val color = new Color(237, 237, 237)
+    private val color = new Color(245, 245, 245)
 
     override def getListCellRendererComponent(list: JList[_ <: String], cell: String, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component = {
       val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus).asInstanceOf[JComponent]

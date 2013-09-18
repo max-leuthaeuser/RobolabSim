@@ -20,16 +20,18 @@ package tud.robolab.model
 
 case class Client(var ip: String, var blocked: Boolean = false)
 
-case class Session(client: Client, var maze: Maze, var way: Seq[(Int, Int, Boolean)]) {
+case class WayElement(x: Int, y: Int, token: Boolean, time: String)
+
+case class Session(client: Client, var maze: Maze, var way: Seq[WayElement]) {
   def clearWay() {
     way = Seq.empty
   }
 
-  def addPoint(x: Int, y: Int, token: Boolean) {
-    way = way :+(x, y, token)
+  def addPoint(elem: WayElement) {
+    way = way :+ elem
   }
 
-  def latestPosition: (Int, Int, Boolean) = way.last
+  def latestPosition: WayElement = way.last
 
   override def equals(o: Any) = o match {
     case that: Session => that.client.ip.equals(this.client.ip)
