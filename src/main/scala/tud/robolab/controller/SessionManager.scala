@@ -25,7 +25,6 @@ import tud.robolab.model.{Request, Session}
 import tud.robolab.model.Client
 import tud.robolab.utils.TimeUtils
 
-// TODO handle multiple simultaneous connection requests from the same IP
 object SessionManager {
   private val sessions = new SessionPool()
 
@@ -121,7 +120,7 @@ object SessionManager {
     sessions.block(getSession(ip).get, block)
   }
 
-  def handleRequest(ip: String, r: Request): Message = {
+  def handleQueryRequest(ip: String, r: Request): Message = {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     var n: Point = null
@@ -142,8 +141,30 @@ object SessionManager {
         Interface.addSimTab(v, s.client.ip, ask = false)
       }
     }
-    val t = n.asTuple
-    n.token = false
-    Response(t._1, t._2, t._3, t._4, t._5)
+    QueryResponseFactory.fromPoint(n)
+  }
+
+  def handlePathRequest(ip: String): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_PATH
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    PathResponse(
+      s.way.map(p => {
+        s.maze(p.x)(p.y) match {
+          case Some(point) => (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
+          case None => throw new IllegalArgumentException
+        }
+      }))
+  }
+
+  def handleMapRequest(ip: String, r: MapRequest): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_PATH
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    sessions.get(getSession(ip).get).changeMap(r.map) match {
+      case true => Ok()
+      case false => ErrorType.NO_MAP
+    }
   }
 }

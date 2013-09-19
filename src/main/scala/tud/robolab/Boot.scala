@@ -29,6 +29,10 @@ object Boot extends App {
   val conf = ConfigFactory.load("application.conf")
   lazy val IP = conf.getString("spray.can.server.ip")
   lazy val PORT = conf.getInt("spray.can.server.port")
+  // TODO allow the server to run without the graphical interface
+  lazy val GUI = conf.getBoolean("spray.can.server.gui")
+  // TODO allow requests for testing that do not need explicit acknowledgement
+  lazy val TESTING = conf.getBoolean("spray.can.server.testing")
 
   // we need an ActorSystem to host our application in
   implicit val system = ActorSystem("on-spray-can")
@@ -39,6 +43,7 @@ object Boot extends App {
   // start a new HTTP server on port 8080 with our service actor as the handler
   IO(Http) ! Http.Bind(service, interface = IP, port = PORT)
 
+  // if (GUI)
   Interface.startup(Array.empty)
 
   def terminate() {

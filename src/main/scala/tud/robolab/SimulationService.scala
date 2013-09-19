@@ -23,11 +23,14 @@ import spray.routing._
 import spray.http._
 import MediaTypes._
 import tud.robolab.utils.TimeUtils
-import tud.robolab.model.{Message, Request, Response, ErrorMessage}
+import tud.robolab.model._
 import spray.json._
 import tud.robolab.controller.SessionManager
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import tud.robolab.model.QueryResponse
+import tud.robolab.model.ErrorMessage
+import tud.robolab.model.Request
 
 // we don't implement our route structure directly in the service actor because
 // we want to be able to test it independently, without having to spin up an actor
@@ -47,8 +50,12 @@ object RequestProtocol extends DefaultJsonProtocol {
   implicit val requestFormat = jsonFormat2(Request)
 }
 
-object ResponseProtocol extends DefaultJsonProtocol {
-  implicit val responseFormat = jsonFormat5(Response)
+object MapRequestProtocol extends DefaultJsonProtocol {
+  implicit val mapRequestFormat = jsonFormat1(MapRequest)
+}
+
+object QueryResponseProtocol extends DefaultJsonProtocol {
+  implicit val queryResponseFormat = jsonFormat5(QueryResponse)
 }
 
 object ErrorMessageProtocol extends DefaultJsonProtocol {
@@ -56,16 +63,21 @@ object ErrorMessageProtocol extends DefaultJsonProtocol {
 }
 
 import RequestProtocol._
-import ResponseProtocol._
+import QueryResponseProtocol._
 import ErrorMessageProtocol._
+import MapRequestProtocol._
 
 object MessageJsonProtocol extends DefaultJsonProtocol {
 
   implicit object MessageJsonFormat extends RootJsonFormat[Message] {
     def write(p: Message) = {
       p match {
-        case r: Response => r.toJson
+        case r: Ok => "Ok".toJson
+        case r: QueryResponse => r.toJson
         case b: ErrorMessage => b.toJson
+        case p: PathResponse => JsArray(p.way.map(t =>
+          JsObject("point" -> t._1.toJson,
+            "properties" -> t._2.toJson)).toList)
         case _ => throw new NotImplementedError()
       }
     }
@@ -79,6 +91,8 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
 
 // this trait defines our service behavior independently from the service actor
 trait SimulationService extends HttpService {
+  private def getIP(req: HttpRequest) = req.headers.filter(_.name.equals("Remote-Address"))(0).value
+
   val myRoute =
     path("") {
       get {
@@ -101,7 +115,7 @@ trait SimulationService extends HttpService {
           values =>
             (get | put) {
               ctx =>
-                val ip = ctx.request.headers.filter(_.name.equals("Remote-Address"))(0).value
+                val ip = getIP(ctx.request)
                 val req = values.asJson.convertTo[Request]
 
                 println("[%s] Incoming Request...".format(TimeUtils.now))
@@ -110,11 +124,51 @@ trait SimulationService extends HttpService {
                 import MessageJsonProtocol._
                 ctx.complete {
                   Future[String] {
-                    val r = SessionManager.handleRequest(ip, req).toJson.compactPrint
+                    val r = SessionManager.handleQueryRequest(ip, req).toJson.compactPrint
                     println("[%s] Completed!".format(TimeUtils.now))
                     r
                   }
                 }
+            }
+        }
+      } ~
+      path("maze") {
+        parameter("") {
+          values =>
+            (get | put) {
+              ctx =>
+                val ip = getIP(ctx.request)
+                val req = values.asJson.convertTo[MapRequest]
+
+                println("[%s] Incoming Maze request...".format(TimeUtils.now))
+                println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
+
+                import MessageJsonProtocol._
+                ctx.complete {
+                  Future[String] {
+                    val r = SessionManager.handleMapRequest(ip, req).toJson.compactPrint
+                    println("[%s] Completed!".format(TimeUtils.now))
+                    r
+                  }
+                }
+            }
+        }
+      } ~
+      path("path") {
+        get {
+          ctx =>
+            val ip = getIP(ctx.request)
+
+            println("[%s] Incoming Path request...".format(TimeUtils.now))
+            println("[%s] from [%s]".format(TimeUtils.now, ip))
+
+            import MessageJsonProtocol._
+            ctx.complete {
+              Future[String] {
+                val r = SessionManager.handlePathRequest(ip).toJson.compactPrint
+                println("[%s] Completed!".format(TimeUtils.now))
+                r
+              }
             }
         }
       }

@@ -53,6 +53,15 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     listModel.addElement(" [%s] x = %s; y = %s %s ".format(p.time, p.x, p.y, t))
   }
 
+  def changeMap(m: String): Boolean = {
+    val f = new File("maps/" + m + ".maze")
+    if (!f.isFile) return false
+    session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
+    nameLabel.setText(m)
+    rebuild()
+    true
+  }
+
   private def buildMapsPanel: JPanel = {
     val result = new JPanel()
     result.setLayout(new BorderLayout(0, 10))
@@ -62,10 +71,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
       def actionPerformed(e: ActionEvent) {
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
-          val n = box.getSelectedItem.asInstanceOf[String]
-          session.maze = IOUtils.readFromFile(new File("maps/" + n + ".maze")).asJson.convertTo[Maze]
-          nameLabel.setText(n)
-          rebuild()
+          changeMap(box.getSelectedItem.asInstanceOf[String])
         }
       }
     })
@@ -116,6 +122,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     invalidate()
     remove(content)
     listModel.removeAllElements()
+    session.clearWay()
     content = new JScrollPane(buildMazePanel())
     add(content, BorderLayout.CENTER)
     validate()
