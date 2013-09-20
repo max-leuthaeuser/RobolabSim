@@ -26,8 +26,6 @@ import tud.robolab.utils.TimeUtils
 import tud.robolab.model._
 import spray.json._
 import tud.robolab.controller.SessionManager
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import tud.robolab.model.QueryResponse
 import tud.robolab.model.ErrorMessage
 import tud.robolab.model.Request
@@ -122,13 +120,7 @@ trait SimulationService extends HttpService {
                 println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
 
                 import MessageJsonProtocol._
-                ctx.complete {
-                  Future[String] {
-                    val r = SessionManager.handleQueryRequest(ip, req).toJson.compactPrint
-                    println("[%s] Completed!".format(TimeUtils.now))
-                    r
-                  }
-                }
+                ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.prettyPrint)
             }
         }
       } ~
@@ -144,13 +136,7 @@ trait SimulationService extends HttpService {
                 println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
 
                 import MessageJsonProtocol._
-                ctx.complete {
-                  Future[String] {
-                    val r = SessionManager.handleMapRequest(ip, req).toJson.compactPrint
-                    println("[%s] Completed!".format(TimeUtils.now))
-                    r
-                  }
-                }
+                ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.prettyPrint)
             }
         }
       } ~
@@ -163,13 +149,7 @@ trait SimulationService extends HttpService {
             println("[%s] from [%s]".format(TimeUtils.now, ip))
 
             import MessageJsonProtocol._
-            ctx.complete {
-              Future[String] {
-                val r = SessionManager.handlePathRequest(ip).toJson.compactPrint
-                println("[%s] Completed!".format(TimeUtils.now))
-                r
-              }
-            }
+            ctx.complete(SessionManager.handlePathRequest(ip).toJson.prettyPrint)
         }
       }
 }
