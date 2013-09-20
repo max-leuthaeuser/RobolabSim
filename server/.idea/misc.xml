@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="DebuggerManager">
+    <breakpoint_any>
+      <breakpoint>
+        <option value="true" name="NOTIFY_CAUGHT" />
+        <option value="true" name="NOTIFY_UNCAUGHT" />
+        <option value="false" name="ENABLED" />
+        <option value="false" name="LOG_ENABLED" />
+        <option value="false" name="LOG_EXPRESSION_ENABLED" />
+        <option value="false" name="REMOVE_AFTER_HIT" />
+        <option value="SuspendAll" name="SUSPEND_POLICY" />
+        <option value="true" name="SUSPEND" />
+        <option value="false" name="COUNT_FILTER_ENABLED" />
+        <option value="0" name="COUNT_FILTER" />
+        <option value="true" name="CONDITION_ENABLED" />
+        <option value="false" name="CLASS_FILTERS_ENABLED" />
+        <option value="false" name="INSTANCE_FILTERS_ENABLED" />
+        <option value="" name="CONDITION" />
+        <option value="" name="LOG_MESSAGE" />
+      </breakpoint>
+      <breakpoint>
+        <option value="true" name="NOTIFY_CAUGHT" />
+        <option value="true" name="NOTIFY_UNCAUGHT" />
+        <option value="false" name="ENABLED" />
+        <option value="false" name="LOG_ENABLED" />
+        <option value="false" name="LOG_EXPRESSION_ENABLED" />
+        <option value="false" name="REMOVE_AFTER_HIT" />
+        <option value="SuspendAll" name="SUSPEND_POLICY" />
+        <option value="true" name="SUSPEND" />
+        <option value="false" name="COUNT_FILTER_ENABLED" />
+        <option value="0" name="COUNT_FILTER" />
+        <option value="true" name="CONDITION_ENABLED" />
+        <option value="false" name="CLASS_FILTERS_ENABLED" />
+        <option value="false" name="INSTANCE_FILTERS_ENABLED" />
+        <option value="" name="CONDITION" />
+        <option value="" name="LOG_MESSAGE" />
+      </breakpoint>
+    </breakpoint_any>
+    <breakpoint_rules />
+    <ui_properties />
+  </component>
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
+  <component settingsEditedManually="false" name="ProjectLevelVcsManager">
+    <OptionsSetting id="Add" value="true" />
+    <OptionsSetting id="Remove" value="true" />
+    <OptionsSetting id="Checkout" value="true" />
+    <OptionsSetting id="Update" value="true" />
+    <OptionsSetting id="Status" value="true" />
+    <OptionsSetting id="Edit" value="true" />
+    <ConfirmationsSetting id="Add" value="0" />
+    <ConfirmationsSetting id="Remove" value="0" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="RunManager">
+    <configuration factoryName="Plugin" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true">
+      <module name="" />
+      <option value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration factoryName="Remote" type="Remote" default="true">
+      <option value="true" name="USE_SOCKET_TRANSPORT" />
+      <option value="false" name="SERVER_MODE" />
+      <option value="javadebug" name="SHMEM_ADDRESS" />
+      <option value="localhost" name="HOST" />
+      <option value="5005" name="PORT" />
+      <method />
+    </configuration>
+    <configuration factoryName="TestNG" type="TestNG" default="true">
+      <module name="" />
+      <option value="false" name="ALTERNATIVE_JRE_PATH_ENABLED" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option value="CLASS" name="TEST_OBJECT" />
+      <option value="-ea" name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option value="$PROJECT_DIR$" name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option value="true" name="PASS_PARENT_ENVS" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option value="false" name="USE_DEFAULT_REPORTERS" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration factoryName="Applet" type="Applet" default="true">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option value="false" name="HTML_USED" />
+      <option value="400" name="WIDTH" />
+      <option value="300" name="HEIGHT" />
+      <option value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" name="POLICY_FILE" />
+      <option name="VM_PARAMETERS" />
+      <option value="false" name="ALTERNATIVE_JRE_PATH_ENABLED" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration factoryName="Application" type="Application" default="true">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option value="$PROJECT_DIR$" name="WORKING_DIRECTORY" />
+      <option value="false" name="ALTERNATIVE_JRE_PATH_ENABLED" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option value="false" name="ENABLE_SWING_INSPECTOR" />
+      <option name="ENV_VARIABLES" />
+      <option value="true" name="PASS_PARENT_ENVS" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration factoryName="JUnit" type="JUnit" default="true">
+      <module name="" />
+      <option value="false" name="ALTERNATIVE_JRE_PATH_ENABLED" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option value="class" name="TEST_OBJECT" />
+      <option value="-ea" name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option value="$PROJECT_DIR$" name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option value="true" name="PASS_PARENT_ENVS" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <list size="0" />
+    <configuration selected="false" default="true" type="WebApp" name="&lt;template&gt;">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+</project>
+
