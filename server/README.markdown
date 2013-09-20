@@ -1,4 +1,4 @@
-## RobolabSim
+## RobolabSim Server
 
 Follow these steps to get started:
 
@@ -6,7 +6,7 @@ Follow these steps to get started:
 
 2. Change directory into your clone:
 
-        $ cd RobolabSim
+        $ cd RobolabSim/server
 
 3. Launch SBT:
 
