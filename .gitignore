@@ -1,7 +1,9 @@
 /server/.idea/
 /testing/.idea/
-/server/project
-/testing/project
+/server/project/project/
+/server/project/target/
+/testing/project/project/
+/testing/project/target/
 server/target/
 testing/target/
 *.iml
