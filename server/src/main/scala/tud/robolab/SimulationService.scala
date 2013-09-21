@@ -120,7 +120,7 @@ trait SimulationService extends HttpService {
                 println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
 
                 import MessageJsonProtocol._
-                ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.prettyPrint)
+                ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
             }
         }
       } ~
@@ -136,7 +136,7 @@ trait SimulationService extends HttpService {
                 println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
 
                 import MessageJsonProtocol._
-                ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.prettyPrint)
+                ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
             }
         }
       } ~
@@ -149,7 +149,7 @@ trait SimulationService extends HttpService {
             println("[%s] from [%s]".format(TimeUtils.now, ip))
 
             import MessageJsonProtocol._
-            ctx.complete(SessionManager.handlePathRequest(ip).toJson.prettyPrint)
+            ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
         }
       }
 }
