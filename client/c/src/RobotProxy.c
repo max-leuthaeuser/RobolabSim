@@ -22,7 +22,11 @@ static int vasprintf(char **s, const char *format, va_list ap) {
 		save_ap = ap;
 #endif
 		/* Try to print in the allocated space. */
+#ifdef _vsnprintf
 		n = _vsnprintf(*s, size, format, save_ap);
+#else
+		n = vsnprintf(*s, size, format, save_ap);
+#endif
 		va_end(save_ap);
 		/* If that worked, return the string. */
 		if (n > -1 && n < size) {
@@ -98,7 +102,6 @@ int Robot_Move(int x, int y) {
 		token = true;
 
 	free(query);
-	free(response);
 
 	currentIntersection = foundIntersection;
 	if (token)

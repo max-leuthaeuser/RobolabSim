@@ -100,8 +100,6 @@ object SessionManager {
       val v = new SimulationView(s)
       if (Interface.addSimTab(v, ip)) {
         sessions.set(s, v)
-        s.addPoint(WayElement(0, 0, token = false, time = TimeUtils.now))
-        v.updateSession()
         return true
       }
     }
@@ -114,8 +112,6 @@ object SessionManager {
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
-      s.addPoint(WayElement(0, 0, token = false, time = TimeUtils.now))
-      v.updateSession()
     }
     sessions.block(getSession(ip).get, block)
   }
@@ -126,8 +122,7 @@ object SessionManager {
     var n: Point = null
     if (!hasSession(ip)) {
       if (addSession(ip)) {
-        val s = getSession(ip).get
-        n = s.maze(0)(0).get
+	return handleQueryRequest(ip, r)
       } else return ErrorType.DENIED
     } else {
       val s = getSession(ip).get
