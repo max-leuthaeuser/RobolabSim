@@ -21,8 +21,8 @@ package tud.robolab.utils
 import java.awt.{GraphicsEnvironment, Dimension}
 
 object SizeUtilities {
-  val std_height = 540
-  val std_width = 800
+  val std_height = 600
+  val std_width = 1024
 
   /**
    * @return the display size of the main screen at this computer.

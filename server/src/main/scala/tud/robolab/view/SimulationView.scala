@@ -30,8 +30,6 @@ import tud.robolab.controller.SessionManager
 import tud.robolab.model.Session
 
 class SimulationView(session: Session, var isShown: Boolean = true) extends JPanel with Observer[MazePool] {
-  private val nameLabel = new JLabel()
-  private val ipLabel = new JLabel(session.client.ip)
   private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
 
@@ -39,12 +37,12 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
 
   private var content = new JScrollPane(buildMazePanel())
 
-  private val mapsPanel = buildMapsPanel
+  private val mapsPanel = buildMapsPanel()
+
+  private val splitPane: JSplitPane = buildSplitPane()
 
   setLayout(new BorderLayout())
-  add(settings, BorderLayout.WEST)
-  add(content, BorderLayout.CENTER)
-  add(mapsPanel, BorderLayout.EAST)
+  add(splitPane, BorderLayout.CENTER)
 
   def updateSession() {
     content.repaint()
@@ -57,12 +55,19 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     val f = new File("maps/" + m + ".maze")
     if (!f.isFile) return false
     session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
-    nameLabel.setText(m)
     rebuild()
     true
   }
 
-  private def buildMapsPanel: JPanel = {
+  private def buildSplitPane(): JSplitPane = {
+    val panel = new JPanel()
+    panel.setLayout(new BorderLayout())
+    panel.add(content, BorderLayout.CENTER)
+    panel.add(mapsPanel, BorderLayout.EAST)
+    new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settings, panel)
+  }
+
+  private def buildMapsPanel(): JPanel = {
     val result = new JPanel()
     result.setLayout(new BorderLayout(0, 10))
     result.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
@@ -85,18 +90,9 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     isShown = false
   }
 
-  private def buildSettingsPanel: JPanel = {
-    val labelname = new JLabel("Maze ")
-    val labelip = new JLabel("Client IP ")
-
-    val edit = new JPanel(new GridLayout(2, 2, 5, 10))
-    edit.add(labelname)
-    edit.add(nameLabel)
-    edit.add(labelip)
-    edit.add(ipLabel)
-
+  private def buildSettingsPanel(): JPanel = {
     val result = new JPanel(new BorderLayout(0, 10))
-    result.add(edit, BorderLayout.NORTH)
+    result.setMinimumSize(new Dimension(230, 100))
     result.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 
     val list = new JList(listModel)
@@ -120,11 +116,16 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
 
   private def rebuild() {
     invalidate()
-    remove(content)
+    splitPane.getRightComponent match {
+      case p: JPanel =>  {
+        p.remove(content)
+        content = new JScrollPane(buildMazePanel())
+        p.add(content, BorderLayout.CENTER)
+      }
+      case _ =>
+    }
     listModel.removeAllElements()
     session.clearWay()
-    content = new JScrollPane(buildMazePanel())
-    add(content, BorderLayout.CENTER)
     validate()
   }
 

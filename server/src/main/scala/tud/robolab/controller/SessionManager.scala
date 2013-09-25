@@ -120,22 +120,23 @@ object SessionManager {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     var n: Point = null
-    if (!hasSession(ip)) {
-      if (addSession(ip)) {
-	return handleQueryRequest(ip, r)
-      } else return ErrorType.DENIED
-    } else {
-      val s = getSession(ip).get
-      if (!s.maze.robotPosition(r.x, r.y)) return ErrorType.INVALID
-      n = s.maze(r.x)(r.y).get
-      s.addPoint(WayElement(r.x, r.y, token = n.token, time = TimeUtils.now))
-      val v = sessions.get(s)
-      v.updateSession()
-      if (!v.isShown) {
-        v.isShown = true
-        Interface.addSimTab(v, s.client.ip, ask = false)
-      }
+
+    if(!hasSession(ip)) 
+      if(!addSession(ip))
+        return ErrorType.DENIED
+   
+    val s = getSession(ip).get
+    if (!s.maze.robotPosition(r.x, r.y)) return ErrorType.INVALID
+    n = s.maze(r.x)(r.y).get
+    s.addPoint(WayElement(r.x, r.y, token = n.token, time = TimeUtils.now))
+    val v = sessions.get(s)
+    v.updateSession()
+
+    if (!v.isShown) {
+      v.isShown = true
+      Interface.addSimTab(v, s.client.ip, ask = false)
     }
+    
     QueryResponseFactory.fromPoint(n)
   }
 
