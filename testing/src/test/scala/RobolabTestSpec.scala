@@ -4,8 +4,6 @@ import org.scalatest.matchers.ShouldMatchers
 class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers {
   def fixture =
     new {
-      // val studentSolution = ...
-      // val server = ...
       val client = new RoblabSimClient("localhost", 8080)
     }
 
@@ -17,9 +15,9 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
     scenario("Robot explores the maze and searches all 3 tokens") {
 
       Given("a running server")
-      // fixture.server.run
+      // Server needs to be started externally by script
       Given("and a running and successfully terminated student solution")
-      // fixture.studentSolution.run
+      // user solution  needs to be started externally by script
 
       When("the path is returned")
       val path = fixture.client.getPath()
@@ -36,7 +34,7 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
     scenario("One should be able to set a new map") {
 
       Given("a running server")
-      // fixture.server.run
+      // Server needs to be started externally by script
 
       When("the map is set")
       val path = fixture.client.setMap("maze")
