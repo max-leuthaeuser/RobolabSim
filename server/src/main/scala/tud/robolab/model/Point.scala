@@ -20,19 +20,38 @@ package tud.robolab.model
 
 import Direction._
 import spray.json._
+import tud.robolab.utils.UUID
 
-case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false, var robot: Boolean = false) {
+case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false, var robot: Boolean = false) extends Subject[Point] {
   assert(data != null)
   assert(data != None)
+  
+  private var callback: () => Unit = null
+
+  private lazy val hash = UUID.createHashcode()
 
   def has(dir: Direction): Boolean = data.contains(dir)
-
-  def +(dir: Direction) {
-    if (!has(dir)) data = data :+ dir
+  
+  def addCallback(h: () => Unit) {
+    callback = h
   }
 
-  def -(dir: Direction) {
-    if (has(dir)) data = data diff Seq(dir)
+  def +(dir: Direction, notify: Boolean = true) {
+    if (!has(dir)) {
+      data = data :+ dir
+      if(callback != null) callback()
+      if(notify)
+	notifyObservers()
+    }
+  }
+
+  def -(dir: Direction, notify: Boolean = true) {
+    if (has(dir)) {
+      data = data diff Seq(dir)
+      if(callback != null) callback()
+      if(notify)
+	notifyObservers()
+    }
   }
 
   def directions: Seq[Direction] = data
@@ -44,6 +63,13 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
     has(WEST),
     token
     )
+
+  override def hashCode(): Int = hash.hashCode
+
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: Point => this.hashCode() == other.hashCode()
+    case _ => false
+  }
 }
 
 object PointJsonProtocol extends DefaultJsonProtocol {

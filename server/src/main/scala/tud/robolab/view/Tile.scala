@@ -128,6 +128,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       sx = dim_width / 2 - (dim_width / 12)
       width = dim_width / 6
       height = dim_height / 2 - (dim_height / 12)
+      enabled = model.has(NORTH)
       super.repaint(g)
     }
 
@@ -148,6 +149,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width
       height = dim_height / 6
+      enabled = model.has(EAST)
       super.repaint(g)
     }
 
@@ -168,6 +170,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       sy = dim_height / 2 + (dim_height / 12)
       width = dim_width / 6
       height = dim_height
+      enabled = model.has(SOUTH)
       super.repaint(g)
     }
 
@@ -187,6 +190,7 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width / 2 - (dim_width / 12)
       height = dim_height / 6
+      enabled = model.has(WEST)
       super.repaint(g)
     }
 

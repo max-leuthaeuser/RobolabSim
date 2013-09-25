@@ -153,7 +153,11 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
 
     model.points.view.zipWithIndex.foreach(xs => {
       xs._1.view.zipWithIndex.foreach(p => {
-        result.add(new Tile(p._1.get, xs._2, p._2))
+        val point = p._1.get
+        val tile = new Tile(point, xs._2, p._2)
+        point.addObserver(model)
+        point.addCallback(result.repaint)
+        result.add(tile)
       })
     })
 

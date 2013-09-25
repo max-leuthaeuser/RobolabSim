@@ -22,6 +22,14 @@ object Direction extends Enumeration {
   type Direction = Value
   val NORTH, EAST, SOUTH, WEST = Value
 
+  def opposite(dir: Direction): Direction = dir match {
+    case NORTH => SOUTH
+    case EAST => WEST
+    case SOUTH => NORTH
+    case WEST => EAST
+    case _ => throw new IllegalArgumentException
+  }
+
   def from(dir: String): Direction = dir match {
     case "NORTH" => NORTH
     case "EAST" => EAST

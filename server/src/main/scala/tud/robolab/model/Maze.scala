@@ -22,7 +22,7 @@ import PointJsonProtocol._
 import spray.json._
 import Direction._
 
-case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) {
+case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) extends Observer[Point] {
   assert(data != null && data(0) != null)
   assert(data != None && data(0) != None)
   robotPosition(robot.x, robot.y)
@@ -42,6 +42,76 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     robot.y = y
     data(x)(y).get.robot = true
     true
+  }
+
+  private def getXY(p: Point): Option[(Int, Int)] = {
+    (0 to width - 1).foreach(x => {
+      (0 to height - 1).foreach(y => {
+        val r = data(x)(y)
+        if (r.isDefined && r.get == p) {
+          return Option((x, y))
+        }
+      })
+    })
+    Option.empty
+  }
+
+  private def neighbour(p: Point, dir: Direction): Option[Point] = dir match {
+    case NORTH => {
+      val c = getXY(p)
+      if (!c.isDefined) return Option.empty
+      val (x, y) = c.get
+      println("Point: x: " + x + ", y: " + y)
+      println("Neighbour: x: " + (x-1) + ", y: " + y)
+      if (x == 0) return Option.empty
+      data(x - 1)(y)
+    }
+    case EAST => {
+      val c = getXY(p)
+      if (!c.isDefined) return Option.empty
+      val (x, y) = c.get
+      println("Point: x: " + x + ", y: " + y)
+      println("Neighbour: x: " + x + ", y: " + (y+1))
+      if (y == height - 1) return Option.empty
+      data(x)(y + 1)
+    }
+    case SOUTH => {
+      val c = getXY(p)
+      if (!c.isDefined) return Option.empty
+      val (x, y) = c.get
+      println("Point: x: " + x + ", y: " + y)
+      println("Neighbour: x: " + (x+1) + ", y: " + y)
+      if (x == width - 1) return Option.empty
+      data(x + 1)(y)
+    }
+    case WEST => {
+      val c = getXY(p)
+      if (!c.isDefined) return Option.empty
+      val (x, y) = c.get
+      println("Point: x: " + x + ", y: " + y)
+      println("Neighbour: x: " + x + ", y: " + (y-1))
+      if (y == 0) return Option.empty
+      data(x)(y - 1)
+    }
+    case _ => throw new IllegalArgumentException
+  }
+
+  def receiveUpdate(subject: Point) {
+    println("Update for: " + subject)
+    Direction.values.foreach(d => subject.has(d) match {
+      case true => {
+        val n = neighbour(subject, d)
+        println("Neighbour: " + n)
+        if (n.isDefined)
+          n.get +(Direction.opposite(d), notify = false)
+      }
+      case false => {
+        val n = neighbour(subject, d)
+        println("Neighbour: " + n)
+        if (n.isDefined)
+          n.get -(Direction.opposite(d), notify = false)
+      }
+    })
   }
 }
 
