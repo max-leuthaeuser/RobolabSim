@@ -61,8 +61,6 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
       val c = getXY(p)
       if (!c.isDefined) return Option.empty
       val (x, y) = c.get
-      println("Point: x: " + x + ", y: " + y)
-      println("Neighbour: x: " + (x-1) + ", y: " + y)
       if (x == 0) return Option.empty
       data(x - 1)(y)
     }
@@ -70,8 +68,6 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
       val c = getXY(p)
       if (!c.isDefined) return Option.empty
       val (x, y) = c.get
-      println("Point: x: " + x + ", y: " + y)
-      println("Neighbour: x: " + x + ", y: " + (y+1))
       if (y == height - 1) return Option.empty
       data(x)(y + 1)
     }
@@ -79,8 +75,6 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
       val c = getXY(p)
       if (!c.isDefined) return Option.empty
       val (x, y) = c.get
-      println("Point: x: " + x + ", y: " + y)
-      println("Neighbour: x: " + (x+1) + ", y: " + y)
       if (x == width - 1) return Option.empty
       data(x + 1)(y)
     }
@@ -88,8 +82,6 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
       val c = getXY(p)
       if (!c.isDefined) return Option.empty
       val (x, y) = c.get
-      println("Point: x: " + x + ", y: " + y)
-      println("Neighbour: x: " + x + ", y: " + (y-1))
       if (y == 0) return Option.empty
       data(x)(y - 1)
     }
@@ -97,17 +89,14 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
   }
 
   def receiveUpdate(subject: Point) {
-    println("Update for: " + subject)
     Direction.values.foreach(d => subject.has(d) match {
       case true => {
         val n = neighbour(subject, d)
-        println("Neighbour: " + n)
         if (n.isDefined)
           n.get +(Direction.opposite(d), notify = false)
       }
       case false => {
         val n = neighbour(subject, d)
-        println("Neighbour: " + n)
         if (n.isDefined)
           n.get -(Direction.opposite(d), notify = false)
       }

@@ -20,18 +20,17 @@ package tud.robolab.model
 
 import Direction._
 import spray.json._
-import tud.robolab.utils.UUID
 
 case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false, var robot: Boolean = false) extends Subject[Point] {
   assert(data != null)
   assert(data != None)
-  
+
   private var callback: () => Unit = null
 
-  private lazy val hash = UUID.createHashcode()
+  private val hash = java.util.UUID.randomUUID.toString
 
   def has(dir: Direction): Boolean = data.contains(dir)
-  
+
   def addCallback(h: () => Unit) {
     callback = h
   }
@@ -39,18 +38,18 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
   def +(dir: Direction, notify: Boolean = true) {
     if (!has(dir)) {
       data = data :+ dir
-      if(callback != null) callback()
-      if(notify)
-	notifyObservers()
+      if (callback != null) callback()
+      if (notify)
+        notifyObservers()
     }
   }
 
   def -(dir: Direction, notify: Boolean = true) {
     if (has(dir)) {
       data = data diff Seq(dir)
-      if(callback != null) callback()
-      if(notify)
-	notifyObservers()
+      if (callback != null) callback()
+      if (notify)
+        notifyObservers()
     }
   }
 
