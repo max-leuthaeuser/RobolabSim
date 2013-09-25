@@ -10,18 +10,9 @@ import scala.util.{Success, Failure}
 import scala.concurrent._
 import scala.concurrent.duration._
 
-case class Coordinates(x: Int, y: Int)
+case class Node(x:Int, y:Int, north: Boolean, east: Boolean, south: Boolean, west: Boolean, token: Boolean)
 
-case class Node(north: Boolean, east: Boolean, south: Boolean, west: Boolean, token: Boolean)
-
-case class Path(nodes: Seq[(Coordinates, Node)])
-
-object MyJsonProtocol extends DefaultJsonProtocol {
-  implicit val requestFormat = jsonFormat2(Coordinates)
-  implicit val nodeFormat = jsonFormat5(Node)
-}
-
-import MyJsonProtocol._
+case class Path(nodes: Seq[Node])
 
 object PathJsonProtocol extends DefaultJsonProtocol {
 
@@ -39,7 +30,7 @@ object PathJsonProtocol extends DefaultJsonProtocol {
             val south = m2("south").convertTo[Boolean]
             val west = m2("west").convertTo[Boolean]
             val token = m2("token").convertTo[Boolean]
-            (Coordinates(x, y), Node(north, east, south, west, token))
+	    Node(x, y, north, east, south, west, token)
           }
           case _ => deserializationError("Path expected!")
         })
@@ -68,7 +59,7 @@ class RoblabSimClient(ip: String, port: Int) {
     val request = Get(url + "/path")
     val response = pipelinePath { request }
 
-    Await.result(response, 1 second)	
+    Await.result(response, 10 second)	
   }
 
   def setMap(name: String) {
@@ -76,6 +67,6 @@ class RoblabSimClient(ip: String, port: Int) {
     val request = Put(url + "/maze?=" + content)
     val response = pipelineMap { request }
 
-    println(Await.result(response, 1 second))
+    println(Await.result(response, 10 second))
   }
 }

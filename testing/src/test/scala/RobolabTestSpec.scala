@@ -14,18 +14,18 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
   feature("Maze exploration") {
     scenario("Robot explores the maze and searches all 3 tokens") {
 
-      Given("a running server")
+      Given("A running server")
       // Server needs to be started externally by script
-      Given("and a running and successfully terminated student solution")
+      Given("A running and successfully terminated student solution")
       // user solution  needs to be started externally by script
 
-      When("the path is returned")
+      When("The path is returned")
       val path = fixture.client.getPath()
 
-      Then("it is printed")
+      Then("It is printed")
       println(path)
 
-      Then("and should not be empty")
+      Then("It should not be empty")
       path.nodes.size should not be 0
     }
   }
@@ -33,13 +33,13 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
   feature("Setting a new Map") {
     scenario("One should be able to set a new map") {
 
-      Given("a running server")
+      Given("A running server")
       // Server needs to be started externally by script
 
-      When("the map is set")
+      When("The map is set")
       val path = fixture.client.setMap("maze")
 
-      Then("no error should occur")
+      Then("No error should occur")
     }
   }
 }
