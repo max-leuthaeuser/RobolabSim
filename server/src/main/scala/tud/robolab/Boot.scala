@@ -25,6 +25,7 @@ import com.typesafe.config.ConfigFactory
 import tud.robolab.view.Interface
 import tud.robolab.utils.TimeUtils
 
+/** Application main entry point. Create and run all relevant actors and bind spray services. */
 object Boot extends App {
   val conf = ConfigFactory.load("application.conf")
   lazy val IP = conf.getString("spray.can.server.ip")
@@ -46,6 +47,7 @@ object Boot extends App {
   // if (GUI)
   Interface.startup(Array.empty)
 
+  /** Call this method on terminating the server for unbinding. */
   def terminate() {
     println("[" + TimeUtils.now + "] Shutting server down ...")
     IO(Http) ! Http.Unbind

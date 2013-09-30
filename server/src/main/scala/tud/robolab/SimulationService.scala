@@ -30,32 +30,63 @@ import tud.robolab.model.QueryResponse
 import tud.robolab.model.ErrorMessage
 import tud.robolab.model.Request
 
-// we don't implement our route structure directly in the service actor because
-// we want to be able to test it independently, without having to spin up an actor
+/** Holding the context actor system and the standard route for our service. */
 class SimulationServiceActor extends Actor with SimulationService {
+  // we don't implement our route structure directly in the service actor because
+  // we want to be able to test it independently, without having to spin up an actor
 
-  // the HttpService trait defines only one abstract member, which
-  // connects the services environment to the enclosing actor or test
+  /** The HttpService trait defines only one abstract member, which
+    * connects the services environment to the enclosing actor or test
+    */
   def actorRefFactory = context
 
-  // this actor only runs our route, but you could add
-  // other things here, like request stream processing
-  // or timeout handling
+  /** this actor only runs our route, but you could add
+    * other things here, like request stream processing
+    * or timeout handling.
+    */
   def receive = runRoute(myRoute)
 }
 
+/** Implicit conversions from [[tud.robolab.model.Request]] to json.
+  *
+  * {{{
+  *   import RequestProtocol._
+  *   val json = Request(...).toJson
+  * }}}
+  */
 object RequestProtocol extends DefaultJsonProtocol {
   implicit val requestFormat = jsonFormat2(Request)
 }
 
+/** Implicit conversions from [[tud.robolab.model.MapRequest]] to json.
+  *
+  * {{{
+  *   import MapRequestProtocol._
+  *   val json = MapRequest(...).toJson
+  * }}}
+  */
 object MapRequestProtocol extends DefaultJsonProtocol {
   implicit val mapRequestFormat = jsonFormat1(MapRequest)
 }
 
+/** Implicit conversions from [[tud.robolab.model.QueryResponse]] to json.
+  *
+  * {{{
+  *   import QueryResponseProtocol._
+  *   val json = QueryResponse(...).toJson
+  * }}}
+  */
 object QueryResponseProtocol extends DefaultJsonProtocol {
   implicit val queryResponseFormat = jsonFormat5(QueryResponse)
 }
 
+/** Implicit conversions from [[tud.robolab.model.ErrorMessage]] to json.
+  *
+  * {{{
+  *   import ErrorMessageProtocol._
+  *   val json = ErrorMessage(...).toJson
+  * }}}
+  */
 object ErrorMessageProtocol extends DefaultJsonProtocol {
   implicit val ErrorMessageFormat = jsonFormat2(ErrorMessage)
 }
@@ -65,6 +96,16 @@ import QueryResponseProtocol._
 import ErrorMessageProtocol._
 import MapRequestProtocol._
 
+/** Implicit conversions from [[tud.robolab.model.Message]] to json.
+  *
+  * {{{
+  *   import MessageJsonProtocol._
+  *   val ok = Ok(...).toJson
+  *   val query = QueryResponse(...).toJson
+  *   val error = ErrorMessage(...).toJson
+  *   val path = PathResponse(...).toJson
+  * }}}
+  */
 object MessageJsonProtocol extends DefaultJsonProtocol {
 
   implicit object MessageJsonFormat extends RootJsonFormat[Message] {
@@ -87,7 +128,7 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
 
 }
 
-// this trait defines our service behavior independently from the service actor
+/** Defines our service behavior independently from the service actor. */
 trait SimulationService extends HttpService {
   private def getIP(req: HttpRequest) = req.headers.filter(_.name.equals("Remote-Address"))(0).value
 
