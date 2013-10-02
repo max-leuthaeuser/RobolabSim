@@ -18,10 +18,17 @@
 
 package tud.robolab.model
 
+/** Enumeration that holds all available directions in a maze and offers
+  * some convenience methods.
+  */
 object Direction extends Enumeration {
   type Direction = Value
   val NORTH, EAST, SOUTH, WEST = Value
 
+  /**
+   * @param dir the [[tud.robolab.model.Direction.Direction]] you want to get the opposite for
+   * @return the opposite direction for `dir`
+   */
   def opposite(dir: Direction): Direction = dir match {
     case NORTH => SOUTH
     case EAST => WEST
@@ -30,6 +37,11 @@ object Direction extends Enumeration {
     case _ => throw new IllegalArgumentException
   }
 
+  /**
+   * @throws an [[java.lang.IllegalArgumentException]] if the param `dir` is no valid known direction
+   * @param dir the direction as String
+   * @return a [[tud.robolab.model.Direction.Direction]] in dependence of the parameter `dir`
+   */
   def from(dir: String): Direction = dir match {
     case "NORTH" => NORTH
     case "EAST" => EAST

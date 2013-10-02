@@ -22,19 +22,44 @@ import PointJsonProtocol._
 import spray.json._
 import Direction._
 
+/** Case class representing a maze. Points (see [[tud.robolab.model.Point]]) are stored in a Seq.
+  *
+  * @param data the initial Seq of points ([[tud.robolab.model.Point]]) representing all intersections
+  * @param robot an instance of [[tud.robolab.model.Robot]] representing the initial position.
+  */
 case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) extends Observer[Point] {
   assert(data != null && data(0) != null)
   assert(data != None && data(0) != None)
   robotPosition(robot.x, robot.y)
 
+  /**
+   * @return the height of this maze as Int
+   */
   def height: Int = data(0).size
 
+  /**
+   * @return the width of this maze as Int
+   */
   def width: Int = data.size
 
+  /**
+   * @param x x coordinate (min: 0, max: width)
+   * @param y y coordinate (min: 0, max: height)
+   * @return the [[tud.robolab.model.Point]] at the given coordinates if there is one.
+   */
   def apply(x: Int)(y: Int): Option[Point] = data(x)(y)
 
+  /**
+   * @return all points ([[tud.robolab.model.Point]]) as Seq
+   */
   def points: Seq[Seq[Option[Point]]] = data
 
+  /**
+   * Set the robot position.
+   * @param x x coordinate (min: 0, max: width)
+   * @param y y coordinate (min: 0, max: height)
+   * @return true if `x` and `y` are representing a valid position, false otherwise
+   */
   def robotPosition(x: Int, y: Int): Boolean = {
     if (x >= width || y >= height || x < 0 || y < 0) return false
     data(robot.x)(robot.y).get.robot = false
@@ -44,6 +69,10 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     true
   }
 
+  /**
+   * @param p an instance of [[tud.robolab.model.Point]]
+   * @return the coordinates for `p` as a Tuple of the type `(Int, Int)`
+   */
   private def getXY(p: Point): Option[(Int, Int)] = {
     (0 to width - 1).foreach(x => {
       (0 to height - 1).foreach(y => {
@@ -56,6 +85,13 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     Option.empty
   }
 
+  /** Calculates the neighbour for the [[tud.robolab.model.Point]] `p` in the given
+    * [[tud.robolab.model.Direction.Direction]] `dir`.
+    *
+    * @param p an instance of [[tud.robolab.model.Point]]
+    * @param dir an instance of [[tud.robolab.model.Direction.Direction]]
+    * @return the neighbour for the [[tud.robolab.model.Point]] `p` in the given [[tud.robolab.model.Direction.Direction]] `dir`
+    */
   private def neighbour(p: Point, dir: Direction): Option[Point] = dir match {
     case NORTH => {
       val c = getXY(p)
@@ -104,7 +140,13 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
   }
 }
 
+/** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
 object Maze {
+  /**
+   * @param width the width of the new maze
+   * @param height the height of the new maze
+   * @return a new [[tud.robolab.model.Maze]] with the given `width` and `height`
+   */
   def empty(width: Int, height: Int): Maze = {
     val max_x = width - 1
     val max_y = height - 1
@@ -126,9 +168,13 @@ object Maze {
     ).toSeq)
   }
 
+  /**
+   * @return a new [[tud.robolab.model.Maze]] with the `width` = 6 and `height` = 6
+   */
   def empty: Maze = empty(6, 6)
 }
 
+/** Implicit conversions from [[tud.robolab.model.Maze]] to json. */
 object MazeJsonProtocol extends DefaultJsonProtocol {
 
   implicit object MazeJsonFormat extends RootJsonFormat[Maze] {

@@ -24,6 +24,7 @@ import tud.robolab.utils.IOUtils
 import java.io.File
 import scala.collection.concurrent.TrieMap
 
+/** Holds all available mazes with their name. */
 class MazePool extends Subject[MazePool] {
   val pool = TrieMap[String, Maze]()
 
@@ -32,15 +33,31 @@ class MazePool extends Subject[MazePool] {
     pool(m) = IOUtils.readFromFile(new File("maps/" + m + ".maze")).asJson.convertTo[Maze]
   })
 
+  /**
+   * @return all available maze names
+   */
   def mazeNames: Iterable[String] = pool.keys
 
+  /**
+   * @param name the name of the maze
+   * @return the [[tud.robolab.model.Maze]] that is stored under the given `name`
+   */
   def apply(name: String): Maze = pool(name)
 
+  /** Add a new [[tud.robolab.model.Maze]] to this pool.
+    *
+    * @param name the desired name of the maze
+    * @param maze an instance of [[tud.robolab.model.Maze]]
+    */
   def +(name: String, maze: Maze) {
     pool(name) = maze
     notifyObservers()
   }
 
+  /** Remove a [[tud.robolab.model.Maze]] with the given `name` from this pool.
+    *
+    * @param name the name of the maze
+    */
   def -(name: String) {
     pool.remove(name)
     notifyObservers()
