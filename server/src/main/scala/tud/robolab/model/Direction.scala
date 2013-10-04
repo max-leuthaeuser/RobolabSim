@@ -38,7 +38,7 @@ object Direction extends Enumeration {
   }
 
   /**
-   * @throws an [[java.lang.IllegalArgumentException]] if the param `dir` is no valid known direction
+   * @throws an IllegalArgumentException if the param `dir` is no valid known direction
    * @param dir the direction as String
    * @return a [[tud.robolab.model.Direction.Direction]] in dependence of the parameter `dir`
    */
