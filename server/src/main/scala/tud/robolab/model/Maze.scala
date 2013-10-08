@@ -61,13 +61,21 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
    * @return true if `x` and `y` are representing a valid position, false otherwise
    */
   def robotPosition(x: Int, y: Int): Boolean = {
-    if (x >= width || y >= height || x < 0 || y < 0) return false
+    if (!isValidPosition(x, y)) return false
     data(robot.x)(robot.y).get.robot = false
     robot.x = x
     robot.y = y
     data(x)(y).get.robot = true
     true
   }
+
+  /** Check if parameters `x` and `y` describe a valid position.
+    *
+    * @param x x coordinate (min: 0, max: width)
+    * @param y y coordinate (min: 0, max: height)
+    * @return if point with `x` and `y` is a valid position
+    */
+  def isValidPosition(x: Int, y: Int): Boolean = x < width && y < height && x >= 0 && y >= 0
 
   /**
    * @param p an instance of [[tud.robolab.model.Point]]

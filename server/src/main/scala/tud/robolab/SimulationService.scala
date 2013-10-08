@@ -165,6 +165,18 @@ trait SimulationService extends HttpService {
             }
         }
       } ~
+      path("history") {
+        get {
+	  ctx =>
+	    val ip = getIP(ctx.request)
+
+	    println("[%s] Incoming History request...".format(TimeUtils.now))
+	    println("[%s] from [%s]".format(TimeUtils.now, ip))
+
+	    import MessageJsonProtocol._
+	    ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
+	}
+      } ~
       path("maze") {
         parameter("") {
           values =>

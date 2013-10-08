@@ -1,4 +1,5 @@
 import org.jgrapht.alg.DijkstraShortestPath
+import scala.collection.JavaConversions._
 
 class PathEvaluator(path: Seq[Node]) {
   private var tokenCount = 3

@@ -169,7 +169,7 @@ object SessionManager {
    */
   def addSession(ip: String): Boolean = {
     if (!hasSession(ip) && !sessionBlocked(ip)) {
-      val s = Session(Client(ip), Maze.empty, Seq.empty)
+      val s = Session(Client(ip))
       val v = new SimulationView(s)
       if (Interface.addSimTab(v, ip)) {
         sessions.set(s, v)
@@ -185,7 +185,7 @@ object SessionManager {
    */
   def blockSession(ip: String, block: Boolean = true) {
     if (!hasSession(ip)) {
-      val s = Session(Client(ip), Maze.empty, Seq.empty)
+      val s = Session(Client(ip))
       val v = new SimulationView(s)
       v.isShown = false
       sessions.set(s, v)
@@ -194,7 +194,7 @@ object SessionManager {
   }
 
   /**
-   * Handle the incoming result, calculating the new robot position
+   * Handle the incoming request, calculating the new robot position
    * and return the appropriate result.
    *
    * @param ip the IP address
@@ -211,9 +211,18 @@ object SessionManager {
         return ErrorType.DENIED
 
     val s = getSession(ip).get
-    if (!s.maze.robotPosition(r.x, r.y)) return ErrorType.INVALID
+    var err = false
+
+    if (!s.maze.robotPosition(r.x, r.y)) err = true
+
     n = s.maze(r.x)(r.y).get
-    s.addPoint(WayElement(r.x, r.y, token = n.token, time = TimeUtils.now))
+    val wayElememt = WayElement(r.x, r.y, token = n.token, time = TimeUtils.now)
+
+    s.addHistoryElement(wayElememt)
+    s.addWayElement(wayElememt)
+
+    if (err) return ErrorType.INVALID
+
     val v = sessions.get(s)
     v.updateSession()
 
@@ -226,11 +235,11 @@ object SessionManager {
   }
 
   /**
-   * Handle the incoming result, calculating the full robot path that is known until now
+   * Handle the incoming request, calculating the full robot path that is known until now
    * and return the appropriate result.
    *
    * @param ip the IP address
-   * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
+   * @return a [[tud.robolab.model.Message]] containing the path regarding to the result of this call.
    */
   def handlePathRequest(ip: String): Message = {
     if (!hasSession(ip)) return ErrorType.NO_PATH
@@ -238,7 +247,7 @@ object SessionManager {
 
     val s = getSession(ip).get
     PathResponse(
-      s.way.map(p => {
+      s.path.map(p => {
         s.maze(p.x)(p.y) match {
           case Some(point) => (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
           case None => throw new IllegalArgumentException
@@ -247,7 +256,7 @@ object SessionManager {
   }
 
   /**
-   * Handle the incoming result, set the new map if possible and return the the appropriate result.
+   * Handle the incoming request, set the new map if possible and return the the appropriate result.
    *
    * @param ip the IP address
    * @param r the [[tud.robolab.model.MapRequest]]
@@ -261,5 +270,25 @@ object SessionManager {
       case true => Ok()
       case false => ErrorType.NO_MAP
     }
+  }
+
+  /**
+   * Handle the incoming request, returning the current history if possible.
+   *
+   * @param ip the IP address
+   * @return a [[tud.robolab.model.Message]] containing the history regarding to the result of this call.
+   */
+  def handleHistoryRequest(ip: String): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_PATH
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    PathResponse(s.path.map(p => {
+      val point = s.maze.isValidPosition(p.x, p.y) match {
+        case true => s.maze(p.x)(p.y).get
+        case false => Point(Seq.empty)
+      }
+      (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
+    }))
   }
 }

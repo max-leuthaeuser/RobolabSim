@@ -22,16 +22,24 @@ case class Client(var ip: String, var blocked: Boolean = false)
 
 case class WayElement(x: Int, y: Int, token: Boolean, time: String)
 
-case class Session(client: Client, var maze: Maze, var way: Seq[WayElement]) {
+case class Session(client: Client, var maze: Maze = Maze.empty, var path: Seq[WayElement] = Seq.empty, var history: Seq[WayElement] = Seq.empty) {
   def clearWay() {
-    way = Seq.empty
+    path = Seq.empty
   }
 
-  def addPoint(elem: WayElement) {
-    way = way :+ elem
+  def clearHistory() {
+    history = Seq.empty
   }
 
-  def latestPosition: WayElement = way.last
+  def addWayElement(elem: WayElement) {
+    path = path :+ elem
+  }
+
+  def addHistoryElement(elem: WayElement) {
+    history = history :+ elem
+  }
+
+  def latestPosition: WayElement = path.last
 
   override def equals(o: Any) = o match {
     case that: Session => that.client.ip.equals(this.client.ip)
