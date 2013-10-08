@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"   %%  "akka-actor"    % "2.1.4",
   "com.typesafe.akka"   %%  "akka-testkit"  % "2.1.4",
   "org.scalatest"       % "scalatest_2.10"  % "1.9.2"   % "test",
-  "org.jgrapht"         % "jgrapht-jdk1.5"  % "0.7.3"   % "test"
+  "org.jgrapht"         % "jgrapht-jdk1.5"  % "0.7.3"
 )
 
 seq(Revolver.settings: _*)

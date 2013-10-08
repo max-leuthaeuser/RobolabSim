@@ -1,4 +1,3 @@
-import scala.collection.JavaConverters.seqAsJavaListConverter
 import org.scalatest.{GivenWhenThen, FeatureSpec}
 import org.scalatest.matchers.ShouldMatchers
 
@@ -6,7 +5,7 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
   def fixture =
     new {
       val client = new RoblabSimClient("localhost", 8080)
-      val evaluator = new PathEvaluator(client.getPath().nodes.asJava)
+      val evaluator = new PathEvaluator(client.getPath().nodes)
     }
 
   info("During the exploration of a maze the robot should")
@@ -19,25 +18,23 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
       fixture.client.getPath().nodes.size should not be 0
     }
 
-    scenario("You should make only 1 step after another & no diagonals"){
-      fixture.evaluator.validateOneStepConstraint() should not be false
+    scenario("You should make only 1 step after another & no diagonals") {
+      fixture.evaluator.validateOneStepConstraint should not be false
     }
 
-    scenario("You should only move on lines"){
-      fixture.evaluator.validateOnlyOnLineConstraint() should not be false
+    scenario("You should only move on lines") {
+      fixture.evaluator.validateOnlyOnLineConstraint should not be false
     }
 
-    scenario("You should not visit a node more often then is has neighbors. (Only until you found the tokens!)"){
-      fixture.evaluator.validateMaximumVisitedCount() should not be false
+    scenario("You should not visit a node more often then is has neighbors. (Only until you found the tokens!)") {
+      fixture.evaluator.validateMaximumVisitedCount should not be false
     }
 
-    scenario("You should drive back the shortest familiar path"){
-      fixture.evaluator.validateShortestPath() should not be false
+    scenario("You should drive back the shortest familiar path") {
+      fixture.evaluator.validateShortestPath should not be false
     }
-
-
   }
-  
+
   /*feature("Setting a new Map") {
     scenario("One should be able to set a new map") {
 

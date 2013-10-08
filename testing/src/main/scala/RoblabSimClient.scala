@@ -6,11 +6,10 @@ import spray.json._
 import SprayJsonSupport._
 import spray.json.{JsArray, JsValue, RootJsonFormat, DefaultJsonProtocol}
 import spray.client.pipelining._
-import scala.util.{Success, Failure}
 import scala.concurrent._
 import scala.concurrent.duration._
 
-case class Node(x:Int, y:Int, north: Boolean, east: Boolean, south: Boolean, west: Boolean, token: Boolean)
+case class Node(x: Int, y: Int, north: Boolean = false, east: Boolean = false, south: Boolean = false, west: Boolean = false, token: Boolean = false)
 
 case class Path(nodes: Seq[Node])
 
@@ -30,7 +29,7 @@ object PathJsonProtocol extends DefaultJsonProtocol {
             val south = m2("south").convertTo[Boolean]
             val west = m2("west").convertTo[Boolean]
             val token = m2("token").convertTo[Boolean]
-	    Node(x, y, north, east, south, west, token)
+            Node(x, y, north, east, south, west, token)
           }
           case _ => deserializationError("Path expected!")
         })
@@ -57,15 +56,19 @@ class RoblabSimClient(ip: String, port: Int) {
 
   def getPath(): Path = {
     val request = Get(url + "/path")
-    val response = pipelinePath { request }
+    val response = pipelinePath {
+      request
+    }
 
-    Await.result(response, 10 second)	
+    Await.result(response, 10 second)
   }
 
   def setMap(name: String) {
     val content = "%7B%22map%22%3A%22" + name + "%22%7D"
     val request = Put(url + "/maze?=" + content)
-    val response = pipelineMap { request }
+    val response = pipelineMap {
+      request
+    }
 
     println(Await.result(response, 10 second))
   }
