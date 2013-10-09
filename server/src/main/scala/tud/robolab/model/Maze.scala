@@ -93,6 +93,11 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     Option.empty
   }
 
+  /**
+   * @return the number of tokens in this maze
+   */
+  def getNumberOfToken(): Int = data.flatten.filter(p => p.isDefined && p.get.token).size
+
   /** Calculates the neighbour for the [[tud.robolab.model.Point]] `p` in the given
     * [[tud.robolab.model.Direction.Direction]] `dir`.
     *

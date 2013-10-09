@@ -69,6 +69,17 @@ object MapRequestProtocol extends DefaultJsonProtocol {
   implicit val mapRequestFormat = jsonFormat1(MapRequest)
 }
 
+/** Implicit conversions from [[tud.robolab.model.TokenRequest]] to json.
+  *
+  * {{{
+  *   import TokenRequestProtocol._
+  *   val json = TokenRequest(...).toJson
+  * }}}
+  */
+object TokenRequestProtocol extends DefaultJsonProtocol {
+  implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
+}
+
 /** Implicit conversions from [[tud.robolab.model.QueryResponse]] to json.
   *
   * {{{
@@ -95,6 +106,7 @@ import RequestProtocol._
 import QueryResponseProtocol._
 import ErrorMessageProtocol._
 import MapRequestProtocol._
+import TokenRequestProtocol._
 
 /** Implicit conversions from [[tud.robolab.model.Message]] to json.
   *
@@ -104,6 +116,7 @@ import MapRequestProtocol._
   *   val query = QueryResponse(...).toJson
   *   val error = ErrorMessage(...).toJson
   *   val path = PathResponse(...).toJson
+  *   // ...
   * }}}
   */
 object MessageJsonProtocol extends DefaultJsonProtocol {
@@ -112,18 +125,17 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
     def write(p: Message) = {
       p match {
         case r: Ok => "Ok".toJson
+        case t: TokenRequest => t.toJson
         case r: QueryResponse => r.toJson
         case b: ErrorMessage => b.toJson
         case p: PathResponse => JsArray(p.way.map(t =>
           JsObject("point" -> t._1.toJson,
             "properties" -> t._2.toJson)).toList)
-        case _ => throw new NotImplementedError()
+        case _ => deserializationError("Message expected!")
       }
     }
 
-    def read(value: JsValue) = {
-      throw new NotImplementedError()
-    }
+    def read(value: JsValue) = ???
   }
 
 }
@@ -167,15 +179,27 @@ trait SimulationService extends HttpService {
       } ~
       path("history") {
         get {
-	  ctx =>
-	    val ip = getIP(ctx.request)
+          ctx =>
+            val ip = getIP(ctx.request)
 
-	    println("[%s] Incoming History request...".format(TimeUtils.now))
-	    println("[%s] from [%s]".format(TimeUtils.now, ip))
+            println("[%s] Incoming History request...".format(TimeUtils.now))
+            println("[%s] from [%s]".format(TimeUtils.now, ip))
 
-	    import MessageJsonProtocol._
-	    ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
-	}
+            import MessageJsonProtocol._
+            ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
+        }
+      } ~
+      path("numberOfTokens") {
+        get {
+          ctx =>
+            val ip = getIP(ctx.request)
+
+            println("[%s] Incoming Number of tokens request...".format(TimeUtils.now))
+            println("[%s] from [%s]".format(TimeUtils.now, ip))
+
+            import MessageJsonProtocol._
+            ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
+        }
       } ~
       path("maze") {
         parameter("") {

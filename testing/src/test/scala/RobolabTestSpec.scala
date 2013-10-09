@@ -5,7 +5,7 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
   def fixture =
     new {
       val client = new RoblabSimClient("localhost", 8080)
-      val evaluator = new PathEvaluator(client.getPath().nodes)
+      val evaluator = new PathEvaluator(client.getPath.nodes)
     }
 
   info("During the exploration of a maze the robot should")
@@ -15,7 +15,7 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
 
   feature("Robot explores a maze") {
     scenario("No empty solutions are allowed") {
-      fixture.client.getPath().nodes.size should not be 0
+      fixture.client.getPath.nodes.size should not be 0
     }
 
     scenario("You should make only 1 step after another & no diagonals") {

@@ -9,6 +9,8 @@ import spray.client.pipelining._
 import scala.concurrent._
 import scala.concurrent.duration._
 
+case class TokenRequest(numberOfTokens: Int)
+
 case class Node(x: Int, y: Int, north: Boolean = false, east: Boolean = false, south: Boolean = false, west: Boolean = false, token: Boolean = false)
 
 case class Path(nodes: Seq[Node])
@@ -41,21 +43,36 @@ object PathJsonProtocol extends DefaultJsonProtocol {
 
 }
 
+object TokenRequestProtocol extends DefaultJsonProtocol {
+  implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
+}
+
 class RoblabSimClient(ip: String, port: Int) {
   private val url = "http://%s:%s".format(ip, port)
   private implicit val system = ActorSystem()
 
   import system.dispatcher
   import PathJsonProtocol._
+  import TokenRequestProtocol._
 
   private val mapEntityContentTypeToJson: HttpResponse => HttpResponse = response =>
     response.withEntity(HttpEntity(`application/json`, response.entity.buffer))
 
   val pipelinePath = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[Path]
+  val pipelineTokens = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[TokenRequest]
   val pipelineMap = sendReceive
 
-  def getPath(): Path = {
+  def getPath: Path = {
     val request = Get(url + "/path")
+    val response = pipelinePath {
+      request
+    }
+
+    Await.result(response, 10 second)
+  }
+
+  def getHistory: Path = {
+    val request = Get(url + "/history")
     val response = pipelinePath {
       request
     }
@@ -71,5 +88,14 @@ class RoblabSimClient(ip: String, port: Int) {
     }
 
     println(Await.result(response, 10 second))
+  }
+
+  def getNumberOfTokens: Int = {
+    val request = Put(url + "/numberOfTokens")
+    val response = pipelineTokens {
+      request
+    }
+
+    Await.result(response, 10 second).numberOfTokens
   }
 }

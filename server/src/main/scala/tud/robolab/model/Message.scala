@@ -26,6 +26,8 @@ case class Request(x: Int, y: Int) extends Message
 
 case class MapRequest(map: String) extends Message
 
+case class TokenRequest(numberOfToken: Int) extends Message
+
 case class QueryResponse(north: Boolean, east: Boolean, south: Boolean, west: Boolean, token: Boolean) extends Message
 
 object QueryResponseFactory {

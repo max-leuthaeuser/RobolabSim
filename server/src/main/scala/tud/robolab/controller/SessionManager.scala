@@ -291,4 +291,18 @@ object SessionManager {
       (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
     }))
   }
+
+  /**
+   * Handle the incoming request, returning the number of tokens of the related session maze if possible.
+   *
+   * @param ip the IP address
+   * @return a [[tud.robolab.model.Message]] containing the number of tokens regarding to the result of this call.
+   */
+  def handleNumberOfTokensRequest(ip: String): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_MAP
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    TokenRequest(s.maze.getNumberOfToken())
+  }
 }
