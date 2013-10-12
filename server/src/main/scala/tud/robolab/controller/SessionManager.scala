@@ -204,8 +204,6 @@ object SessionManager {
   def handleQueryRequest(ip: String, r: Request): Message = {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
-    var n: Point = null
-
     if (!hasSession(ip))
       if (!addSession(ip))
         return ErrorType.DENIED
@@ -215,14 +213,18 @@ object SessionManager {
 
     if (!s.maze.robotPosition(r.x, r.y)) err = true
 
-    n = s.maze(r.x)(r.y).get
-    val wayElememt = WayElement(r.x, r.y, token = n.token, time = TimeUtils.now)
+	val token = err match {
+		case true => false
+		case false => s.maze(r.x)(r.y).get.token 
+	}
+    val wayElememt = WayElement(r.x, r.y, token, TimeUtils.now)
 
     s.addHistoryElement(wayElememt)
     s.addWayElement(wayElememt)
 
     if (err) return ErrorType.INVALID
 
+	val n = s.maze(r.x)(r.y).get
     val v = sessions.get(s)
     v.updateSession()
 
