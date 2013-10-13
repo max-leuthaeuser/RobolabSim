@@ -1,5 +1,6 @@
 import org.jgrapht.graph.{DefaultEdge, Multigraph, SimpleGraph}
 import org.jgrapht.UndirectedGraph
+import scala.collection.mutable
 
 class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, DefaultEdge] {
   private var tokenCount: Int = 3
@@ -10,7 +11,7 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     assert(path != null)
 
     var lastNode: Node = null
-    var foundTokens = 0
+    val uniqueTokenSet = new mutable.HashSet[Node]()
 
     val graph: UndirectedGraph[Node, DefaultEdge] = asMultigraph match {
       case true => new Multigraph[Node, DefaultEdge](classOf[DefaultEdge])
@@ -20,9 +21,9 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     // constructs the drive home path INCLUSIVE the Node of the last token
     path.foreach(n => {
       if (n.token) {
-        foundTokens += 1
+        uniqueTokenSet.add(n)
       }
-      if (foundTokens == tokenCount) {
+      if (uniqueTokenSet.size == tokenCount) {
         graph.addVertex(n)
         if (lastNode != null) graph.addEdge(lastNode, n)
         lastNode = n
@@ -33,13 +34,13 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
   }
 
   def getLastTokenNode: Node = {
-    var foundTokens = 0
+    val uniqueTokenSet = new mutable.HashSet[Node]()
 
     path.foreach(n => {
       if (n.token) {
-        foundTokens += 1
+        uniqueTokenSet.add(n)
       }
-      if (foundTokens == tokenCount) return n
+      if (uniqueTokenSet.size == tokenCount) return n
     })
 
     null
@@ -64,7 +65,7 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     assert(path != null)
 
     var lastNode: Node = null
-    var foundTokens = 0
+    val uniqueTokenSet = new mutable.HashSet[Node]()
 
     val graph: UndirectedGraph[Node, DefaultEdge] = asMultigraph match {
       case true => new Multigraph[Node, DefaultEdge](classOf[DefaultEdge])
@@ -82,9 +83,9 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
       if (lastNode != null) graph.addEdge(lastNode, n)
       lastNode = n
       if (n.token) {
-        foundTokens += 1
+        uniqueTokenSet.add(n)
       }
-      if (foundTokens == tokenCount) return graph
+      if (uniqueTokenSet.size == tokenCount) return graph
     })
 
     graph

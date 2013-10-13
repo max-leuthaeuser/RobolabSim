@@ -1,5 +1,6 @@
 import org.jgrapht.alg.DijkstraShortestPath
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 
 class PathEvaluator(path: Seq[Node]) {
   private var tokenCount = 3
@@ -120,12 +121,73 @@ class PathEvaluator(path: Seq[Node]) {
     //calculate one of the shortest paths
     val shortestPath = new DijkstraShortestPath(knownMaze, pseudoLastToken, pseudoHome)
 
-    // TODO: check if the solution drives back home :) So now you just have to drive a path with the correct length
+    //evaluating if the Start Node is included in the shortest path
+    var isStartIncluded = false;
+    for(e <- shortestPath.getPathEdgeList){
+      val source = driveHome.getEdgeSource(e)
+      val target = driveHome.getEdgeTarget(e)
+
+      if(source.x == 0 && source.y == 0){
+        isStartIncluded = true;
+      }
+
+      if(target.x == 0 && target.y == 0){
+        isStartIncluded = true;
+      }
+    }
+
     // only checking the length and if the endNode is the homeNode, because there are more than 1 adequate shortest paths
-    if (shortestPath.getPathLength == driveHome.edgeSet().size()) {
+    if (shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded) {
       return true
     }
 
     false
+  }
+
+  def validateHistory: Boolean = {
+    //TODO: Do it !!
+    println("Muh")
+    false
+  }
+
+  def foundUniqueTokens: Int = {
+    val path = getBuilder.constructPath
+    var uniqueTokenSet = new mutable.HashSet[Node]()
+
+    for(n <- path.vertexSet()){
+      if( n.token == true) uniqueTokenSet += n
+    }
+
+    uniqueTokenSet.size
+  }
+
+  def validateCompleteMazeIsExplored: Boolean = {
+    val knownMaze = getBuilder.constructKnownMaze
+    val path = getBuilder.constructPath
+
+    if(knownMaze.vertexSet().size() == path.vertexSet().size){
+      return true
+    }
+
+    false
+  }
+
+  def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
+    val knownMaze = getBuilder.constructKnownMaze
+    val uniqueVisitedNodes = new mutable.HashSet[Node]
+
+    var knownMazeEqualsDrivenPath = false;
+
+    for(n <- path){
+      if(!knownMazeEqualsDrivenPath){
+        uniqueVisitedNodes += n
+        if(knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
+      }
+      else{
+        return false
+      }
+    }
+
+    true
   }
 }

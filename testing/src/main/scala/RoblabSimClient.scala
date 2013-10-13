@@ -9,7 +9,7 @@ import spray.client.pipelining._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-case class TokenRequest(numberOfTokens: Int)
+case class TokenRequest(numberOfToken: Int)
 
 case class Node(x: Int, y: Int, north: Boolean = false, east: Boolean = false, south: Boolean = false, west: Boolean = false, token: Boolean = false)
 
@@ -91,11 +91,11 @@ class RoblabSimClient(ip: String, port: Int) {
   }
 
   def getNumberOfTokens: Int = {
-    val request = Put(url + "/numberOfTokens")
+    val request = Get(url + "/numberOfTokens")
     val response = pipelineTokens {
       request
     }
 
-    Await.result(response, 10 second).numberOfTokens
+    Await.result(response, 10 second).numberOfToken
   }
 }
