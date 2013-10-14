@@ -33,18 +33,7 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     graph
   }
 
-  def getLastTokenNode: Node = {
-    val uniqueTokenSet = new mutable.HashSet[Node]()
-
-    path.foreach(n => {
-      if (n.token) {
-        uniqueTokenSet.add(n)
-      }
-      if (uniqueTokenSet.size == tokenCount) return n
-    })
-
-    null
-  }
+  def getLastTokenNode: Node = path.filter(_.token).toSet.take(tokenCount).last
 
   def setTokenCount(tokenCount: Int): GraphBuilder[Node, DefaultEdge] = {
     this.tokenCount = tokenCount

@@ -122,68 +122,49 @@ class PathEvaluator(path: Seq[Node]) {
     val shortestPath = new DijkstraShortestPath(knownMaze, pseudoLastToken, pseudoHome)
 
     //evaluating if the Start Node is included in the shortest path
-    var isStartIncluded = false;
-    for(e <- shortestPath.getPathEdgeList){
+    var isStartIncluded = false
+    for (e <- shortestPath.getPathEdgeList) {
       val source = driveHome.getEdgeSource(e)
       val target = driveHome.getEdgeTarget(e)
 
-      if(source.x == 0 && source.y == 0){
-        isStartIncluded = true;
+      if (source.x == 0 && source.y == 0) {
+        isStartIncluded = true
       }
 
-      if(target.x == 0 && target.y == 0){
-        isStartIncluded = true;
+      if (target.x == 0 && target.y == 0) {
+        isStartIncluded = true
       }
     }
 
     // only checking the length and if the endNode is the homeNode, because there are more than 1 adequate shortest paths
-    if (shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded) {
-      return true
-    }
-
-    false
+    shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
   }
 
-  def validateHistory: Boolean = {
-    //TODO: Do it !!
-    println("Muh")
-    false
-  }
+  def validateHistory: Boolean = ???
 
-  def foundUniqueTokens: Int = {
-    val path = getBuilder.constructPath
-    var uniqueTokenSet = new mutable.HashSet[Node]()
-
-    for(n <- path.vertexSet()){
-      if( n.token == true) uniqueTokenSet += n
-    }
-
-    uniqueTokenSet.size
-  }
+  def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
 
   def validateCompleteMazeIsExplored: Boolean = {
     val knownMaze = getBuilder.constructKnownMaze
     val path = getBuilder.constructPath
 
-    if(knownMaze.vertexSet().size() == path.vertexSet().size){
-      return true
-    }
-
-    false
+    knownMaze.vertexSet().size == path.vertexSet().size
   }
 
   def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
+    // TODO this method will always return false
     val knownMaze = getBuilder.constructKnownMaze
     val uniqueVisitedNodes = new mutable.HashSet[Node]
 
-    var knownMazeEqualsDrivenPath = false;
+    var knownMazeEqualsDrivenPath = false
 
-    for(n <- path){
-      if(!knownMazeEqualsDrivenPath){
+    for (n <- path) {
+      // the following check will always fail
+      if (!knownMazeEqualsDrivenPath) {
         uniqueVisitedNodes += n
-        if(knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
+        if (knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
       }
-      else{
+      else {
         return false
       }
     }
