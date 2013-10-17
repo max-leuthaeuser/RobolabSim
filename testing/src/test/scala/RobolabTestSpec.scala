@@ -1,7 +1,7 @@
-import org.scalatest.{GivenWhenThen, FeatureSpec}
+import org.scalatest.{FunSuite, GivenWhenThen}
 import org.scalatest.matchers.ShouldMatchers
 
-class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers {
+class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
   def fixture =
     new {
       val client = new RoblabSimClient("localhost", 8080)
@@ -14,75 +14,59 @@ class RobolabTestSpec extends FeatureSpec with GivenWhenThen with ShouldMatchers
   info("not cross any node more than once except it is")
   info("a dead end or there is no other unexplored way.")
 
-  feature("something, which could be a proper solution, should happen") {
-
-    scenario("No empty solutions are allowed") {
-      fixture.client.getPath.nodes.size should not be 0
-    }
-
-    ignore("No invalid tokens are allowed (if failed, you drove out of bounds of the maze, in most cases)") {
-      fixture.historyEvaluator.validateHistory should not be false
-    }
-
+  test("No empty solutions are allowed") {
+    fixture.client.getPath.nodes.size should not be 0
   }
 
-  feature("for a correct solution, some constraints must be fulfilled") {
-
-    scenario("you have to move step by step & you aren't permitted to drive diagonals") {
-      fixture.evaluator.validateOneStepConstraint should not be false
-    }
-
-    scenario("You should only move on lines") {
-      fixture.evaluator.validateOnlyOnLineConstraint should not be false
-    }
-
-    scenario("You should not visit a node more often then is has neighbors. (Only until you found the tokens!)") {
-      fixture.evaluator.validateMaximumVisitedCount should not be false
-    }
-
+  ignore("No invalid tokens are allowed (if failed, you drove out of bounds of the maze, in most cases)") {
+    fixture.historyEvaluator.validateHistory should not be false
   }
 
-  feature("robot explores a maze until all tokens was found, or if there aren't any tokens, the robot should explore the entire maze") {
+  test("you have to move step by step & you aren't permitted to drive diagonals") {
+    fixture.evaluator.validateOneStepConstraint should not be false
+  }
 
-    scenario("find all tokens if they exist") {
-      When("There are tokens")
-      fixture.tokenCount should not be 0
-      Then("You have to find them all")
-      fixture.evaluator.foundUniqueTokens shouldEqual fixture.tokenCount
-    }
+  test("You should only move on lines") {
+    fixture.evaluator.validateOnlyOnLineConstraint should not be false
+  }
 
-    scenario("if no token exists you algorithm should terminate after the entire maze is explored") {
-      When("There are no tokens")
-      fixture.tokenCount shouldEqual 0
-      Then("You can not find any of them")
-      fixture.evaluator.foundUniqueTokens shouldEqual 0
-      And("You should explore the complete maze")
+  test("You should not visit a node more often then is has neighbors. (Only until you found the tokens!)") {
+    fixture.evaluator.validateMaximumVisitedCount should not be false
+  }
+
+  test("find all tokens if they exist. if there are no tokens, you can't find any of them ;)") {
+    fixture.evaluator.foundUniqueTokens shouldEqual fixture.tokenCount
+  }
+
+  if (fixture.tokenCount == 0) {
+    test("if no token exists you should explore the complete maze") {
       fixture.evaluator.validateCompleteMazeIsExplored should not be false
-      And("Your solution should terminate after the last node")
+    }
+
+    test("if no token exists you algorithm should terminate after the entire maze is explored") {
       fixture.evaluator.validateTerminatedAfterWholeMazeIsExplored should not be false
     }
-
   }
 
-  feature("robot have to find the shortest path between two nodes, for driving back to start position on a optimal path") {
-
-    scenario("You should drive back the shortest familiar path") {
-      When("There are Tokens")
-      fixture.tokenCount should not be 0
-      Then("You have to drive back to the start node after found the last one")
+  if (fixture.tokenCount != 0) {
+    test("if there are tokens, robot have to find the shortest path between two nodes, for driving back to start position on a optimal path") {
       fixture.evaluator.validateShortestPath should not be false
     }
-
   }
+
 
   info("Here are some statistics of your course:")
   val stats = new Statistics(fixture.client.getPath.nodes)
   val magicVisitedNodesNumber = 10
   val magicTurnsNumber = 6
   val turns = stats.getTurns
+  val Lturns = stats.getLTurns
+  val Uturns = stats.getUTurns
   val nodes = stats.getVisitedNodes
   info("You visited %s nodes".format(nodes))
   info("You made %s turns".format(turns))
+  info("\t%s of them are 90 degree turns".format(Lturns))
+  info("\t%s of them are 180 degree turns".format(Uturns))
   val score = (nodes * magicVisitedNodesNumber) + (turns * magicTurnsNumber)
   info("Your score is (the lower the better): " + score)
 

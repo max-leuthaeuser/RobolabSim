@@ -168,6 +168,6 @@ class PathEvaluator(path: Seq[Node]) {
       }
     }
 
-    true
+    knownMazeEqualsDrivenPath
   }
 }
