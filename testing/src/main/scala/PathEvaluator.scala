@@ -152,7 +152,6 @@ class PathEvaluator(path: Seq[Node]) {
   }
 
   def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
-    // TODO this method will always return false
     val knownMaze = getBuilder.constructKnownMaze
     val uniqueVisitedNodes = new mutable.HashSet[Node]
 
