@@ -305,6 +305,6 @@ object SessionManager {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     val s = getSession(ip).get
-    TokenRequest(s.maze.getNumberOfToken())
+    TokenRequest(s.maze.getNumberOfToken)
   }
 }

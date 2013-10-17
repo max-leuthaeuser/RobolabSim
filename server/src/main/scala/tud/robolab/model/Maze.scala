@@ -29,7 +29,6 @@ import Direction._
   */
 case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) extends Observer[Point] {
   assert(data != null && data(0) != null)
-  assert(data != None && data(0) != None)
   robotPosition(robot.x, robot.y)
 
   /**
@@ -96,7 +95,7 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
   /**
    * @return the number of tokens in this maze
    */
-  def getNumberOfToken(): Int = data.flatten.filter(p => p.isDefined && p.get.token).size
+  def getNumberOfToken: Int = data.flatten.count(p => p.isDefined && p.get.token)
 
   /** Calculates the neighbour for the [[tud.robolab.model.Point]] `p` in the given
     * [[tud.robolab.model.Direction.Direction]] `dir`.
@@ -193,10 +192,10 @@ object MazeJsonProtocol extends DefaultJsonProtocol {
   implicit object MazeJsonFormat extends RootJsonFormat[Maze] {
     def write(p: Maze) = {
       val points: List[List[JsValue]] = p.points.map(ys => {
-        ys.map(_ match {
+        ys.map {
           case None => JsString("None")
           case Some(e) => e.toJson
-        }).toList
+        }.toList
       }).toList
 
       JsArray(points.map(JsArray(_)))
@@ -204,13 +203,13 @@ object MazeJsonProtocol extends DefaultJsonProtocol {
 
     def read(value: JsValue) = value match {
       case s: JsArray => {
-        val points = s.elements.map(_ match {
-          case l: JsArray => l.elements.map(_ match {
+        val points = s.elements.map {
+          case l: JsArray => l.elements.map {
             case e if e.compactPrint.contains("None") => Option.empty
             case e => Option(e.convertTo[Point])
-          }).toSeq
+          }.toSeq
           case _ => deserializationError("Maze expected!")
-        }).toSeq
+        }.toSeq
 
         Maze(points)
       }
