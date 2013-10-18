@@ -298,7 +298,7 @@ object SessionManager {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     val s = getSession(ip).get
-    PathResponse(s.path.map(p => {
+    PathResponse(s.history.map(p => {
       val point = s.maze.isValidPosition(p.x, p.y) match {
         case true => s.maze(p.x)(p.y).get
         case false => Point(Seq.empty)

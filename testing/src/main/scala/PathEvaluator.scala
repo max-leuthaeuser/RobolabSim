@@ -140,7 +140,7 @@ class PathEvaluator(path: Seq[Node]) {
     shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
   }
 
-  def validateHistory: Boolean = ???
+  def validateHistory: Int = path.count(t => t.east==false && t.west == false && t.north == false && t.south ==false)
 
   def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
 
@@ -168,6 +168,6 @@ class PathEvaluator(path: Seq[Node]) {
       }
     }
 
-    true
+    knownMazeEqualsDrivenPath
   }
 }
