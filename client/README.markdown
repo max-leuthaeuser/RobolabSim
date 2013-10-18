@@ -8,7 +8,7 @@ Follow these steps to get started:
 
         $ cd RobolabSim/client/c/src/
 
-3. Compile it
+3. Compile it (**you need to have Python 2.7 installed**)
 
         $ gcc -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
 
