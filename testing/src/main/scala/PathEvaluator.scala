@@ -140,7 +140,7 @@ class PathEvaluator(path: Seq[Node]) {
     shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
   }
 
-  def validateHistory: Int = path.count(t => t.east==false && t.west == false && t.north == false && t.south ==false)
+  def validateHistory: Boolean = path.count(t => !t.east && !t.west && !t.north && !t.south) == 0
 
   def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
 

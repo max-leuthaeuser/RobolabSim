@@ -19,7 +19,7 @@ class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
   }
 
   test("No invalid tokens are allowed (if failed, you drove out of bounds of the maze, in most cases)") {
-    fixture.historyEvaluator.validateHistory shouldEqual 0
+    fixture.historyEvaluator.validateHistory should not be false
   }
 
   test("you have to move step by step & you aren't permitted to drive diagonals") {

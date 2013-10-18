@@ -26,10 +26,6 @@ class Statistics(path: Seq[Node]) {
 
   def getUTurns: Int = getTurnsIt.count(_ == 2)
 
-  for(n <- getTurnsIt){
-    println(n)
-  }
-
   def getLTurns: Int = getTurnsIt.count(_ == 1)
 
   def getVisitedNodes: Int = path.size
