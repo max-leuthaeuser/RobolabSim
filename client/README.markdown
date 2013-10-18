@@ -10,7 +10,9 @@ Follow these steps to get started:
 
 3. Compile it (**you need to have Python 2.7 installed**)
 
-        $ gcc -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
+        3.1. Linux: $ gcc -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
+
+        3.2. Windows: $ gcc -LC:/Python27/libs -IC:/Python27/include -o RobolabSimClient.exe *.c
 
 4. Start the application:
 
