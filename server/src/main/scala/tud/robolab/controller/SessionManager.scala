@@ -31,30 +31,31 @@ import tud.robolab.utils.TimeUtils
   */
 object SessionManager {
   private val sessions = new SessionPool()
+  var testing = false
 
   /** Handling all active sessions.
     * They are basically a tuple (Session -> associated View).
     */
   class SessionPool extends Subject[SessionPool] {
-    private val peer = TrieMap[Session, SimulationView]()
+    private val peer = TrieMap[Session, Option[SimulationView]]()
 
     /**
      * @param s a [[tud.robolab.model.Session]] you want to get the [[tud.robolab.view.SimulationView]] for.
      * @return the [[tud.robolab.view.SimulationView]] associated to that session.
      */
-    private[SessionManager] def get(s: Session): SimulationView = peer(s)
+    private[SessionManager] def get(s: Session): Option[SimulationView] = peer(s)
 
     /**
      * @return all sessions and views.
      */
-    private[SessionManager] def all: TrieMap[Session, SimulationView] = peer
+    private[SessionManager] def all: TrieMap[Session, Option[SimulationView]] = peer
 
     /**
      * Set the new [[tud.robolab.model.Session]] `s` and its [[tud.robolab.view.SimulationView]] `v`.
      * @param s the new [[tud.robolab.model.Session]] to add
      * @param v the new [[tud.robolab.view.SimulationView]] to add
      */
-    private[SessionManager] def set(s: Session, v: SimulationView) {
+    private[SessionManager] def set(s: Session, v: Option[SimulationView]) {
       peer(s) = v
       notifyObservers()
     }
@@ -63,7 +64,7 @@ object SessionManager {
      * @param s the [[tud.robolab.model.Session]] to remove.
      */
     private[SessionManager] def remove(s: Session) {
-      Interface.removeSimTap(get(s))
+      get(s).foreach(Interface.removeSimTap)
       peer.remove(s)
       notifyObservers()
     }
@@ -98,14 +99,14 @@ object SessionManager {
    * @param s the [[tud.robolab.model.Session]] you want to get the asociated [[tud.robolab.view.SimulationView]] for.
    * @return the [[tud.robolab.view.SimulationView]] the [[tud.robolab.model.Session]] `s` is associated with.
    */
-  def getView(s: Session): SimulationView = sessions.get(s)
+  def getView(s: Session): Option[SimulationView] = sessions.get(s)
 
   /**
    * Set the new [[tud.robolab.model.Session]] `s` and its [[tud.robolab.view.SimulationView]] `v`.
    * @param s the new [[tud.robolab.model.Session]] to set
    * @param v the new [[tud.robolab.view.SimulationView]] to set
    */
-  def set(s: Session, v: SimulationView) {
+  def set(s: Session, v: Option[SimulationView]) {
     sessions.set(s, v)
   }
 
@@ -158,8 +159,10 @@ object SessionManager {
    */
   def addSession(s: Session) {
     if (!hasSession(s.client.ip)) {
-      val v = new SimulationView(s)
-      v.isShown = false
+      val v: Option[SimulationView] = testing match {
+        case true => Option.empty
+        case false => Option(new SimulationView(s, false))
+      }
       sessions.set(s, v)
     }
   }
@@ -169,11 +172,19 @@ object SessionManager {
    */
   def addSession(ip: String): Boolean = {
     if (!hasSession(ip) && !sessionBlocked(ip)) {
-      val s = Session(Client(ip))
-      val v = new SimulationView(s)
-      if (Interface.addSimTab(v, ip)) {
-        sessions.set(s, v)
-        return true
+      val s = Session(Client(ip))      
+      testing match {
+        case false => {
+          val v = new SimulationView(s)
+          if (Interface.addSimTab(v, ip)) {
+            sessions.set(s, Option(v))
+            return true
+          }
+        }
+        case true => {
+          sessions.set(s, Option.empty)
+          return true
+        }
       }
     }
     false
@@ -188,7 +199,7 @@ object SessionManager {
       val s = Session(Client(ip))
       val v = new SimulationView(s)
       v.isShown = false
-      sessions.set(s, v)
+      sessions.set(s, Option(v))
     }
     sessions.block(getSession(ip).get, block)
   }
@@ -226,12 +237,13 @@ object SessionManager {
 
     val n = s.maze(r.x)(r.y).get
     val v = sessions.get(s)
-    v.updateSession()
-
-    if (!v.isShown) {
-      v.isShown = true
-      Interface.addSimTab(v, s.client.ip, ask = false)
-    }
+    v.foreach(view => {
+      view.updateSession()
+      if (!view.isShown) {
+        view.isShown = true
+        Interface.addSimTab(view, s.client.ip, ask = false)
+      }
+    })
 
     QueryResponseFactory.fromPoint(n)
   }
@@ -268,7 +280,8 @@ object SessionManager {
     if (!hasSession(ip)) return ErrorType.NO_PATH
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
-    sessions.get(getSession(ip).get).changeMap(r.map) match {
+    val s = getSession(ip).get
+    MainController.changeMap(r.map, s, getView(s)) match {
       case true => Ok()
       case false => ErrorType.NO_MAP
     }

@@ -25,7 +25,7 @@ import javax.swing.border.BevelBorder
 import java.awt.{BorderLayout, FlowLayout}
 import java.awt.event.{MouseEvent, MouseAdapter, ActionEvent, ActionListener}
 import tud.robolab.model.MazePool
-import tud.robolab.controller.SessionManager
+import tud.robolab.controller.{MainController, SessionManager}
 import tud.robolab.utils.SizeUtilities
 
 object Interface extends SimpleSwingApplication {
@@ -33,7 +33,6 @@ object Interface extends SimpleSwingApplication {
   private val status = new Label("Waiting for connections ...")
   private val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
   private val menu = createMenu()
-  var mazePool: MazePool = null
 
   def top = new MainFrame {
     //Look and Feel
@@ -65,7 +64,6 @@ object Interface extends SimpleSwingApplication {
     mainPanel.layout(statusPanel) = BorderPanel.Position.South
     mainPanel.peer.add(tabbed, BorderLayout.CENTER)
 
-    mazePool = new MazePool
     val mazeGenerator = new MazeGenerator
     val sessionsEditor = new SessionsView
 
@@ -74,7 +72,7 @@ object Interface extends SimpleSwingApplication {
     tabbed.addTab("SessionsEditor", sessionsEditor)
 
     /** Attach Observers here **/
-    mazePool.addObserver(mazeGenerator)
+    MainController.mazePool.addObserver(mazeGenerator)
     SessionManager.getSessions.addObserver(sessionsEditor)
 
     tabbed.addMouseListener(new PopupListener())
@@ -132,7 +130,7 @@ object Interface extends SimpleSwingApplication {
   }
 
   private def _addSimTap(c: SimulationView, title: String) {
-    mazePool.addObserver(c)
+    MainController.mazePool.addObserver(c)
     tabbed.addTab(null, c)
     val pos = tabbed.indexOfComponent(c)
 

@@ -72,7 +72,7 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     actionMap.put("Open", new AbstractAction() {
       def actionPerformed(e: ActionEvent) {
         val s = SessionManager.getSession(table.getSelectedRow)
-        val v = SessionManager.getView(s)
+        val v = SessionManager.getView(s).get
         if (!v.isShown) {
           v.isShown = true
           Interface.addSimTab(v, s.client.ip, ask = false)

@@ -24,6 +24,7 @@ import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{ChangeEvent, ChangeListener}
 import tud.robolab.model.{MazePool, Observer, Maze}
+import tud.robolab.controller.MainController
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
@@ -35,7 +36,7 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
   private var curr_height = 6
 
   private val name = new JTextField("maze")
-  private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
+  private val box = new JComboBox(MainController.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 12, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 12, 1))
 
@@ -127,7 +128,7 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
             }
           }
         }
-        Interface.mazePool +(filename, model)
+        MainController.mazePool +(filename, model)
       }
     })
 

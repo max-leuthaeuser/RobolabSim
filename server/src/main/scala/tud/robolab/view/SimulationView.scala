@@ -19,18 +19,14 @@
 package tud.robolab.view
 
 import javax.swing._
-import tud.robolab.utils.IOUtils
-import java.io.File
 import java.awt._
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.{MazePool, Observer, Maze}
-import spray.json._
-import tud.robolab.model.MazeJsonProtocol._
-import tud.robolab.controller.SessionManager
+import tud.robolab.model.{MazePool, Observer}
+import tud.robolab.controller.{MainController, SessionManager}
 import tud.robolab.model.Session
 
 class SimulationView(session: Session, var isShown: Boolean = true) extends JPanel with Observer[MazePool] {
-  private val box = new JComboBox(Interface.mazePool.mazeNames.toArray)
+  private val box = new JComboBox(MainController.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
 
   private val settings = buildSettingsPanel
@@ -51,14 +47,6 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     listModel.addElement(" [%s] x = %s; y = %s %s ".format(p.time, p.x, p.y, t))
   }
 
-  def changeMap(m: String): Boolean = {
-    val f = new File("maps/" + m + ".maze")
-    if (!f.isFile) return false
-    session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
-    rebuild()
-    true
-  }
-
   private def buildSplitPane(): JSplitPane = {
     val panel = new JPanel()
     panel.setLayout(new BorderLayout())
@@ -76,7 +64,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
       def actionPerformed(e: ActionEvent) {
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
-          changeMap(box.getSelectedItem.asInstanceOf[String])
+          MainController.changeMap(box.getSelectedItem.asInstanceOf[String], session, Option(SimulationView.this))
         }
       }
     })
@@ -114,10 +102,10 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     result
   }
 
-  private def rebuild() {
+  def rebuild() {
     invalidate()
     splitPane.getRightComponent match {
-      case p: JPanel =>  {
+      case p: JPanel => {
         p.remove(content)
         content = new JScrollPane(buildMazePanel())
         p.add(content, BorderLayout.CENTER)
