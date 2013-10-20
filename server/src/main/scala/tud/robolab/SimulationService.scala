@@ -144,19 +144,26 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
 trait SimulationService extends HttpService {
   private def getIP(req: HttpRequest) = req.headers.filter(_.name.equals("Remote-Address"))(0).value
 
+  private def getUpTime: String = TimeUtils.uptime
+
   val myRoute =
     path("") {
       get {
         respondWithMediaType(`text/html`) {
           complete {
-            <html>
+            """<html>
               <body>
-                <h1>Welcome to
-                  <i>RobolabSim</i>
-                </h1>
-                See the GUI provided to watch your robot navigating around.
+                <h1>Welcome to <i>RobolabSim</i></h1>
+                <b>Server status page</b><br/>
+                <ul>
+                  <li><i>Uptime:</i> %s</li>
+                  <li><i>Sessions:</i> %s</li>
+                  %s
+                </ul>
               </body>
-            </html>
+            </html>""".format(getUpTime,
+              SessionManager.numberOfSessions(),
+              SessionManager.getSessionsAsList.map("<li>" + _.client.ip + "</li>").mkString("<ul>", "", "</ul>"))
           }
         }
       }
@@ -169,8 +176,8 @@ trait SimulationService extends HttpService {
                 val ip = getIP(ctx.request)
                 val req = values.asJson.convertTo[Request]
 
-                println("[%s] Incoming Request...".format(TimeUtils.now))
-                println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
+                println("[%s] Incoming Request...".format(TimeUtils.nowAsString))
+                println("[%s] from [%s] %s".format(TimeUtils.nowAsString, ip, req))
 
                 import MessageJsonProtocol._
                 ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
@@ -182,8 +189,8 @@ trait SimulationService extends HttpService {
           ctx =>
             val ip = getIP(ctx.request)
 
-            println("[%s] Incoming History request...".format(TimeUtils.now))
-            println("[%s] from [%s]".format(TimeUtils.now, ip))
+            println("[%s] Incoming History request...".format(TimeUtils.nowAsString))
+            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
@@ -194,8 +201,8 @@ trait SimulationService extends HttpService {
           ctx =>
             val ip = getIP(ctx.request)
 
-            println("[%s] Incoming Number of tokens request...".format(TimeUtils.now))
-            println("[%s] from [%s]".format(TimeUtils.now, ip))
+            println("[%s] Incoming Number of tokens request...".format(TimeUtils.nowAsString))
+            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
@@ -209,8 +216,8 @@ trait SimulationService extends HttpService {
                 val ip = getIP(ctx.request)
                 val req = values.asJson.convertTo[MapRequest]
 
-                println("[%s] Incoming Maze request...".format(TimeUtils.now))
-                println("[%s] from [%s] %s".format(TimeUtils.now, ip, req))
+                println("[%s] Incoming Maze request...".format(TimeUtils.nowAsString))
+                println("[%s] from [%s] %s".format(TimeUtils.nowAsString, ip, req))
 
                 import MessageJsonProtocol._
                 ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
@@ -222,8 +229,8 @@ trait SimulationService extends HttpService {
           ctx =>
             val ip = getIP(ctx.request)
 
-            println("[%s] Incoming Path request...".format(TimeUtils.now))
-            println("[%s] from [%s]".format(TimeUtils.now, ip))
+            println("[%s] Incoming Path request...".format(TimeUtils.nowAsString))
+            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)

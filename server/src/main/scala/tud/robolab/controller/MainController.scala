@@ -21,7 +21,7 @@ package tud.robolab.controller
 import tud.robolab.view.{SimulationView, Interface}
 import tud.robolab.model.{Maze, MazePool, Session}
 import java.io.File
-import tud.robolab.utils.IOUtils
+import tud.robolab.utils.{TimeUtils, IOUtils}
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 

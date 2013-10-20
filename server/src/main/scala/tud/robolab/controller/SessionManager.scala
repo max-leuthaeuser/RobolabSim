@@ -86,6 +86,11 @@ object SessionManager {
   def getSessions: SessionPool = sessions
 
   /**
+   * @return all sessions as list stored via the [[tud.robolab.controller.SessionManager.SessionPool]].
+   */
+  def getSessionsAsList: List[Session] = getSessions.all.keys.toList
+
+  /**
    * @return the amount of sessions stored.
    */
   def numberOfSessions(): Int = sessions.all.size
@@ -172,7 +177,7 @@ object SessionManager {
    */
   def addSession(ip: String): Boolean = {
     if (!hasSession(ip) && !sessionBlocked(ip)) {
-      val s = Session(Client(ip))      
+      val s = Session(Client(ip))
       testing match {
         case false => {
           val v = new SimulationView(s)
@@ -228,7 +233,7 @@ object SessionManager {
       case true => false
       case false => s.maze(r.x)(r.y).get.token
     }
-    val wayElememt = WayElement(r.x, r.y, token, TimeUtils.now)
+    val wayElememt = WayElement(r.x, r.y, token, TimeUtils.nowAsString)
 
     s.addHistoryElement(wayElememt)
 

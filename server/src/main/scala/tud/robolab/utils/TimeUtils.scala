@@ -18,31 +18,23 @@
 
 package tud.robolab.utils
 
-import java.util.Calendar
+import java.util.{TimeZone, Date, Calendar}
 import java.text.SimpleDateFormat
+import java.lang.management.ManagementFactory
 
 object TimeUtils {
+  private val STD_TIME_FORMAT = "HH:mm:ss:SSS"
+  private lazy val date_format_peer = new SimpleDateFormat(STD_TIME_FORMAT)
 
-  /**
-   * Use apply method to measure time used
-   * executing the given function block.
-   */
-  object Time {
-    def apply[T](name: String)(block: => T) {
-      val start = System.currentTimeMillis
-      try {
-        block
-      } finally {
-        val diff = System.currentTimeMillis - start
-        println("# " + name + " completed, time taken: " + diff + " ms (" + diff / 1000.0 + " s)")
-      }
-    }
+  def nowAsString: String = {
+    val cal = Calendar.getInstance()
+    date_format_peer.format(cal.getTime)
   }
 
-  def now: String = {
-    val DATE_FORMAT_NOW = "HH:mm:ss:SSS"
-    val cal = Calendar.getInstance()
-    val sdf = new SimpleDateFormat(DATE_FORMAT_NOW)
-    sdf.format(cal.getTime)
+  def uptime: String = {
+    val mx = ManagementFactory.getRuntimeMXBean
+    val df = new SimpleDateFormat("HH 'hours', mm 'mins', ss 'seconds'")
+    df.setTimeZone(TimeZone.getTimeZone("GMT+0"))
+    df.format(new Date(mx.getUptime))
   }
 }

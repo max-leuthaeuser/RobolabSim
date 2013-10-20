@@ -40,8 +40,8 @@ object Boot extends App {
 
   /** Call this method on terminating the server for unbinding. */
   def terminate() {
-    println("[" + TimeUtils.now + "] Shutting server down ...")
+    println("[" + TimeUtils.nowAsString + "] Shutting server down ...")
     IO(Http) ! Http.Unbind
-    println("[" + TimeUtils.now + "] Done.")
+    println("[" + TimeUtils.nowAsString + "] Done.")
   }
 }
