@@ -46,6 +46,10 @@ class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
     test("if no token exists you algorithm should terminate after the entire maze is explored") {
       fixture.evaluator.validateTerminatedAfterWholeMazeIsExplored should not be false
     }
+
+    test("When you explore the maze, you should not head back a known path if there are unknown ones directly available") {
+      fixture.evaluator.validateIfThereIsADirectUnknownPathDriveIt should not be false
+    }
   }
 
   if (fixture.tokenCount != 0) {
