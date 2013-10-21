@@ -140,34 +140,96 @@ class PathEvaluator(path: Seq[Node]) {
     shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
   }
 
-  def validateHistory: Boolean = path.count(t => !t.east && !t.west && !t.north && !t.south) == 0
+  def getSetOfNeighbors(n: Node): Seq[Node] = {
 
-  def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
+    // BE AWARE of these pseudo Nodes -- only for the x & y position, north east west south and token values are fake
 
-  def validateCompleteMazeIsExplored: Boolean = {
-    val knownMaze = getBuilder.constructKnownMaze
-    val path = getBuilder.constructPath
+    var neighbors: Seq[Node] = Seq[Node]()
 
-    knownMaze.vertexSet().size == path.vertexSet().size
-  }
-
-  def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
-    val knownMaze = getBuilder.constructKnownMaze
-    val uniqueVisitedNodes = new mutable.HashSet[Node]
-
-    var knownMazeEqualsDrivenPath = false
-
-    for (n <- path) {
-      // the following check will always fail
-      if (!knownMazeEqualsDrivenPath) {
-        uniqueVisitedNodes += n
-        if (knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
-      }
-      else {
-        return false
-      }
+    neighbors = n.east match {
+      case true => neighbors :+ new Node(n.x, n.y - 1)
     }
 
-    knownMazeEqualsDrivenPath
+    neighbors = n.west match {
+      case true => neighbors :+ new Node(n.x, n.y + 1)
+    }
+
+    neighbors = n.north match {
+      case true => neighbors :+ new Node(n.x - 1, n.y)
+    }
+
+    neighbors = n.south match {
+      case true => neighbors :+ new Node(n.x + 1, n.y)
+    }
+
+    neighbors
   }
+
+  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node], n: Node): Seq[Node] = {
+
+    val neighbors = getSetOfNeighbors(n)
+    var notVisitedNeighbors = Seq[Node]()
+
+    for (v <- neighbors) {
+      if (pathUntil.count(t => t.x == v.x && t.y == v.y) == 0) notVisitedNeighbors = notVisitedNeighbors :+ v
+    }
+
+    notVisitedNeighbors.distinct
+  }
+
+  def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
+
+  def validateIfNextNodeIsAlreadyVisited(next: Node, notVisitedNeighborsOfOrigin: Seq[Node]): Boolean = {
+    if (!notVisitedNeighborsOfOrigin.isEmpty) {
+      val pseudoNodeOfNext = new Node(next.x,next.y)
+      if (notVisitedNeighborsOfOrigin.contains(pseudoNodeOfNext)) {
+        return true
+      }
+      return false
+    }
+    return true
+  }
+
+  def validateIfThereIsADirectUnknownPathDriveIt: Boolean = {
+
+
+    def eval(revPath: Seq[Node]): Boolean = {
+      revPath match {
+      case hd :: hd2 :: tail => validateIfNextNodeIsAlreadyVisited(hd2 , getSetOfNotVisitedNeighbors(hd2 :: tail, hd)) && eval(hd2 :: tail)
+      case hd :: Nil => true
+    }
+    }
+
+    return eval(path.reverse)
+
+  }
+
+def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
+
+def validateCompleteMazeIsExplored: Boolean = {
+  val knownMaze = getBuilder.constructKnownMaze
+  val path = getBuilder.constructPath
+
+  knownMaze.vertexSet().size == path.vertexSet().size
+}
+
+def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
+  val knownMaze = getBuilder.constructKnownMaze
+  val uniqueVisitedNodes = new mutable.HashSet[Node]
+
+  var knownMazeEqualsDrivenPath = false
+
+  for (n <- path) {
+    // the following check will always fail
+    if (!knownMazeEqualsDrivenPath) {
+      uniqueVisitedNodes += n
+      if (knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
+    }
+    else {
+      return false
+    }
+  }
+
+  knownMazeEqualsDrivenPath
+}
 }
