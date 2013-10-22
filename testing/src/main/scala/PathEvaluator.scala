@@ -146,20 +146,24 @@ class PathEvaluator(path: Seq[Node]) {
 
     var neighbors: Seq[Node] = Seq[Node]()
 
-    neighbors = n.east match {
-      case true => neighbors :+ new Node(n.x, n.y - 1)
+    n.east match {
+      case true => neighbors = neighbors :+ new Node(n.x, n.y - 1)
+      case false => {}
     }
 
-    neighbors = n.west match {
-      case true => neighbors :+ new Node(n.x, n.y + 1)
+    n.west match {
+      case true => neighbors = neighbors :+ new Node(n.x, n.y + 1)
+      case false => {}
     }
 
-    neighbors = n.north match {
-      case true => neighbors :+ new Node(n.x - 1, n.y)
+    n.north match {
+      case true => neighbors = neighbors :+ new Node(n.x - 1, n.y)
+      case false => {}
     }
 
-    neighbors = n.south match {
-      case true => neighbors :+ new Node(n.x + 1, n.y)
+    n.south match {
+      case true => neighbors = neighbors :+ new Node(n.x + 1, n.y)
+      case false => {}
     }
 
     neighbors
