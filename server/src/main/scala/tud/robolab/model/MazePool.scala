@@ -36,7 +36,7 @@ class MazePool extends Subject[MazePool] {
   /**
    * @return all available maze names
    */
-  def mazeNames: Iterable[String] = pool.keys
+  def mazeNames: Seq[String] = pool.keys.toSeq
 
   /**
    * @param name the name of the maze

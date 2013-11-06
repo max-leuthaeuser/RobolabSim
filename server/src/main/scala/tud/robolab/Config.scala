@@ -26,4 +26,5 @@ object Config {
   lazy val IP = conf.getString("spray.can.server.ip")
   lazy val PORT = conf.getInt("spray.can.server.port")
   lazy val TESTING = conf.getBoolean("spray.can.server.testing")
+  lazy val MAP = conf.getString("spray.can.server.default-map")
 }

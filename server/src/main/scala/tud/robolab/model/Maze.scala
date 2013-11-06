@@ -21,6 +21,8 @@ package tud.robolab.model
 import PointJsonProtocol._
 import spray.json._
 import Direction._
+import tud.robolab.controller.MainController
+import tud.robolab.Config
 
 /** Case class representing a maze. Points (see [[tud.robolab.model.Point]]) are stored in a Seq.
   *
@@ -184,6 +186,15 @@ object Maze {
    * @return a new [[tud.robolab.model.Maze]] with the `width` = 6 and `height` = 6
    */
   def empty: Maze = empty(6, 6)
+
+  /**
+   * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]]
+   *         with the `width` = 6 and `height` = 6 if configuration is invalid
+   */
+  def default: Maze = MainController.mazePool.mazeNames.contains(Config.MAP) match {
+    case true => MainController.mazePool(Config.MAP) 
+    case false => empty 
+  }
 }
 
 /** Implicit conversions from [[tud.robolab.model.Maze]] to json. */
