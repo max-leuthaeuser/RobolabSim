@@ -175,9 +175,7 @@ trait SimulationService extends HttpService {
               ctx =>
                 val ip = getIP(ctx.request)
                 val req = values.asJson.convertTo[Request]
-
-                println("[%s] Incoming Request...".format(TimeUtils.nowAsString))
-                println("[%s] from [%s] %s".format(TimeUtils.nowAsString, ip, req))
+                Boot.log.info("Incoming [Query] request from [%s]: %s".format(ip, req))
 
                 import MessageJsonProtocol._
                 ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
@@ -188,9 +186,7 @@ trait SimulationService extends HttpService {
         get {
           ctx =>
             val ip = getIP(ctx.request)
-
-            println("[%s] Incoming History request...".format(TimeUtils.nowAsString))
-            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
+            Boot.log.info("Incoming [History] request from [%s]".format(ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
@@ -200,9 +196,7 @@ trait SimulationService extends HttpService {
         get {
           ctx =>
             val ip = getIP(ctx.request)
-
-            println("[%s] Incoming Number of tokens request...".format(TimeUtils.nowAsString))
-            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
+            Boot.log.info("Incoming [NumberOfTokens] request from [%s]".format(ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
@@ -215,9 +209,7 @@ trait SimulationService extends HttpService {
               ctx =>
                 val ip = getIP(ctx.request)
                 val req = values.asJson.convertTo[MapRequest]
-
-                println("[%s] Incoming Maze request...".format(TimeUtils.nowAsString))
-                println("[%s] from [%s] %s".format(TimeUtils.nowAsString, ip, req))
+                Boot.log.info("Incoming [MapChange] request from [%s]".format(ip))
 
                 import MessageJsonProtocol._
                 ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
@@ -228,9 +220,7 @@ trait SimulationService extends HttpService {
         get {
           ctx =>
             val ip = getIP(ctx.request)
-
-            println("[%s] Incoming Path request...".format(TimeUtils.nowAsString))
-            println("[%s] from [%s]".format(TimeUtils.nowAsString, ip))
+            Boot.log.info("Incoming [Path] request from [%s]".format(ip))
 
             import MessageJsonProtocol._
             ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
