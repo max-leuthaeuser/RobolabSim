@@ -32,6 +32,9 @@ object Boot extends App {
   // create and start our service actor
   val service = system.actorOf(Props[SimulationServiceActor], "sim-service")
 
+  // get our logging object
+  val log = system.log
+
   // start a new HTTP server on port 8080 with our service actor as the handler
   IO(Http) ! Http.Bind(service, interface = Config.IP, port = Config.PORT)
 
@@ -40,8 +43,8 @@ object Boot extends App {
 
   /** Call this method on terminating the server for unbinding. */
   def terminate() {
-    println("[" + TimeUtils.nowAsString + "] Shutting server down ...")
+    log.info("Terminating server ...")
     IO(Http) ! Http.Unbind
-    println("[" + TimeUtils.nowAsString + "] Done.")
+    log.info("Done. All services terminated normally.")
   }
 }

@@ -21,7 +21,7 @@ ECHO Setting second Maze
 curl -X PUT %SERVER_IP%maze?="%%7B%%22map%%22%%3A%%22%Maze2%%%22%%7D"
 
 ECHO Executing your solution
-cd builds 
+cd ../builds 
 RobolabSimClient.exe
 
 ECHO Executing the validation
@@ -32,7 +32,7 @@ ECHO Setting third Maze
 curl -X PUT %SERVER_IP%maze?="%%7B%%22map%%22%%3A%%22%Maze3%%%22%%7D"
 
 ECHO Executing your solution
-cd builds 
+cd ../builds 
 RobolabSimClient.exe
 
 ECHO Executing the validation

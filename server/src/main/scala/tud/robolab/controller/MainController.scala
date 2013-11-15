@@ -33,6 +33,10 @@ object MainController {
     if (!f.isFile) return false
     session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
     view.foreach(_ rebuild())
+
+    session.clearWay()
+    session.clearHistory()
+
     true
   }
 

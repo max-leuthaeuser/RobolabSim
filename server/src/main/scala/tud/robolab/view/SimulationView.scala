@@ -113,7 +113,6 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
       case _ =>
     }
     listModel.removeAllElements()
-    session.clearWay()
     validate()
   }
 
