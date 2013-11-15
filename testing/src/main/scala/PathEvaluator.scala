@@ -147,12 +147,12 @@ class PathEvaluator(path: Seq[Node]) {
     var neighbors: Seq[Node] = Seq[Node]()
 
     n.east match {
-      case true => neighbors = neighbors :+ new Node(n.x, n.y - 1)
+      case true => neighbors = neighbors :+ new Node(n.x, n.y + 1)
       case false => {}
     }
 
     n.west match {
-      case true => neighbors = neighbors :+ new Node(n.x, n.y + 1)
+      case true => neighbors = neighbors :+ new Node(n.x, n.y - 1)
       case false => {}
     }
 
@@ -178,6 +178,8 @@ class PathEvaluator(path: Seq[Node]) {
       if (pathUntil.count(t => t.x == v.x && t.y == v.y) == 0) notVisitedNeighbors = notVisitedNeighbors :+ v
     }
 
+
+
     notVisitedNeighbors.distinct
   }
 
@@ -199,7 +201,8 @@ class PathEvaluator(path: Seq[Node]) {
 
     def eval(revPath: Seq[Node]): Boolean = {
       revPath match {
-      case hd :: hd2 :: tail => validateIfNextNodeIsAlreadyVisited(hd2 , getSetOfNotVisitedNeighbors(hd2 :: tail, hd)) && eval(hd2 :: tail)
+      case hd :: hd2 :: tail => {
+        validateIfNextNodeIsAlreadyVisited(hd , getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)}
       case hd :: Nil => true
     }
     }

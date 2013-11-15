@@ -4,7 +4,7 @@ import org.scalatest.matchers.ShouldMatchers
 class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
   def fixture =
     new {
-      val client = new RoblabSimClient("localhost", 8080)
+      val client = new RoblabSimClient("141.30.61.87", 8080)
       val tokenCount = client.getNumberOfTokens
       val evaluator = new PathEvaluator(client.getPath.nodes).setTokenCount(tokenCount)
       val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
