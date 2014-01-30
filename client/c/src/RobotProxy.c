@@ -5,7 +5,7 @@
 int currentIntersection = ROBOT_FAIL;
 
 #if !defined(vasprintf)
-static int vasprintf(char **s, const char *format, va_list ap) {
+int vasprintf(char **s, const char *format, va_list ap) {
 	/* Guess we need no more than 100 bytes. */
 	int n, size = 100;
 	va_list save_ap;
@@ -46,7 +46,7 @@ static int vasprintf(char **s, const char *format, va_list ap) {
 #endif
 
 #if !defined(asprintf)
-static int asprintf(char **s, const char *format, ...) {
+int asprintf(char **s, const char *format, ...) {
 	va_list vals;
 	int result;
 
