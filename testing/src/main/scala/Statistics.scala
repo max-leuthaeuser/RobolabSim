@@ -18,8 +18,10 @@ class Statistics(path: Seq[Node]) {
 
   def getTurnsIt: Seq[Int] = path.sliding(2).map {
     case Seq(a, b) => distinguishLoc(a, b)
+    case _ => 0
   }.sliding(2).map {
     case Seq(a, b) => calcTurns(a, b)
+    case _ => 0
   }.toSeq
 
   def getTurns: Int = getTurnsIt.sum
