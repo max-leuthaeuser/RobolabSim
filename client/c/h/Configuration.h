@@ -14,7 +14,7 @@
 #include "RobotProxy.h"
 
 // define server URL here
-#define URL "http://localhost:8080/query?="
+#define URL "http://localhost:8080/query?id=someGroupID&values="
 
 // define maze size here
 #define MAZE_WIDTH 6

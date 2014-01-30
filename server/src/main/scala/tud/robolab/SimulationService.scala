@@ -105,8 +105,8 @@ object ErrorMessageProtocol extends DefaultJsonProtocol {
 import RequestProtocol._
 import QueryResponseProtocol._
 import ErrorMessageProtocol._
-import MapRequestProtocol._
 import TokenRequestProtocol._
+import MapRequestProtocol._
 
 /** Implicit conversions from [[tud.robolab.model.Message]] to json.
   *
@@ -125,12 +125,14 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
     def write(p: Message) = {
       p match {
         case r: Ok => "Ok".toJson
+        case m: MapRequest => m.toJson
         case t: TokenRequest => t.toJson
         case r: QueryResponse => r.toJson
         case b: ErrorMessage => b.toJson
         case p: PathResponse => JsArray(p.way.map(t =>
           JsObject("point" -> t._1.toJson,
             "properties" -> t._2.toJson)).toList)
+        case req: Request => req.toJson
         case _ => deserializationError("Message expected!")
       }
     }
@@ -142,8 +144,6 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
 
 /** Defines our service behavior independently from the service actor. */
 trait SimulationService extends HttpService {
-  private def getIP(req: HttpRequest) = req.headers.filter(_.name.equals("Remote-Address"))(0).value
-
   private def getUpTime: String = TimeUtils.uptime
 
   val myRoute =
@@ -162,68 +162,75 @@ trait SimulationService extends HttpService {
                 </ul>
               </body>
             </html>""".format(getUpTime,
-              SessionManager.numberOfSessions(),
-              SessionManager.getSessionsAsList.map("<li>" + _.client.ip + "</li>").mkString("<ul>", "", "</ul>"))
+                SessionManager.numberOfSessions(),
+                SessionManager.getSessionsAsList.map("<li>" + _.client.ip + "</li>").mkString("<ul>", "", "</ul>"))
           }
         }
       }
     } ~
       path("query") {
-        parameter("") {
-          values =>
-            (get | put) {
-              ctx =>
-                val ip = getIP(ctx.request)
-                val req = values.asJson.convertTo[Request]
-                Boot.log.info("Incoming [Query] request from [%s]: %s".format(ip, req))
-
-                import MessageJsonProtocol._
-                ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
-            }
+        parameters('id, 'values) {
+          (id, values) =>
+              (get | put) {
+                ctx =>
+                  val ip = id
+                  import MessageJsonProtocol._
+                  val req = values.toString.asJson.convertTo[Request]
+                  Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
+                  ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
+              }
         }
       } ~
       path("history") {
-        get {
-          ctx =>
-            val ip = getIP(ctx.request)
-            Boot.log.info("Incoming [History] request from [%s]".format(ip))
-
-            import MessageJsonProtocol._
-            ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
-        }
-      } ~
-      path("numberOfTokens") {
-        get {
-          ctx =>
-            val ip = getIP(ctx.request)
-            Boot.log.info("Incoming [NumberOfTokens] request from [%s]".format(ip))
-
-            import MessageJsonProtocol._
-            ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
-        }
-      } ~
-      path("maze") {
-        parameter("") {
-          values =>
-            (get | put) {
+        parameter('id) {
+          id =>
+            get {
               ctx =>
-                val ip = getIP(ctx.request)
-                val req = values.asJson.convertTo[MapRequest]
-                Boot.log.info("Incoming [MapChange] request from [%s]".format(ip))
+                val ip = id
+                Boot.log.info("Incoming [History] request from ID [%s]".format(ip))
 
                 import MessageJsonProtocol._
-                ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
+                ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
             }
         }
       } ~
-      path("path") {
-        get {
-          ctx =>
-            val ip = getIP(ctx.request)
-            Boot.log.info("Incoming [Path] request from [%s]".format(ip))
+      path("numberOfTokens") {
+        parameter('id) {
+          id =>
+            get {
+              ctx =>
+                val ip = id
+                Boot.log.info("Incoming [NumberOfTokens] request from ID [%s]".format(ip))
 
-            import MessageJsonProtocol._
-            ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
+                import MessageJsonProtocol._
+                ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
+            }
+        }
+      } ~
+      path("maze") {
+        parameters('id, 'values) {
+          (id, values) =>
+              (get | put) {
+                ctx =>
+                  val ip = id
+                  import MessageJsonProtocol._
+                  val req = values.toString.toJson.convertTo[MapRequest]
+                  Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
+                  ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
+              }
+        }
+      } ~
+      path("path") {
+        parameter('id) {
+          id =>
+            get {
+              ctx =>
+                val ip = id
+                Boot.log.info("Incoming [Path] request from ID [%s]".format(ip))
+
+                import MessageJsonProtocol._
+                ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
+            }
         }
       }
 }

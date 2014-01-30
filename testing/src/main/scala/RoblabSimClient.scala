@@ -9,7 +9,7 @@ import spray.client.pipelining._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-case class TokenRequest(numberOfToken: Int)
+case class TokenRequest(numberOfTokens: Int)
 
 case class Node(x: Int, y: Int, north: Boolean = false, east: Boolean = false, south: Boolean = false, west: Boolean = false, token: Boolean = false)
 
@@ -47,7 +47,7 @@ object TokenRequestProtocol extends DefaultJsonProtocol {
   implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
 }
 
-class RoblabSimClient(ip: String, port: Int) {
+class RoblabSimClient(id: String, ip: String, port: Int) {
   private val url = "http://%s:%s".format(ip, port)
   private implicit val system = ActorSystem()
 
@@ -63,7 +63,7 @@ class RoblabSimClient(ip: String, port: Int) {
   val pipelineMap = sendReceive
 
   def getPath: Path = {
-    val request = Get(url + "/path")
+    val request = Get(url + "/path?id=" + id)
     val response = pipelinePath {
       request
     }
@@ -72,7 +72,7 @@ class RoblabSimClient(ip: String, port: Int) {
   }
 
   def getHistory: Path = {
-    val request = Get(url + "/history")
+    val request = Get(url + "/history?id=" + id)
     val response = pipelinePath {
       request
     }
@@ -81,8 +81,8 @@ class RoblabSimClient(ip: String, port: Int) {
   }
 
   def setMap(name: String) {
-    val content = "%7B%22map%22%3A%22" + name + "%22%7D"
-    val request = Put(url + "/maze?=" + content)
+    val content = "%267B%22map%22%3A%22" + name + "%22%7D"
+    val request = Put(url + "/maze?id=" + id + content)
     val response = pipelineMap {
       request
     }
@@ -91,11 +91,11 @@ class RoblabSimClient(ip: String, port: Int) {
   }
 
   def getNumberOfTokens: Int = {
-    val request = Get(url + "/numberOfTokens")
+    val request = Get(url + "/numberOfTokens?id=" + id)
     val response = pipelineTokens {
       request
     }
 
-    Await.result(response, 10 second).numberOfToken
+    Await.result(response, 10 second).numberOfTokens
   }
 }

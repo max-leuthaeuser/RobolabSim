@@ -1,10 +1,10 @@
 import org.scalatest.{FunSuite, GivenWhenThen}
 import org.scalatest.matchers.ShouldMatchers
 
-class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
+class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThen with ShouldMatchers {
   def fixture =
     new {
-      val client = new RoblabSimClient("141.30.61.87", 8080)
+      val client = new RoblabSimClient(id, ip, 8080)
       val tokenCount = client.getNumberOfTokens
       val evaluator = new PathEvaluator(client.getPath.nodes).setTokenCount(tokenCount)
       val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
@@ -73,17 +73,4 @@ class RobolabTestSpec extends FunSuite with GivenWhenThen with ShouldMatchers {
   info("\t%s of them are 180 degree turns".format(Uturns))
   val score = (nodes * magicVisitedNodesNumber) + (turns * magicTurnsNumber)
   info("Your score is (the lower the better): " + score)
-
-  /*feature("Setting a new Map") {
-    scenario("One should be able to set a new map") {
-
-      Given("A running server")
-      // Server needs to be started externally by script
-
-      When("The map is set")
-      val path = fixture.client.setMap("tes")
-
-      Then("No error should occur")
-    }
-  }  */
 }

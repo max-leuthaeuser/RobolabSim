@@ -37,6 +37,6 @@ seq(Revolver.settings: _*)
 
 mainClass in assembly := Some("Main")
 
-jarName in assembly := "RobolabSimTestRemoteBrandNew.jar"
+jarName in assembly := "RobolabSimTest.jar"
 
 test in assembly := {}

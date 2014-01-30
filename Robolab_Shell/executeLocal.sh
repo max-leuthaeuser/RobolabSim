@@ -17,4 +17,4 @@ echo "Done"
 
 echo "Executing the validation"
 cd ../test
-java -jar RobolabSimTestLocal.jar
+java -jar RobolabSimTestLocal.jar --ID someGroupID --IP localhost
