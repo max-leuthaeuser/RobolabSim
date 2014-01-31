@@ -10,9 +10,12 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
       val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
     }
 
-  info("During the exploration of a maze the robot should")
-  info("not cross any node more than once except it is")
-  info("a dead end or there is no other unexplored way.")
+  info {
+    """ During the exploration of a maze the robot should
+      |   not cross any node more than once except it is
+      |   a dead end or there is no other unexplored way.
+    """.stripMargin
+  }
 
   test("No empty solutions are allowed") {
     fixture.client.getPath.nodes.size should not be 0
@@ -58,7 +61,6 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
     }
   }
 
-
   info("Here are some statistics of your course:")
   val stats = new Statistics(fixture.client.getPath.nodes)
   val magicVisitedNodesNumber = 10
@@ -73,17 +75,4 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
   info("\t%s of them are 180 degree turns".format(Uturns))
   val score = (nodes * magicVisitedNodesNumber) + (turns * magicTurnsNumber)
   info("Your score is (the lower the better): " + score)
-
-  /*feature("Setting a new Map") {
-    scenario("One should be able to set a new map") {
-
-      Given("A running server")
-      // Server needs to be started externally by script
-
-      When("The map is set")
-      val path = fixture.client.setMap("tes")
-
-      Then("No error should occur")
-    }
-  }  */
 }

@@ -146,97 +146,66 @@ class PathEvaluator(path: Seq[Node]) {
 
     var neighbors: Seq[Node] = Seq[Node]()
 
-    n.east match {
-      case true => neighbors = neighbors :+ new Node(n.x, n.y + 1)
-      case false => {}
-    }
-
-    n.west match {
-      case true => neighbors = neighbors :+ new Node(n.x, n.y - 1)
-      case false => {}
-    }
-
-    n.north match {
-      case true => neighbors = neighbors :+ new Node(n.x - 1, n.y)
-      case false => {}
-    }
-
-    n.south match {
-      case true => neighbors = neighbors :+ new Node(n.x + 1, n.y)
-      case false => {}
-    }
+    if (n.east) neighbors = neighbors :+ new Node(n.x, n.y + 1)
+    if (n.west) neighbors = neighbors :+ new Node(n.x, n.y - 1)
+    if (n.north) neighbors = neighbors :+ new Node(n.x - 1, n.y)
+    if (n.south) neighbors = neighbors :+ new Node(n.x + 1, n.y)
 
     neighbors
   }
 
-  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node], n: Node): Seq[Node] = {
-
-    val neighbors = getSetOfNeighbors(n)
-    var notVisitedNeighbors = Seq[Node]()
-
-    for (v <- neighbors) {
-      if (pathUntil.count(t => t.x == v.x && t.y == v.y) == 0) notVisitedNeighbors = notVisitedNeighbors :+ v
-    }
-
-
-
-    notVisitedNeighbors.distinct
-  }
+  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node], n: Node): Seq[Node] =
+    getSetOfNeighbors(n).filter(v => pathUntil.count(t => t.x == v.x && t.y == v.y) != 0).distinct
 
   def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
 
   def validateIfNextNodeIsAlreadyVisited(next: Node, notVisitedNeighborsOfOrigin: Seq[Node]): Boolean = {
     if (!notVisitedNeighborsOfOrigin.isEmpty) {
-      val pseudoNodeOfNext = new Node(next.x,next.y)
+      val pseudoNodeOfNext = new Node(next.x, next.y)
       if (notVisitedNeighborsOfOrigin.contains(pseudoNodeOfNext)) {
         return true
       }
       return false
     }
-    return true
+    true
   }
 
   def validateIfThereIsADirectUnknownPathDriveIt: Boolean = {
-
-
     def eval(revPath: Seq[Node]): Boolean = {
       revPath match {
-      case hd :: hd2 :: tail => {
-        validateIfNextNodeIsAlreadyVisited(hd , getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)}
-      case hd :: Nil => true
+        case hd :: hd2 :: tail =>
+          validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)
+        case hd :: Nil => true
+      }
     }
-    }
-
-    return eval(path.reverse)
-
+    eval(path.reverse)
   }
 
-def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
+  def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
 
-def validateCompleteMazeIsExplored: Boolean = {
-  val knownMaze = getBuilder.constructKnownMaze
-  val path = getBuilder.constructPath
+  def validateCompleteMazeIsExplored: Boolean = {
+    val knownMaze = getBuilder.constructKnownMaze
+    val path = getBuilder.constructPath
 
-  knownMaze.vertexSet().size == path.vertexSet().size
-}
-
-def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
-  val knownMaze = getBuilder.constructKnownMaze
-  val uniqueVisitedNodes = new mutable.HashSet[Node]
-
-  var knownMazeEqualsDrivenPath = false
-
-  for (n <- path) {
-    // the following check will always fail
-    if (!knownMazeEqualsDrivenPath) {
-      uniqueVisitedNodes += n
-      if (knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
-    }
-    else {
-      return false
-    }
+    knownMaze.vertexSet().size == path.vertexSet().size
   }
 
-  knownMazeEqualsDrivenPath
-}
+  def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
+    val knownMaze = getBuilder.constructKnownMaze
+    val uniqueVisitedNodes = new mutable.HashSet[Node]
+
+    var knownMazeEqualsDrivenPath = false
+
+    for (n <- path) {
+      if (!knownMazeEqualsDrivenPath) {
+        uniqueVisitedNodes += n
+        if (knownMaze.vertexSet().size() == uniqueVisitedNodes.size) knownMazeEqualsDrivenPath = true
+      }
+      else {
+        return false
+      }
+    }
+
+    knownMazeEqualsDrivenPath
+  }
 }
