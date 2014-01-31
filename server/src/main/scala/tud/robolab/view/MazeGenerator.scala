@@ -32,8 +32,8 @@ import tud.robolab.model.MazeJsonProtocol._
 class MazeGenerator extends JPanel with Observer[MazePool] {
   private var model: Maze = null
 
-  private var curr_width = 6
-  private var curr_height = 6
+  private var curr_width = 7
+  private var curr_height = 7
 
   private val name = new JTextField("maze")
   private val box = new JComboBox(MainController.mazePool.mazeNames.toArray)
@@ -77,8 +77,8 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
   }
 
   private def buildSettingsPanel: JPanel = {
-    val labelx = new JLabel("Width ")
-    val labely = new JLabel("Height ")
+    val labelx = new JLabel("<html>Width: <br/>(#Intersections)</html>")
+    val labely = new JLabel("<html>Hight: <br/>(#Intersections)</html>")
     val labeln = new JLabel("Name ")
 
     spinnerx.addChangeListener(new ChangeListener {

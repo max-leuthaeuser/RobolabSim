@@ -35,6 +35,7 @@ object TimeUtils {
     val mx = ManagementFactory.getRuntimeMXBean
     val df = new SimpleDateFormat("HH 'hours', mm 'mins', ss 'seconds'")
     df.setTimeZone(TimeZone.getTimeZone("GMT+0"))
-    df.format(new Date(mx.getUptime))
+    val uptime = mx.getUptime
+    uptime / (3600 * 1000 * 24) + " day(s), " + df.format(uptime)
   }
 }

@@ -183,13 +183,13 @@ object Maze {
   }
 
   /**
-   * @return a new [[tud.robolab.model.Maze]] with the `width` = 6 and `height` = 6
+   * @return a new [[tud.robolab.model.Maze]] with the `width` = 7 and `height` = 7
    */
-  def empty: Maze = empty(6, 6)
+  def empty: Maze = empty(7, 7)
 
   /**
    * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]]
-   *         with the `width` = 6 and `height` = 6 if configuration is invalid
+   *         with the `width` = 7 and `height` = 7 if configuration is invalid
    */
   def default: Maze = MainController.mazePool.mazeNames.contains(Config.MAP) match {
     case true => MainController.mazePool(Config.MAP) 
