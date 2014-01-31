@@ -25,7 +25,7 @@ import java.awt.{Color, GridLayout, BorderLayout}
 import javax.swing.table.AbstractTableModel
 import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
 import tud.robolab.controller.SessionManager
-import tud.robolab.utils.{IPUtils, SizeUtilities}
+import tud.robolab.utils.SizeUtilities
 
 class SessionsView extends JPanel with Observer[SessionPool] {
   private val tableModel = new TableModel()
@@ -82,7 +82,7 @@ class SessionsView extends JPanel with Observer[SessionPool] {
 
     table.getColumnModel.getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()) {
       override def stopCellEditing(): Boolean = {
-        val b = IPUtils.isValidIPV4(getCellEditorValue.toString) && !SessionManager.hasSession(getCellEditorValue.toString)
+        val b = !getCellEditorValue.toString.isEmpty && !SessionManager.hasSession(getCellEditorValue.toString)
         if (!b) {
           getComponent.setForeground(Color.red)
         } else {
@@ -156,17 +156,17 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     dialog.setResizable(false)
     dialog.setModal(true)
     dialog.setLayout(new BorderLayout())
-    ipText.setToolTipText("Enter a valid IP address!")
+    ipText.setToolTipText("Enter a valid group ID!")
 
     private val content = new JPanel(new GridLayout(3, 1))
     content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5))
-    content.add(new JLabel("IP"))
+    content.add(new JLabel("ID"))
     content.add(ipText)
     content.add(blockedBox)
 
     okBtn.addActionListener(new ActionListener {
       def actionPerformed(e: ActionEvent) {
-        if (IPUtils.isValidIPV4(ipText.getText)) {
+        if (!ipText.getText.isEmpty) {
           session = Option(Session(Client(ipText.getText, blockedBox.isSelected), Maze.empty, Seq.empty))
           dialog.setVisible(false)
           dialog.dispose()
