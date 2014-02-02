@@ -37,7 +37,17 @@ object Main {
     // Parse options based on the command line args
     val options = parseOptions(args.toList, required, optional, Map())
 
-    new RobolabTestSpec(options('ID), options('IP)).execute(color = false)
+    val stdout = Console.out
+    val stderr = Console.err
+    val stream = new java.io.ByteArrayOutputStream()
+    Console.setOut(stream)
+    Console.setErr(stream)
+    val test = new RobolabTestSpec(options('ID), options('IP))
+    test.execute(color = false)
+    val result = stream.toString
+    Console.setErr(stderr)
+    Console.setOut(stdout)
+    test.fixture.client.sendTest(result)
     sys.exit(1)
   }
 }

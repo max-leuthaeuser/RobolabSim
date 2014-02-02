@@ -28,6 +28,7 @@ import tud.robolab.utils.TimeUtils
 /** Handles incoming requests and sessions.
   *
   * See `handleQueryRequest`, `handlePathRequest` and `handleMapRequest`.
+  * TODO: update doc (IP -> ID)
   */
 object SessionManager {
   private val sessions = new SessionPool()
@@ -324,5 +325,39 @@ object SessionManager {
 
     val s = getSession(ip).get
     TokenRequest(s.maze.getNumberOfToken)
+  }
+
+  /**
+   * Handle the incoming request, set a test result and return the the appropriate result.
+   *
+   * @param ip the IP address
+   * @param r the [[tud.robolab.model.TestMessage]]
+   * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
+   */
+  def handleTestRequest(ip: String, r: TestMessage): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_ID
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    s.test = Test(r.result, r.status)
+    Ok()
+  }
+
+  /**
+   * Handle the incoming request, return the the appropriate test result.
+   *
+   * @param ip the IP address
+   * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
+   */
+  def handleTestRequest(ip: String): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_ID
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    val st = s.test.status
+    TestMessage(s.test.result, st match {
+      case TestResult.SUCCESS => true
+      case TestResult.FAILED => false
+    })
   }
 }

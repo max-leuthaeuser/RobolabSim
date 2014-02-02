@@ -22,7 +22,7 @@ case class Client(var ip: String, var blocked: Boolean = false)
 
 case class WayElement(x: Int, y: Int, token: Boolean, time: String)
 
-case class Session(client: Client, var maze: Maze = Maze.default, var path: Seq[WayElement] = Seq.empty, var history: Seq[WayElement] = Seq.empty) {
+case class Session(client: Client, var maze: Maze = Maze.default, var path: Seq[WayElement] = Seq.empty, var history: Seq[WayElement] = Seq.empty, var test: Test = Test()) {
   def clearWay() {
     path = Seq.empty
   }

@@ -29,6 +29,7 @@ import tud.robolab.controller.SessionManager
 import tud.robolab.model.QueryResponse
 import tud.robolab.model.ErrorMessage
 import tud.robolab.model.Request
+import java.net.URLDecoder
 
 /** Holding the context actor system and the standard route for our service. */
 class SimulationServiceActor extends Actor with SimulationService {
@@ -102,11 +103,23 @@ object ErrorMessageProtocol extends DefaultJsonProtocol {
   implicit val ErrorMessageFormat = jsonFormat2(ErrorMessage)
 }
 
+/** Implicit conversions from [[tud.robolab.model.TestMessage]] to json.
+  *
+  * {{{
+  *   import TestMessageProtocol._
+  *   val json = TestMessage(...).toJson
+  * }}}
+  */
+object TestMessageProtocol extends DefaultJsonProtocol {
+  implicit val TestMessageFormat = jsonFormat2(TestMessage)
+}
+
 import RequestProtocol._
 import QueryResponseProtocol._
 import ErrorMessageProtocol._
 import TokenRequestProtocol._
 import MapRequestProtocol._
+import TestMessageProtocol._
 
 /** Implicit conversions from [[tud.robolab.model.Message]] to json.
   *
@@ -125,6 +138,7 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
     def write(p: Message) = {
       p match {
         case r: Ok => "Ok".toJson
+        case test: TestMessage => test.toJson
         case m: MapRequest => m.toJson
         case t: TokenRequest => t.toJson
         case r: QueryResponse => r.toJson
@@ -163,7 +177,9 @@ trait SimulationService extends HttpService {
               </body>
             </html>""".format(getUpTime,
                 SessionManager.numberOfSessions(),
-                SessionManager.getSessionsAsList.map("<li>" + _.client.ip + "</li>").mkString("<ul>", "", "</ul>"))
+                SessionManager.getSessionsAsList.map(s => {
+                  "<li>%s (<a href=\"/gettest?id=%s\">Test result</a>)</li>".format(s.client.ip, s.client.ip)
+                }).mkString("<ul>", "", "</ul>"))
           }
         }
       }
@@ -171,14 +187,14 @@ trait SimulationService extends HttpService {
       path("query") {
         parameters('id, 'values) {
           (id, values) =>
-              (get | put) {
-                ctx =>
-                  val ip = id
-                  import MessageJsonProtocol._
-                  val req = values.toString.asJson.convertTo[Request]
-                  Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
-                  ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
-              }
+            (get | put) {
+              ctx =>
+                val ip = id
+                import MessageJsonProtocol._
+                val req = values.toString.asJson.convertTo[Request]
+                Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
+                ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
+            }
         }
       } ~
       path("history") {
@@ -210,14 +226,14 @@ trait SimulationService extends HttpService {
       path("maze") {
         parameters('id, 'values) {
           (id, values) =>
-              (get | put) {
-                ctx =>
-                  val ip = id
-                  import MessageJsonProtocol._
-                  val req = values.toString.toJson.convertTo[MapRequest]
-                  Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
-                  ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
-              }
+            (get | put) {
+              ctx =>
+                val ip = id
+                import MessageJsonProtocol._
+                val req = values.toString.toJson.convertTo[MapRequest]
+                Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
+                ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
+            }
         }
       } ~
       path("path") {
@@ -230,6 +246,49 @@ trait SimulationService extends HttpService {
 
                 import MessageJsonProtocol._
                 ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
+            }
+        }
+      } ~
+      path("settest") {
+        parameter('id, 'values) {
+          (id, values) =>
+            put {
+              ctx =>
+                val ip = id
+                import MessageJsonProtocol._
+                println(values.toString.replace("+", " ").replaceAll(System.getProperty("line.separator"), "<br/>").replaceAll("\\t", ""))
+                val req = values.toString.replace("+", " ").replaceAll(System.getProperty("line.separator").replaceAll("\\t", ""), "<br/>").asJson.convertTo[TestMessage]
+
+                Boot.log.info("Incoming [Test] put request from ID [%s]: %s".format(ip, req))
+
+                ctx.complete(SessionManager.handleTestRequest(ip, req).toJson.compactPrint)
+            }
+        }
+      } ~
+      path("gettest") {
+        parameter('id) {
+          id =>
+            get {
+              respondWithMediaType(`text/html`) {
+                val ip = id
+                import MessageJsonProtocol._
+                Boot.log.info("Incoming [Test] get request from ID [%s]".format(ip))
+                SessionManager.handleTestRequest(ip) match {
+                  case t: TestMessage => {
+                    complete {
+                      """<html>
+                          <body>
+                            <b>Test result for %s:</b><br/>
+                            %s
+                          </body>
+                         </html>""".format(ip, t.asHtml)
+                    }
+                  }
+                  case m: Message => complete {
+                    m.toJson.compactPrint
+                  }
+                }
+              }
             }
         }
       }

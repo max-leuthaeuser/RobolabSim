@@ -1,4 +1,5 @@
 import akka.actor.ActorSystem
+import java.net.URLEncoder
 import spray.http.{HttpEntity, HttpResponse}
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport
@@ -60,7 +61,7 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
 
   val pipelinePath = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[Path]
   val pipelineTokens = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[TokenRequest]
-  val pipelineMap = sendReceive
+  val pipelinePut = sendReceive
 
   def getPath: Path = {
     val request = Get(url + "/path?id=" + id)
@@ -83,7 +84,19 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
   def setMap(name: String) {
     val content = "%267B%22map%22%3A%22" + name + "%22%7D"
     val request = Put(url + "/maze?id=" + id + content)
-    val response = pipelineMap {
+    val response = pipelinePut {
+      request
+    }
+
+    println(Await.result(response, 10 second))
+  }
+
+  def sendTest(result: String) {
+    val success = !result.toLowerCase().contains("failed")
+    val payload = URLEncoder.encode(result,"UTF-8").replace("+", "%2B")
+    val content = "&values=%7B%22result%22%3A%22" + payload + "%22%2C%22status%22%3A" + success + "%7D"
+    val request = Put(url + "/settest?id=" + id + content)
+    val response = pipelinePut {
       request
     }
 

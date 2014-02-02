@@ -39,6 +39,16 @@ object QueryResponseFactory {
 
 case class PathResponse(way: Seq[(Request, QueryResponse)]) extends Message
 
+case class TestMessage(result: String, status: Boolean) extends Message {
+  def asHtml = {
+    val r = status match {
+      case true => "<i>*** SUCCESS ***</i>"
+      case false => "<i>*** FAILED ***</i>"
+    }
+    r + "<br/><br/><b>Reason:</b><br/>" + result
+  }
+}
+
 case class ErrorMessage(code: Int, message: String) extends Message
 
 object ErrorType {
@@ -47,4 +57,5 @@ object ErrorType {
   val INVALID = ErrorMessage(3, "Invalid position!")
   val NO_PATH = ErrorMessage(4, "No path found!")
   val NO_MAP = ErrorMessage(5, "No map found!")
+  val NO_ID = ErrorMessage(6, "No ID found!")
 }
