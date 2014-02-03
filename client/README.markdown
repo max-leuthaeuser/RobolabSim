@@ -8,7 +8,9 @@ Follow these steps to get started:
 
         $ cd RobolabSim/client/c/src/
 
-3. Compile it (**you need to have Python 2.7 installed**)
+3. Edit h/Configuration.h with your group ID
+
+4. Compile it (**you need to have Python 2.7 installed**)
 
         3.1. Linux: $ gcc -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
 
@@ -16,6 +18,6 @@ Follow these steps to get started:
 
         3.3. MacOS X: $ gcc -ansi -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
 
-4. Start the application:
+5. Start the application:
 
-        $ ./RobolabSimClient
+        e.g. $ ./RobolabSimClient
