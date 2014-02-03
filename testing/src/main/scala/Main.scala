@@ -42,12 +42,27 @@ object Main {
     val stream = new java.io.ByteArrayOutputStream()
     Console.setOut(stream)
     Console.setErr(stream)
+
     val test = new RobolabTestSpec(options('ID), options('IP))
     test.execute(color = false)
     val result = stream.toString
+    test.fixture.client.sendTest(result)
+
     Console.setErr(stderr)
     Console.setOut(stdout)
+
+    println("+---------------+")
+    println("| Upload result |")
+    println("+---------------+\n")
     test.fixture.client.sendTest(result)
+    println("\n\n")
+
+    println("+---------------+")
+    println("| Test results  |")
+    println("+---------------+\n")
+
+    println(result)
+
     sys.exit(1)
   }
 }

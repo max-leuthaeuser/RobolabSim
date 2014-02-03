@@ -29,7 +29,7 @@ import tud.robolab.controller.SessionManager
 import tud.robolab.model.QueryResponse
 import tud.robolab.model.ErrorMessage
 import tud.robolab.model.Request
-import java.net.URLDecoder
+import java.net.{URLEncoder, URLDecoder}
 
 /** Holding the context actor system and the standard route for our service. */
 class SimulationServiceActor extends Actor with SimulationService {
@@ -256,12 +256,15 @@ trait SimulationService extends HttpService {
               ctx =>
                 val ip = id
                 import MessageJsonProtocol._
-                println(values.toString.replace("+", " ").replaceAll(System.getProperty("line.separator"), "<br/>").replaceAll("\\t", ""))
-                val req = values.toString.replace("+", " ").replaceAll(System.getProperty("line.separator").replaceAll("\\t", ""), "<br/>").asJson.convertTo[TestMessage]
+                val req = values.toString
+                val dec = URLDecoder.decode(req, "UTF-8")
+                  .replace("+", " ") // URLEncoder messes up with whitespaces...
+                  .replaceAll(System.getProperty("line.separator"), "<br/>") // and we need explicite linebreaks in HTML
+                  .asJson.convertTo[TestMessage]
 
-                Boot.log.info("Incoming [Test] put request from ID [%s]: %s".format(ip, req))
+                Boot.log.info("Incoming [Test] put request from ID [%s]".format(ip))
 
-                ctx.complete(SessionManager.handleTestRequest(ip, req).toJson.compactPrint)
+                ctx.complete(SessionManager.handleTestRequest(ip, dec).toJson.compactPrint)
             }
         }
       } ~
