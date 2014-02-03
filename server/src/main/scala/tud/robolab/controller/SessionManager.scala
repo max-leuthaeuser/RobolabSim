@@ -24,6 +24,9 @@ import tud.robolab.view.{Interface, SimulationView}
 import tud.robolab.model.{Request, Session}
 import tud.robolab.model.Client
 import tud.robolab.utils.TimeUtils
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+import scala.sys.process._
 
 /** Handles incoming requests and sessions.
   *
@@ -359,5 +362,23 @@ object SessionManager {
       case TestResult.SUCCESS => true
       case TestResult.FAILED => false
     })
+  }
+
+  def handleRunTestRequest(ip: String, map: String): Message = {
+    if (!hasSession(ip)) return ErrorType.NO_ID
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val s = getSession(ip).get
+    MainController.changeMap(map, s, getView(s), remove = false) match {
+      case true =>
+        val cmd = "java -jar RobolabSimTest.jar --ID " + ip + " --IP localhost"
+        future {
+          blocking {
+            cmd.!!
+          }
+        }
+        Ok()
+      case false => ErrorType.NO_MAP
+    }
   }
 }

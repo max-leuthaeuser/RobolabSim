@@ -22,4 +22,4 @@ object Test {
   }
 }
 
-case class Test(result: String = "No tests done yet.", status: TestResult = TestResult.FAILED)
+case class Test(result: String = "No tests done yet. (Reload this page if necessary!)", status: TestResult = TestResult.FAILED)

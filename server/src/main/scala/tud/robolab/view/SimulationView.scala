@@ -102,7 +102,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
     result
   }
 
-  def rebuild() {
+  def rebuild(remove: Boolean = true) {
     invalidate()
     splitPane.getRightComponent match {
       case p: JPanel => {
@@ -112,7 +112,7 @@ class SimulationView(session: Session, var isShown: Boolean = true) extends JPan
       }
       case _ =>
     }
-    listModel.removeAllElements()
+    if (remove) listModel.removeAllElements()
     validate()
   }
 

@@ -28,15 +28,16 @@ import tud.robolab.model.MazeJsonProtocol._
 object MainController {
   val mazePool = new MazePool
 
-  def changeMap(m: String, session: Session, view: Option[SimulationView]): Boolean = {
+  def changeMap(m: String, session: Session, view: Option[SimulationView], remove: Boolean = true): Boolean = {
     val f = new File("maps/" + m + ".maze")
     if (!f.isFile) return false
     session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
-    view.foreach(_ rebuild())
+    view.foreach(_ rebuild remove)
 
-    session.clearWay()
-    session.clearHistory()
-
+    if (remove) {
+      session.clearWay()
+      session.clearHistory()
+    }
     true
   }
 

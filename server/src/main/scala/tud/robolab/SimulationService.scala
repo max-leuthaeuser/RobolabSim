@@ -25,7 +25,7 @@ import MediaTypes._
 import tud.robolab.utils.TimeUtils
 import tud.robolab.model._
 import spray.json._
-import tud.robolab.controller.SessionManager
+import tud.robolab.controller.{MainController, SessionManager}
 import tud.robolab.model.QueryResponse
 import tud.robolab.model.ErrorMessage
 import tud.robolab.model.Request
@@ -178,7 +178,12 @@ trait SimulationService extends HttpService {
             </html>""".format(getUpTime,
                 SessionManager.numberOfSessions(),
                 SessionManager.getSessionsAsList.map(s => {
-                  "<li>%s (<a href=\"/gettest?id=%s\">Test result</a>)</li>".format(s.client.ip, s.client.ip)
+                  val tests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase).map(n => {
+                    val mr = URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")
+                    "<li><a href=\"/runtest?id=%s&values=%s\">Run test for maze: <b>%s</b></a></li>".format(s.client.ip, mr, n)
+                  }).mkString("<ul>", "", "</ul>")
+                  "<li>%s (<a href=\"/gettest?id=%s\">Test result</a>)%s</li>"
+                    .format(s.client.ip, s.client.ip, tests)
                 }).mkString("<ul>", "", "</ul>"))
           }
         }
@@ -250,7 +255,7 @@ trait SimulationService extends HttpService {
         }
       } ~
       path("settest") {
-        parameter('id, 'values) {
+        parameters('id, 'values) {
           (id, values) =>
             put {
               ctx =>
@@ -265,6 +270,20 @@ trait SimulationService extends HttpService {
                 Boot.log.info("Incoming [Test] put request from ID [%s]".format(ip))
 
                 ctx.complete(SessionManager.handleTestRequest(ip, dec).toJson.compactPrint)
+            }
+        }
+      } ~
+      path("runtest") {
+        parameters('id, 'values) {
+          (id, values) =>
+            (get | put) {
+              ctx =>
+                val ip = id
+                val dec = URLDecoder.decode(values.toString, "UTF-8")
+                val req = dec.asJson.convertTo[MapRequest]
+                Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
+                SessionManager.handleRunTestRequest(ip, req.map)
+                ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
             }
         }
       } ~
