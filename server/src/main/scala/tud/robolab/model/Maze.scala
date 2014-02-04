@@ -152,6 +152,40 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
       }
     })
   }
+
+  def asAsciiArt: String =
+    "<font face=\"Courier New\">" +
+      points.map(xs => {
+
+        val a = xs.map {
+          case Some(p) if p.has(NORTH) => "| "
+          case Some(p) => "  "
+          case None => "   "
+        }.mkString + "<br/>"
+
+        val b =
+          xs.map {
+            case Some(p) if p.directions.nonEmpty => {
+              val core = p.token match {
+                case true => "O"
+                case false => "X"
+              }
+
+              val dir = p.has(WEST) match {
+                case true => "-"
+                case false => " "
+              }
+              dir + core
+            }
+            case _ => "  "
+          }.mkString
+
+        var res = b
+        if (b.startsWith(" "))
+          res = b.substring(1)
+        a + res
+
+      }).mkString("<br/>").replaceAll(" ", "&nbsp;") + "</font>"
 }
 
 /** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
@@ -192,8 +226,8 @@ object Maze {
    *         with the `width` = 7 and `height` = 7 if configuration is invalid
    */
   def default: Maze = MainController.mazePool.mazeNames.contains(Config.MAP) match {
-    case true => MainController.mazePool(Config.MAP) 
-    case false => empty 
+    case true => MainController.mazePool(Config.MAP)
+    case false => empty
   }
 }
 

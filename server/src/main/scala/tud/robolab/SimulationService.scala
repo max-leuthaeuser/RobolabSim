@@ -296,16 +296,20 @@ trait SimulationService extends HttpService {
                 import MessageJsonProtocol._
                 Boot.log.info("Incoming [Test] get request from ID [%s]".format(ip))
                 SessionManager.handleTestRequest(ip) match {
-                  case t: TestMessage => {
+                  case t: TestMessage =>
+                    val s = SessionManager.getSession(ip).get
                     complete {
                       """<html>
                           <body>
+                            <b>Map:</b><br/>
+                            %s<br/><br/>
+                            <b>Path:</b><br/>
+                            %s
                             <b>Test result for %s:</b><br/>
                             %s
                           </body>
-                         </html>""".format(ip, t.asHtml)
+                         </html>""".format(s.maze.asAsciiArt, s.pathToHtml, ip, t.asHtml)
                     }
-                  }
                   case m: Message => complete {
                     m.toJson.compactPrint
                   }

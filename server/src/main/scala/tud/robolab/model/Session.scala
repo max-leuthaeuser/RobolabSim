@@ -20,7 +20,16 @@ package tud.robolab.model
 
 case class Client(var ip: String, var blocked: Boolean = false)
 
-case class WayElement(x: Int, y: Int, token: Boolean, time: String)
+case class WayElement(x: Int, y: Int, token: Boolean, time: String) {
+  def toHtml: String = {
+    val t = token match {
+      case true => " (T) "
+      case false => " "
+    }
+
+    "x: <b>" + x + "</b> y: <b>" + y + "</b>" + t + "(at " + time + ")"
+  }
+}
 
 case class Session(client: Client, var maze: Maze = Maze.default, var path: Seq[WayElement] = Seq.empty, var history: Seq[WayElement] = Seq.empty, var test: Test = Test()) {
   def clearWay() {
@@ -40,6 +49,11 @@ case class Session(client: Client, var maze: Maze = Maze.default, var path: Seq[
   }
 
   def latestPosition: WayElement = path.last
+
+  def pathToHtml: String = path.isEmpty match {
+    case true => "<i>*** No path was driven yet ***</i><br/><br/>"
+    case false => path.map("<li>" + _.toHtml + "</li>").mkString("<ul>", "", "</ul>")
+  }
 
   override def equals(o: Any) = o match {
     case that: Session => that.client.ip.equals(this.client.ip)
