@@ -422,6 +422,7 @@ object SessionManager
     s.clearHistory()
     s.clearWay()
     s.maze = Maze.default
+    s.test = Test()
     Ok()
   }
 }
