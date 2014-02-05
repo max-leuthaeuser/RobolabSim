@@ -1,14 +1,21 @@
 import org.scalatest.{FunSuite, GivenWhenThen}
 import org.scalatest.matchers.ShouldMatchers
 
-class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThen with ShouldMatchers {
+class RobolabTestSpec(id: String,
+                      ip: String) extends FunSuite
+                                          with
+                                          GivenWhenThen
+                                          with
+                                          ShouldMatchers
+{
   def fixture =
-    new {
-      val client = new RoblabSimClient(id, ip, 8080)
-      val tokenCount = client.getNumberOfTokens
-      val evaluator = new PathEvaluator(client.getPath.nodes).setTokenCount(tokenCount)
-      val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
-    }
+    new
+      {
+        val client = new RoblabSimClient(id, ip, 8080)
+        val tokenCount = client.getNumberOfTokens
+        val evaluator = new PathEvaluator(client.getPath.nodes).setTokenCount(tokenCount)
+        val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
+      }
 
   info("During the exploration of a maze the robot should")
   info("not cross any node more than once except it is")
@@ -47,17 +54,19 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
       fixture.evaluator.validateTerminatedAfterWholeMazeIsExplored should not be false
     }
 
-    test("When you explore the maze, you should not head back a known path if there are unknown ones directly available") {
+    test(
+      "When you explore the maze, you should not head back a known path if there are unknown ones directly available") {
       fixture.evaluator.validateIfThereIsADirectUnknownPathDriveIt should not be false
     }
   }
 
   if (fixture.tokenCount != 0) {
-    test("if there are tokens, robot have to find the shortest path between two nodes, for driving back to start position on a optimal path") {
+    test(
+      "if there are tokens, robot have to find the shortest path between two nodes, for driving back to start position on a optimal path")
+    {
       fixture.evaluator.validateShortestPath should not be false
     }
   }
-
 
   info("Here are some statistics of your course:")
   val stats = new Statistics(fixture.client.getPath.nodes)

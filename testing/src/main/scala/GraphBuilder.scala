@@ -1,7 +1,8 @@
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.UndirectedGraph
 
-trait GraphBuilder[N, E <: DefaultEdge] {
+trait GraphBuilder[N, E <: DefaultEdge]
+{
   /** The known Maze contains all explicit & implicit information, which are known by the solution.
     * It possibly contains nodes, which wasn't visited --> important for evaluating the shortest path back home.
     */

@@ -2,18 +2,21 @@ import org.jgrapht.alg.DijkstraShortestPath
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-class PathEvaluator(path: Seq[Node]) {
+class PathEvaluator(path: Seq[Node])
+{
   private var tokenCount = 3
 
   private def getBuilder = new SimpleGraphBuilder(path).setTokenCount(tokenCount)
 
-  def setTokenCount(tokenCount: Int): PathEvaluator = {
+  def setTokenCount(tokenCount: Int): PathEvaluator =
+  {
     assert(tokenCount >= 0)
     this.tokenCount = tokenCount
     this
   }
 
-  def validateOneStepConstraint: Boolean = {
+  def validateOneStepConstraint: Boolean =
+  {
     val graph = getBuilder.constructPath
 
     for (dE <- graph.edgeSet()) {
@@ -40,7 +43,8 @@ class PathEvaluator(path: Seq[Node]) {
     true
   }
 
-  def validateOnlyOnLineConstraint: Boolean = {
+  def validateOnlyOnLineConstraint: Boolean =
+  {
     val graph = getBuilder.constructPath
 
     for (dE <- graph.edgeSet()) {
@@ -77,8 +81,8 @@ class PathEvaluator(path: Seq[Node]) {
     true
   }
 
-
-  def validateMaximumVisitedCount: Boolean = {
+  def validateMaximumVisitedCount: Boolean =
+  {
     // a multigraph of the exploration (the path until the last token was found). A multigraph allows multiple edges between two vertexes
     // there is also a pseudo start point added to this. Reason --> see the for loop
     val multigraph = getBuilder.makeMultiGraph.addStartPoint.constructExplorationPhaseGraph
@@ -105,7 +109,8 @@ class PathEvaluator(path: Seq[Node]) {
     true
   }
 
-  def validateShortestPath: Boolean = {
+  def validateShortestPath: Boolean =
+  {
     // The path from the Node where the last token was found until the end
     val driveHome = getBuilder.constructDriveHomePhaseGraph
     // The Maze which is known by the students solution, so also unvisited Nodes are contained
@@ -140,8 +145,8 @@ class PathEvaluator(path: Seq[Node]) {
     shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
   }
 
-  def getSetOfNeighbors(n: Node): Seq[Node] = {
-
+  def getSetOfNeighbors(n: Node): Seq[Node] =
+  {
     // BE AWARE of these pseudo Nodes -- only for the x & y position, north east west south and token values are fake
 
     var neighbors: Seq[Node] = Seq[Node]()
@@ -154,12 +159,15 @@ class PathEvaluator(path: Seq[Node]) {
     neighbors
   }
 
-  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node], n: Node): Seq[Node] =
+  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node],
+                                  n: Node): Seq[Node] =
     getSetOfNeighbors(n).filter(v => pathUntil.count(t => t.x == v.x && t.y == v.y) != 0).distinct
 
   def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
 
-  def validateIfNextNodeIsAlreadyVisited(next: Node, notVisitedNeighborsOfOrigin: Seq[Node]): Boolean = {
+  def validateIfNextNodeIsAlreadyVisited(next: Node,
+                                         notVisitedNeighborsOfOrigin: Seq[Node]): Boolean =
+  {
     if (!notVisitedNeighborsOfOrigin.isEmpty) {
       val pseudoNodeOfNext = new Node(next.x, next.y)
       if (notVisitedNeighborsOfOrigin.contains(pseudoNodeOfNext)) {
@@ -170,8 +178,10 @@ class PathEvaluator(path: Seq[Node]) {
     true
   }
 
-  def validateIfThereIsADirectUnknownPathDriveIt: Boolean = {
-    def eval(revPath: Seq[Node]): Boolean = {
+  def validateIfThereIsADirectUnknownPathDriveIt: Boolean =
+  {
+    def eval(revPath: Seq[Node]): Boolean =
+    {
       revPath match {
         case hd :: hd2 :: tail =>
           validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)
@@ -183,14 +193,16 @@ class PathEvaluator(path: Seq[Node]) {
 
   def foundUniqueTokens: Int = getBuilder.constructPath.vertexSet().filter(_.token).toSet.size
 
-  def validateCompleteMazeIsExplored: Boolean = {
+  def validateCompleteMazeIsExplored: Boolean =
+  {
     val knownMaze = getBuilder.constructKnownMaze
     val path = getBuilder.constructPath
 
     knownMaze.vertexSet().size == path.vertexSet().size
   }
 
-  def validateTerminatedAfterWholeMazeIsExplored: Boolean = {
+  def validateTerminatedAfterWholeMazeIsExplored: Boolean =
+  {
     val knownMaze = getBuilder.constructKnownMaze
     val uniqueVisitedNodes = new mutable.HashSet[Node]
 

@@ -2,12 +2,14 @@ import org.jgrapht.graph.{DefaultEdge, Multigraph, SimpleGraph}
 import org.jgrapht.UndirectedGraph
 import scala.collection.mutable
 
-class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, DefaultEdge] {
+class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, DefaultEdge]
+{
   private var tokenCount: Int = 3
   private var asMultigraph: Boolean = false
   private var addPseudoStartPoint: Boolean = false
 
-  def constructDriveHomePhaseGraph: UndirectedGraph[Node, DefaultEdge] = {
+  def constructDriveHomePhaseGraph: UndirectedGraph[Node, DefaultEdge] =
+  {
     assert(path != null)
 
     var lastNode: Node = null
@@ -35,22 +37,26 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
 
   def getLastTokenNode: Node = path.filter(_.token).toSet.take(tokenCount).last
 
-  def setTokenCount(tokenCount: Int): GraphBuilder[Node, DefaultEdge] = {
+  def setTokenCount(tokenCount: Int): GraphBuilder[Node, DefaultEdge] =
+  {
     this.tokenCount = tokenCount
     this
   }
 
-  def makeMultiGraph: GraphBuilder[Node, DefaultEdge] = {
+  def makeMultiGraph: GraphBuilder[Node, DefaultEdge] =
+  {
     this.asMultigraph = true
     this
   }
 
-  def addStartPoint: GraphBuilder[Node, DefaultEdge] = {
+  def addStartPoint: GraphBuilder[Node, DefaultEdge] =
+  {
     this.addPseudoStartPoint = true
     this
   }
 
-  def constructExplorationPhaseGraph: UndirectedGraph[Node, DefaultEdge] = {
+  def constructExplorationPhaseGraph: UndirectedGraph[Node, DefaultEdge] =
+  {
     assert(path != null)
 
     var lastNode: Node = null
@@ -80,7 +86,8 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     graph
   }
 
-  def constructKnownMaze: UndirectedGraph[Node, DefaultEdge] = {
+  def constructKnownMaze: UndirectedGraph[Node, DefaultEdge] =
+  {
     assert(path != null)
 
     val graph: UndirectedGraph[Node, DefaultEdge] = new SimpleGraph[Node, DefaultEdge](classOf[DefaultEdge])
@@ -113,7 +120,8 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     graph
   }
 
-  def constructPath: UndirectedGraph[Node, DefaultEdge] = {
+  def constructPath: UndirectedGraph[Node, DefaultEdge] =
+  {
     assert(path != null)
 
     val graph: UndirectedGraph[Node, DefaultEdge] = new SimpleGraph[Node, DefaultEdge](classOf[DefaultEdge])

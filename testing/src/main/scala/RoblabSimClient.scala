@@ -1,6 +1,5 @@
 import akka.actor.ActorSystem
 import java.net.URLEncoder
-import scala.util.matching.Regex
 import spray.http.{HttpEntity, HttpResponse}
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport
@@ -13,13 +12,21 @@ import scala.concurrent.duration._
 
 case class TokenRequest(numberOfTokens: Int)
 
-case class Node(x: Int, y: Int, north: Boolean = false, east: Boolean = false, south: Boolean = false, west: Boolean = false, token: Boolean = false)
+case class Node(x: Int,
+                y: Int,
+                north: Boolean = false,
+                east: Boolean = false,
+                south: Boolean = false,
+                west: Boolean = false,
+                token: Boolean = false)
 
 case class Path(nodes: Seq[Node])
 
-object PathJsonProtocol extends DefaultJsonProtocol {
+object PathJsonProtocol extends DefaultJsonProtocol
+{
 
-  implicit object PathJsonFormat extends RootJsonFormat[Path] {
+  implicit object PathJsonFormat extends RootJsonFormat[Path]
+  {
     def write(p: Path) = ???
 
     def read(value: JsValue) = value match {
@@ -43,14 +50,18 @@ object PathJsonProtocol extends DefaultJsonProtocol {
 
 }
 
-object TokenRequestProtocol extends DefaultJsonProtocol {
+object TokenRequestProtocol extends DefaultJsonProtocol
+{
   implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
 }
 
 import PathJsonProtocol._
 import TokenRequestProtocol._
 
-class RoblabSimClient(id: String, ip: String, port: Int) {
+class RoblabSimClient(id: String,
+                      ip: String,
+                      port: Int)
+{
   private val url = "http://%s:%s".format(ip, port)
   private implicit val system = ActorSystem()
 
@@ -63,7 +74,8 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
   val pipelineTokens = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[TokenRequest]
   val pipelinePut = sendReceive
 
-  def getPath: Path = {
+  def getPath: Path =
+  {
     val request = Get(url + "/path?id=" + id)
     val response = pipelinePath {
       request
@@ -72,7 +84,8 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
     Await.result(response, 10 second)
   }
 
-  def getHistory: Path = {
+  def getHistory: Path =
+  {
     val request = Get(url + "/history?id=" + id)
     val response = pipelinePath {
       request
@@ -81,7 +94,8 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
     Await.result(response, 10 second)
   }
 
-  def setMap(name: String) {
+  def setMap(name: String)
+  {
     val content = "%267B%22map%22%3A%22" + name + "%22%7D"
     val request = Put(url + "/maze?id=" + id + content)
     val response = pipelinePut {
@@ -91,7 +105,8 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
     println(Await.result(response, 10 second))
   }
 
-  def sendTest(result: String) {
+  def sendTest(result: String)
+  {
     val success = !result.toLowerCase.contains("failed")
     val payload = URLEncoder.encode(result, "UTF-8").replace("+", "%2B")
     val values = """{"result":"""" + payload + """","status":""" + success + """}"""
@@ -105,7 +120,8 @@ class RoblabSimClient(id: String, ip: String, port: Int) {
     println(Await.result(response, 10 second))
   }
 
-  def getNumberOfTokens: Int = {
+  def getNumberOfTokens: Int =
+  {
     val request = Get(url + "/numberOfTokens?id=" + id)
     val response = pipelineTokens {
       request

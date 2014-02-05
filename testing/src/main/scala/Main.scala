@@ -1,4 +1,5 @@
-object Main {
+object Main
+{
 
   val usage = """
     Usage:  --ID groupName
@@ -7,7 +8,11 @@ object Main {
                   The ip address of the simulation server
               """
 
-  def parseOptions(args: List[String], required: List[Symbol], optional: Map[String, Symbol], options: Map[Symbol, String]): Map[Symbol, String] = {
+  def parseOptions(args: List[String],
+                   required: List[Symbol],
+                   optional: Map[String, Symbol],
+                   options: Map[Symbol, String]): Map[Symbol, String] =
+  {
     args match {
       // Empty list
       case Nil => options
@@ -27,7 +32,8 @@ object Main {
     }
   }
 
-  def main(args: Array[String]) {
+  def main(args: Array[String])
+  {
     // Required positional arguments by key in options
     val required = List('ID, 'IP)
 
