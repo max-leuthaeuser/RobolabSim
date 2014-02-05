@@ -10,12 +10,9 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
       val historyEvaluator = new PathEvaluator(client.getHistory.nodes)
     }
 
-  info {
-    """ During the exploration of a maze the robot should
-      |   not cross any node more than once except it is
-      |   a dead end or there is no other unexplored way.
-    """.stripMargin
-  }
+  info("During the exploration of a maze the robot should")
+  info("not cross any node more than once except it is")
+  info("a dead end or there is no other unexplored way.")
 
   test("No empty solutions are allowed") {
     fixture.client.getPath.nodes.size should not be 0
@@ -25,7 +22,7 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
     fixture.historyEvaluator.validateHistory should not be false
   }
 
-  test("you have to move step by step & you aren't permitted to drive diagonals") {
+  test("you have to move step by step and you are not permitted to drive diagonals") {
     fixture.evaluator.validateOneStepConstraint should not be false
   }
 
@@ -37,7 +34,7 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
     fixture.evaluator.validateMaximumVisitedCount should not be false
   }
 
-  test("find all tokens if they exist. if there are no tokens, you can't find any of them ;)") {
+  test("find all tokens if they exist. if there are no tokens, you can not find any of them") {
     fixture.evaluator.foundUniqueTokens shouldEqual fixture.tokenCount
   }
 
@@ -61,6 +58,7 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
     }
   }
 
+
   info("Here are some statistics of your course:")
   val stats = new Statistics(fixture.client.getPath.nodes)
   val magicVisitedNodesNumber = 10
@@ -71,8 +69,8 @@ class RobolabTestSpec(id: String, ip: String) extends FunSuite with GivenWhenThe
   val nodes = stats.getVisitedNodes
   info("You visited %s nodes".format(nodes))
   info("You made %s turns".format(turns))
-  info("\t%s of them are 90 degree turns".format(Lturns))
-  info("\t%s of them are 180 degree turns".format(Uturns))
+  info("%s of them are 90 degree turns".format(Lturns))
+  info("%s of them are 180 degree turns".format(Uturns))
   val score = (nodes * magicVisitedNodesNumber) + (turns * magicTurnsNumber)
   info("Your score is (the lower the better): " + score)
 }
