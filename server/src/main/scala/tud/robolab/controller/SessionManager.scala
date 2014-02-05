@@ -398,23 +398,30 @@ object SessionManager
   }
 
   def handleRunTestRequest(
-    ip: String,
-    map: String): Message =
+    ip: String): Message =
+  {
+    if (!hasSession(ip)) return ErrorType.NO_ID
+    if (sessionBlocked(ip)) return ErrorType.BLOCKED
+
+    val cmd = "java -jar RobolabSimTest.jar --ID " + ip + " --IP localhost"
+    future {
+      blocking {
+        cmd.!!
+      }
+    }
+    Ok()
+  }
+
+  def handleResetRequest(
+    ip: String): Message =
   {
     if (!hasSession(ip)) return ErrorType.NO_ID
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     val s = getSession(ip).get
-    MainController.changeMap(map, s, getView(s), remove = false) match {
-      case true =>
-        val cmd = "java -jar RobolabSimTest.jar --ID " + ip + " --IP localhost"
-        future {
-          blocking {
-            cmd.!!
-          }
-        }
-        Ok()
-      case false => ErrorType.NO_MAP
-    }
+    s.clearHistory()
+    s.clearWay()
+    s.maze = Maze.default
+    Ok()
   }
 }

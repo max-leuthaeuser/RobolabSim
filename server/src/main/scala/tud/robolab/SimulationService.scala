@@ -51,6 +51,7 @@ trait SimulationService extends HttpService
       numberOfTokensRoute ~
       mazeRoute ~
       pathRoute ~
+      resetRoute ~
       setTestRoute ~
       runTestRoute ~
       getTestRoute

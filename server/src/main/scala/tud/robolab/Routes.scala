@@ -52,13 +52,13 @@ object Routes
             </html>""".format(getUpTime,
               SessionManager.numberOfSessions(),
               SessionManager.getSessionsAsList.map(s => {
-                val tests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase).map(n => {
+                val maps = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase).map(n => {
                   val mr = URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")
-                  "<li><a href=\"/runtest?id=%s&values=%s\">Run test for maze: <b>%s</b></a></li>"
+                  "<li><a href=\"/maze?id=%s&values=%s\">Set maze <b>%s</b></a></li>"
                     .format(s.client.ip, mr, n)
                 }).mkString("<ul>", "", "</ul>")
-                "<li>%s (<a href=\"/gettest?id=%s\">Test result</a>)%s</li>"
-                  .format(s.client.ip, s.client.ip, tests)
+                "<li>%s (<a href=\"/runtest?id=%s\">Run tests</a> | <a href=\"/gettest?id=%s\">Test result</a> | <a href=\"/reset?id=%s\">Reset</a>)%s</li>"
+                  .format(s.client.ip, s.client.ip, s.client.ip, s.client.ip, maps)
               }).mkString("<ul>", "", "</ul>"))
         }
       }
@@ -119,7 +119,7 @@ object Routes
           ctx =>
             val ip = id
             import MessageJsonProtocol._
-            val req = values.toString.toJson.convertTo[MapRequest]
+            val req = values.toString.asJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
             ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
@@ -157,25 +157,35 @@ object Routes
               .asJson.convertTo[TestMessage]
 
             Boot.log.info("Incoming [Test] put request from ID [%s]".format(ip))
-
             ctx.complete(SessionManager.handleTestRequest(ip, dec).toJson.compactPrint)
         }
     }
   }
 
   val runTestRoute = path("runtest") {
-    parameters('id, 'values) {
-      (
-        id,
-        values) =>
+    parameter('id) {
+      id
+      =>
         (get | put) {
           ctx =>
             val ip = id
-            val dec = URLDecoder.decode(values.toString, "UTF-8")
-            val req = dec.asJson.convertTo[MapRequest]
             Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
-            SessionManager.handleRunTestRequest(ip, req.map)
+            SessionManager.handleRunTestRequest(ip)
             ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
+        }
+    }
+  }
+
+  val resetRoute = path("reset") {
+    parameter('id) {
+      id
+      =>
+        (get | put) {
+          ctx =>
+            val ip = id
+            import MessageJsonProtocol._
+            Boot.log.info("Incoming [Reset] request from ID [%s]".format(ip))
+            ctx.complete(SessionManager.handleResetRequest(ip).toJson.compactPrint)
         }
     }
   }
