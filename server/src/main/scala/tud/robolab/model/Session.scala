@@ -18,10 +18,18 @@
 
 package tud.robolab.model
 
-case class Client(var ip: String, var blocked: Boolean = false)
+case class Client(
+  var ip: String,
+  var blocked: Boolean = false)
 
-case class WayElement(x: Int, y: Int, token: Boolean, time: String) {
-  def toHtml: String = {
+case class WayElement(
+  x: Int,
+  y: Int,
+  token: Boolean,
+  time: String)
+{
+  def toHtml: String =
+  {
     val t = token match {
       case true => " (T) "
       case false => " "
@@ -31,20 +39,30 @@ case class WayElement(x: Int, y: Int, token: Boolean, time: String) {
   }
 }
 
-case class Session(client: Client, var maze: Maze = Maze.default, var path: Seq[WayElement] = Seq.empty, var history: Seq[WayElement] = Seq.empty, var test: Test = Test()) {
-  def clearWay() {
+case class Session(
+  client: Client,
+  var maze: Maze = Maze.default,
+  var path: Seq[WayElement] = Seq.empty,
+  var history: Seq[WayElement] = Seq.empty,
+  var test: Test = Test())
+{
+  def clearWay()
+  {
     path = Seq.empty
   }
 
-  def clearHistory() {
+  def clearHistory()
+  {
     history = Seq.empty
   }
 
-  def addWayElement(elem: WayElement) {
+  def addWayElement(elem: WayElement)
+  {
     path = path :+ elem
   }
 
-  def addHistoryElement(elem: WayElement) {
+  def addHistoryElement(elem: WayElement)
+  {
     history = history :+ elem
   }
 

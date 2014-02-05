@@ -24,7 +24,12 @@ import java.awt.event.{MouseListener, MouseEvent, MouseMotionListener}
 import tud.robolab.model.Direction._
 import tud.robolab.model.Point
 
-class Tile(private val model: Point, private val cx: Int, private val cy: Int, private val readOnly: Boolean = false) extends JPanel {
+class Tile(
+  private val model: Point,
+  private val cx: Int,
+  private val cy: Int,
+  private val readOnly: Boolean = false) extends JPanel
+{
   private def dim_width = this.getWidth
 
   private def dim_height = this.getHeight
@@ -36,33 +41,43 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
 
   setBackground(Color.WHITE)
 
-  addMouseMotionListener(new MouseMotionListener {
-    def mouseMoved(e: MouseEvent) {
+  addMouseMotionListener(new MouseMotionListener
+  {
+    def mouseMoved(e: MouseEvent)
+    {
       dirs.foreach(_ handleHover(e.getX, e.getY))
       showHoverText = true
     }
 
-    def mouseDragged(e: MouseEvent) {}
+    def mouseDragged(e: MouseEvent)
+    {}
   })
 
-  addMouseListener(new MouseListener {
-    def mouseExited(e: MouseEvent) {
+  addMouseListener(new MouseListener
+  {
+    def mouseExited(e: MouseEvent)
+    {
       dirs.foreach(_ handleHover(-1, -1))
       showHoverText = false
     }
 
-    def mouseClicked(e: MouseEvent) {}
+    def mouseClicked(e: MouseEvent)
+    {}
 
-    def mouseEntered(e: MouseEvent) {}
+    def mouseEntered(e: MouseEvent)
+    {}
 
-    def mousePressed(e: MouseEvent) {
+    def mousePressed(e: MouseEvent)
+    {
       dirs.foreach(_ handleClick(e.getX, e.getY))
     }
 
-    def mouseReleased(e: MouseEvent) {}
+    def mouseReleased(e: MouseEvent)
+    {}
   })
 
-  private sealed abstract class NodeTile {
+  private sealed abstract class NodeTile
+  {
     var sx, sy, width, height = 0
     var enabled = true
     private var hover = false
@@ -70,7 +85,8 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     var hoverColor = Color.darkGray
     var color = Color.lightGray
 
-    def repaint(g: Graphics) {
+    def repaint(g: Graphics)
+    {
       if (enabled)
         if (hover)
           g.setColor(hoverColor)
@@ -81,7 +97,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       g.fillRect(sx, sy, width, height)
     }
 
-    def handleClick(x: Int, y: Int) {
+    def handleClick(
+      x: Int,
+      y: Int)
+    {
       if (!readOnly) {
         val ex = sx + width
         val ey = sy + height
@@ -91,7 +110,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       Tile.this.repaint()
     }
 
-    def handleHover(x: Int, y: Int) {
+    def handleHover(
+      x: Int,
+      y: Int)
+    {
       val ex = sx + width
       val ey = sy + height
       if (x >= sx && x <= ex && y >= sy && y <= ey)
@@ -102,16 +124,21 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
   }
 
-  private class Token extends NodeTile {
+  private class Token extends NodeTile
+  {
     hoverColor = new Color(0, 100, 0)
     color = Color.green
 
-    override def handleClick(x: Int, y: Int) {
+    override def handleClick(
+      x: Int,
+      y: Int)
+    {
       super.handleClick(x, y)
       if (!model.robot) model.token = enabled
     }
 
-    override def repaint(g: Graphics) {
+    override def repaint(g: Graphics)
+    {
       sx = dim_width / 2 - (dim_width / 12)
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width / 6
@@ -121,10 +148,12 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
   }
 
-  private class North extends NodeTile {
+  private class North extends NodeTile
+  {
     enabled = model.has(NORTH)
 
-    override def repaint(g: Graphics) {
+    override def repaint(g: Graphics)
+    {
       sx = dim_width / 2 - (dim_width / 12)
       width = dim_width / 6
       height = dim_height / 2 - (dim_height / 12)
@@ -132,7 +161,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       super.repaint(g)
     }
 
-    override def handleClick(x: Int, y: Int) {
+    override def handleClick(
+      x: Int,
+      y: Int)
+    {
       super.handleClick(x, y)
       enabled match {
         case true => model + NORTH
@@ -141,10 +173,12 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
   }
 
-  private class East extends NodeTile {
+  private class East extends NodeTile
+  {
     enabled = model.has(EAST)
 
-    override def repaint(g: Graphics) {
+    override def repaint(g: Graphics)
+    {
       sx = dim_width / 2 + (dim_width / 12)
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width
@@ -153,7 +187,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       super.repaint(g)
     }
 
-    override def handleClick(x: Int, y: Int) {
+    override def handleClick(
+      x: Int,
+      y: Int)
+    {
       super.handleClick(x, y)
       enabled match {
         case true => model + EAST
@@ -162,10 +199,12 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
   }
 
-  private class South extends NodeTile {
+  private class South extends NodeTile
+  {
     enabled = model.has(SOUTH)
 
-    override def repaint(g: Graphics) {
+    override def repaint(g: Graphics)
+    {
       sx = dim_width / 2 - (dim_width / 12)
       sy = dim_height / 2 + (dim_height / 12)
       width = dim_width / 6
@@ -174,7 +213,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       super.repaint(g)
     }
 
-    override def handleClick(x: Int, y: Int) {
+    override def handleClick(
+      x: Int,
+      y: Int)
+    {
       super.handleClick(x, y)
       enabled match {
         case true => model + SOUTH
@@ -183,10 +225,12 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
     }
   }
 
-  private class West extends NodeTile {
+  private class West extends NodeTile
+  {
     enabled = model.has(WEST)
 
-    override def repaint(g: Graphics) {
+    override def repaint(g: Graphics)
+    {
       sy = dim_height / 2 - (dim_height / 12)
       width = dim_width / 2 - (dim_width / 12)
       height = dim_height / 6
@@ -194,7 +238,10 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
       super.repaint(g)
     }
 
-    override def handleClick(x: Int, y: Int) {
+    override def handleClick(
+      x: Int,
+      y: Int)
+    {
       super.handleClick(x, y)
       enabled match {
         case true => model + WEST
@@ -205,7 +252,8 @@ class Tile(private val model: Point, private val cx: Int, private val cy: Int, p
 
   private val dirs = Seq(new North(), new East(), new South(), new West(), new Token())
 
-  override def paintComponent(g: Graphics) {
+  override def paintComponent(g: Graphics)
+  {
     super.paintComponent(g)
     dirs.foreach(_ repaint g)
     if (model.robot) {

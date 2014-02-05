@@ -29,7 +29,10 @@ import tud.robolab.Config
   * @param data the initial Seq of points ([[tud.robolab.model.Point]]) representing all intersections
   * @param robot an instance of [[tud.robolab.model.Robot]] representing the initial position.
   */
-case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot()) extends Observer[Point] {
+case class Maze(
+  private val data: Seq[Seq[Option[Point]]],
+  robot: Robot = Robot()) extends Observer[Point]
+{
   assert(data != null && data(0) != null)
   robotPosition(robot.x, robot.y)
 
@@ -48,7 +51,8 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
    * @param y y coordinate (min: 0, max: height)
    * @return the [[tud.robolab.model.Point]] at the given coordinates if there is one.
    */
-  def apply(x: Int)(y: Int): Option[Point] = data(x)(y)
+  def apply(x: Int)
+    (y: Int): Option[Point] = data(x)(y)
 
   /**
    * @return all points ([[tud.robolab.model.Point]]) as Seq
@@ -61,7 +65,10 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
    * @param y y coordinate (min: 0, max: height)
    * @return true if `x` and `y` are representing a valid position, false otherwise
    */
-  def robotPosition(x: Int, y: Int): Boolean = {
+  def robotPosition(
+    x: Int,
+    y: Int): Boolean =
+  {
     if (!isValidPosition(x, y)) return false
     data(robot.x)(robot.y).get.robot = false
     robot.x = x
@@ -76,13 +83,16 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     * @param y y coordinate (min: 0, max: height)
     * @return if point with `x` and `y` is a valid position
     */
-  def isValidPosition(x: Int, y: Int): Boolean = x < width && y < height && x >= 0 && y >= 0
+  def isValidPosition(
+    x: Int,
+    y: Int): Boolean = x < width && y < height && x >= 0 && y >= 0
 
   /**
    * @param p an instance of [[tud.robolab.model.Point]]
    * @return the coordinates for `p` as a Tuple of the type `(Int, Int)`
    */
-  private def getXY(p: Point): Option[(Int, Int)] = {
+  private def getXY(p: Point): Option[(Int, Int)] =
+  {
     (0 to width - 1).foreach(x => {
       (0 to height - 1).foreach(y => {
         val r = data(x)(y)
@@ -106,7 +116,9 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     * @param dir an instance of [[tud.robolab.model.Direction.Direction]]
     * @return the neighbour for the [[tud.robolab.model.Point]] `p` in the given [[tud.robolab.model.Direction.Direction]] `dir`
     */
-  private def neighbour(p: Point, dir: Direction): Option[Point] = dir match {
+  private def neighbour(
+    p: Point,
+    dir: Direction): Option[Point] = dir match {
     case NORTH => {
       val c = getXY(p)
       if (!c.isDefined) return Option.empty
@@ -138,7 +150,8 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
     case _ => throw new IllegalArgumentException
   }
 
-  def receiveUpdate(subject: Point) {
+  def receiveUpdate(subject: Point)
+  {
     Direction.values.foreach(d => subject.has(d) match {
       case true => {
         val n = neighbour(subject, d)
@@ -184,18 +197,21 @@ case class Maze(private val data: Seq[Seq[Option[Point]]], robot: Robot = Robot(
         if (b.startsWith(" "))
           res = b.substring(1)
         a + res
-
       }).mkString("<br/>").replaceAll(" ", "&nbsp;") + "</font>"
 }
 
 /** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
-object Maze {
+object Maze
+{
   /**
    * @param width the width of the new maze
    * @param height the height of the new maze
    * @return a new [[tud.robolab.model.Maze]] with the given `width` and `height`
    */
-  def empty(width: Int, height: Int): Maze = {
+  def empty(
+    width: Int,
+    height: Int): Maze =
+  {
     val max_x = width - 1
     val max_y = height - 1
     Maze((0 to max_x).map(x =>
@@ -232,10 +248,13 @@ object Maze {
 }
 
 /** Implicit conversions from [[tud.robolab.model.Maze]] to json. */
-object MazeJsonProtocol extends DefaultJsonProtocol {
+object MazeJsonProtocol extends DefaultJsonProtocol
+{
 
-  implicit object MazeJsonFormat extends RootJsonFormat[Maze] {
-    def write(p: Maze) = {
+  implicit object MazeJsonFormat extends RootJsonFormat[Maze]
+  {
+    def write(p: Maze) =
+    {
       val points: List[List[JsValue]] = p.points.map(ys => {
         ys.map {
           case None => JsString("None")

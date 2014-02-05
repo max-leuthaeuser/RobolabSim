@@ -12,13 +12,14 @@ import scala.concurrent.duration._
 
 case class TokenRequest(numberOfTokens: Int)
 
-case class Node(x: Int,
-                y: Int,
-                north: Boolean = false,
-                east: Boolean = false,
-                south: Boolean = false,
-                west: Boolean = false,
-                token: Boolean = false)
+case class Node(
+  x: Int,
+  y: Int,
+  north: Boolean = false,
+  east: Boolean = false,
+  south: Boolean = false,
+  west: Boolean = false,
+  token: Boolean = false)
 
 case class Path(nodes: Seq[Node])
 
@@ -58,9 +59,10 @@ object TokenRequestProtocol extends DefaultJsonProtocol
 import PathJsonProtocol._
 import TokenRequestProtocol._
 
-class RoblabSimClient(id: String,
-                      ip: String,
-                      port: Int)
+class RoblabSimClient(
+  id: String,
+  ip: String,
+  port: Int)
 {
   private val url = "http://%s:%s".format(ip, port)
   private implicit val system = ActorSystem()

@@ -25,10 +25,16 @@ import tud.robolab.utils.{TimeUtils, IOUtils}
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
-object MainController {
+object MainController
+{
   val mazePool = new MazePool
 
-  def changeMap(m: String, session: Session, view: Option[SimulationView], remove: Boolean = true): Boolean = {
+  def changeMap(
+    m: String,
+    session: Session,
+    view: Option[SimulationView],
+    remove: Boolean = true): Boolean =
+  {
     val f = new File("maps/" + m + ".maze")
     if (!f.isFile) return false
     session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
@@ -41,7 +47,8 @@ object MainController {
     true
   }
 
-  def apply(testing: Boolean = false) {
+  def apply(testing: Boolean = false)
+  {
     SessionManager.testing = testing
     if (!testing) Interface.startup(Array.empty)
   }

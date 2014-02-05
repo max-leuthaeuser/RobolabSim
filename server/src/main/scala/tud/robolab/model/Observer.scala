@@ -18,11 +18,13 @@
 
 package tud.robolab.model
 
-trait Observer[S] {
+trait Observer[S]
+{
   def receiveUpdate(subject: S)
 }
 
-trait Subject[S] {
+trait Subject[S]
+{
   this: S =>
   private var observers: List[Observer[S]] = Nil
 

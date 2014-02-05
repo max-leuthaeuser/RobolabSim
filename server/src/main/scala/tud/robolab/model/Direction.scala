@@ -21,7 +21,8 @@ package tud.robolab.model
 /** Enumeration that holds all available directions in a maze and offers
   * some convenience methods.
   */
-object Direction extends Enumeration {
+object Direction extends Enumeration
+{
   type Direction = Value
   val NORTH, EAST, SOUTH, WEST = Value
 

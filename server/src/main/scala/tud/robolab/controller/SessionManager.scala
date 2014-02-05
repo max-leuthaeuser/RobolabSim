@@ -33,14 +33,16 @@ import scala.sys.process._
   * See `handleQueryRequest`, `handlePathRequest` and `handleMapRequest`.
   * TODO: update doc (IP -> ID)
   */
-object SessionManager {
+object SessionManager
+{
   private val sessions = new SessionPool()
   var testing = false
 
   /** Handling all active sessions.
     * They are basically a tuple (Session -> associated View).
     */
-  class SessionPool extends Subject[SessionPool] {
+  class SessionPool extends Subject[SessionPool]
+  {
     private val peer = TrieMap[Session, Option[SimulationView]]()
 
     /**
@@ -59,7 +61,10 @@ object SessionManager {
      * @param s the new [[tud.robolab.model.Session]] to add
      * @param v the new [[tud.robolab.view.SimulationView]] to add
      */
-    private[SessionManager] def set(s: Session, v: Option[SimulationView]) {
+    private[SessionManager] def set(
+      s: Session,
+      v: Option[SimulationView])
+    {
       peer(s) = v
       notifyObservers()
     }
@@ -67,7 +72,8 @@ object SessionManager {
     /**
      * @param s the [[tud.robolab.model.Session]] to remove.
      */
-    private[SessionManager] def remove(s: Session) {
+    private[SessionManager] def remove(s: Session)
+    {
       get(s).foreach(Interface.removeSimTap)
       peer.remove(s)
       notifyObservers()
@@ -77,7 +83,10 @@ object SessionManager {
      * @param s the [[tud.robolab.model.Session]] to block or unblock depending on `block`.
      * @param block `true` means block the [[tud.robolab.model.Session]] `s`, false means unblock it.
      */
-    private[SessionManager] def block(s: Session, block: Boolean) {
+    private[SessionManager] def block(
+      s: Session,
+      block: Boolean)
+    {
       s.client.blocked = block
       notifyObservers()
     }
@@ -115,7 +124,10 @@ object SessionManager {
    * @param s the new [[tud.robolab.model.Session]] to set
    * @param v the new [[tud.robolab.view.SimulationView]] to set
    */
-  def set(s: Session, v: Option[SimulationView]) {
+  def set(
+    s: Session,
+    v: Option[SimulationView])
+  {
     sessions.set(s, v)
   }
 
@@ -129,7 +141,8 @@ object SessionManager {
    * @param i the index
    * @return the `i`th [[tud.robolab.model.Session]].
    */
-  def getSession(i: Int): Session = {
+  def getSession(i: Int): Session =
+  {
     assert(i >= 0 && i < sessions.all.size)
     sessions.all.keys.toSeq(i)
   }
@@ -149,7 +162,8 @@ object SessionManager {
   /**
    * @param ip remove the [[tud.robolab.model.Session]] with the given IP `ip`.
    */
-  def removeSession(ip: String) {
+  def removeSession(ip: String)
+  {
     if (hasSession(ip)) {
       val s = getSession(ip).get
       sessions.remove(s)
@@ -159,14 +173,16 @@ object SessionManager {
   /**
    * @param s the [[tud.robolab.model.Session]] to remove.
    */
-  def removeSession(s: Session) {
+  def removeSession(s: Session)
+  {
     sessions.remove(s)
   }
 
   /**
    * @param s the [[tud.robolab.model.Session]] to add.
    */
-  def addSession(s: Session) {
+  def addSession(s: Session)
+  {
     if (!hasSession(s.client.ip)) {
       val v: Option[SimulationView] = testing match {
         case true => Option.empty
@@ -179,7 +195,8 @@ object SessionManager {
   /**
    * @param ip create a nre [[tud.robolab.model.Session]] and add it to the [[tud.robolab.controller.SessionManager.SessionPool]].
    */
-  def addSession(ip: String): Boolean = {
+  def addSession(ip: String): Boolean =
+  {
     if (!hasSession(ip) && !sessionBlocked(ip)) {
       val s = Session(Client(ip))
       testing match {
@@ -203,7 +220,10 @@ object SessionManager {
    * @param ip the IP for the the [[tud.robolab.model.Session]] to block or unblock depending on `block`.
    * @param block `true` means block the [[tud.robolab.model.Session]] `s`, false means unblock it.
    */
-  def blockSession(ip: String, block: Boolean = true) {
+  def blockSession(
+    ip: String,
+    block: Boolean = true)
+  {
     if (!hasSession(ip)) {
       val s = Session(Client(ip))
       val v = new SimulationView(s)
@@ -221,7 +241,10 @@ object SessionManager {
    * @param r the [[tud.robolab.model.Request]]
    * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
    */
-  def handleQueryRequest(ip: String, r: Request): Message = {
+  def handleQueryRequest(
+    ip: String,
+    r: Request): Message =
+  {
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
     if (!hasSession(ip))
@@ -264,7 +287,8 @@ object SessionManager {
    * @param ip the IP address
    * @return a [[tud.robolab.model.Message]] containing the path regarding to the result of this call.
    */
-  def handlePathRequest(ip: String): Message = {
+  def handlePathRequest(ip: String): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_PATH
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -285,7 +309,10 @@ object SessionManager {
    * @param r the [[tud.robolab.model.MapRequest]]
    * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
    */
-  def handleMapRequest(ip: String, r: MapRequest): Message = {
+  def handleMapRequest(
+    ip: String,
+    r: MapRequest): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_PATH
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -302,7 +329,8 @@ object SessionManager {
    * @param ip the IP address
    * @return a [[tud.robolab.model.Message]] containing the history regarding to the result of this call.
    */
-  def handleHistoryRequest(ip: String): Message = {
+  def handleHistoryRequest(ip: String): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_PATH
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -322,7 +350,8 @@ object SessionManager {
    * @param ip the IP address
    * @return a [[tud.robolab.model.Message]] containing the number of tokens regarding to the result of this call.
    */
-  def handleNumberOfTokensRequest(ip: String): Message = {
+  def handleNumberOfTokensRequest(ip: String): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_MAP
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -337,7 +366,10 @@ object SessionManager {
    * @param r the [[tud.robolab.model.TestMessage]]
    * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
    */
-  def handleTestRequest(ip: String, r: TestMessage): Message = {
+  def handleTestRequest(
+    ip: String,
+    r: TestMessage): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_ID
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -352,7 +384,8 @@ object SessionManager {
    * @param ip the IP address
    * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
    */
-  def handleTestRequest(ip: String): Message = {
+  def handleTestRequest(ip: String): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_ID
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 
@@ -364,7 +397,10 @@ object SessionManager {
     })
   }
 
-  def handleRunTestRequest(ip: String, map: String): Message = {
+  def handleRunTestRequest(
+    ip: String,
+    map: String): Message =
+  {
     if (!hasSession(ip)) return ErrorType.NO_ID
     if (sessionBlocked(ip)) return ErrorType.BLOCKED
 

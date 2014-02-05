@@ -1,8 +1,8 @@
 class Statistics(path: Seq[Node])
 {
-
-  def distinguishLoc(a: Node,
-                     b: Node): Int =
+  def distinguishLoc(
+    a: Node,
+    b: Node): Int =
   {
     if (a.x + 1 == b.x) return 3
     // B is in the north of A
@@ -14,8 +14,9 @@ class Statistics(path: Seq[Node])
     else 0
   }
 
-  def calcTurns(a: Int,
-                b: Int): Int = math.abs(a - b) match {
+  def calcTurns(
+    a: Int,
+    b: Int): Int = math.abs(a - b) match {
     case 3 => 1
     case t => t
   }

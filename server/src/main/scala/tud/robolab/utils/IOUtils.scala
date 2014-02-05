@@ -24,27 +24,34 @@ import java.text.SimpleDateFormat
 import io.Source._
 import javax.swing.JFileChooser
 
-
-object IOUtils {
+object IOUtils
+{
   /**
    * Used for reading/writing to database, files, etc.
    * Code From the book "Beginning Scala"
    * http://www.amazon.com/Beginning-Scala-David-Pollak/dp/1430219890
    */
-  def using[A <: {def close()}, B](param: A)(f: A => B): B =
+  def using[A <: {def close()}, B](param: A)
+    (f: A => B): B =
     try {
       f(param)
     } finally {
       param.close()
     }
 
-  def writeToFile(fileName: String, data: String) {
+  def writeToFile(
+    fileName: String,
+    data: String)
+  {
     using(new FileWriter(fileName)) {
       fileWriter => fileWriter.write(data)
     }
   }
 
-  def appendToFile(fileName: String, textData: String) {
+  def appendToFile(
+    fileName: String,
+    textData: String)
+  {
     using(new FileWriter(fileName, true)) {
       fileWriter =>
         using(new PrintWriter(fileWriter)) {
@@ -53,7 +60,8 @@ object IOUtils {
     }
   }
 
-  def createDirectory(dir: File) {
+  def createDirectory(dir: File)
+  {
     if (!dir.exists && !dir.isDirectory)
       dir.mkdirs()
   }
@@ -62,9 +70,13 @@ object IOUtils {
     f #:: (if (f.isDirectory) f.listFiles().toStream.flatMap(getFileTree)
     else Stream.empty)
 
-  def getFileTreeFilter(f: File, str: String): Array[String] = getFileTree(f).filter(_.getName.endsWith(str)).map(_.getName.replaceAll(".maze", "")).toArray
+  def getFileTreeFilter(
+    f: File,
+    str: String): Array[String] = getFileTree(f).filter(_.getName.endsWith(str))
+    .map(_.getName.replaceAll(".maze", "")).toArray
 
-  def readFromFile(f: File): String = {
+  def readFromFile(f: File): String =
+  {
     val src = fromFile(f)
     try {
       src.getLines().mkString("\n")
@@ -74,7 +86,8 @@ object IOUtils {
     }
   }
 
-  def letUserChooseFile(currentDirectory: String): Option[String] = {
+  def letUserChooseFile(currentDirectory: String): Option[String] =
+  {
     val fc = new JFileChooser(currentDirectory)
     val returnVal = fc.showOpenDialog(null)
 

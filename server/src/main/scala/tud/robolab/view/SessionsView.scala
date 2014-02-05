@@ -27,12 +27,16 @@ import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
 import tud.robolab.controller.SessionManager
 import tud.robolab.utils.SizeUtilities
 
-class SessionsView extends JPanel with Observer[SessionPool] {
+class SessionsView extends JPanel
+                           with Observer[SessionPool]
+{
   private val tableModel = new TableModel()
   private val addBtn = new JButton("Add session")
 
-  addBtn.addActionListener(new ActionListener {
-    def actionPerformed(e: ActionEvent) {
+  addBtn.addActionListener(new ActionListener
+  {
+    def actionPerformed(e: ActionEvent)
+    {
       val r = SessionAddDialog.getSession
       if (r.isDefined) {
         SessionManager.addSession(r.get)
@@ -45,7 +49,8 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   add(new JScrollPane(buildTable), BorderLayout.CENTER)
 
   private val right = new JPanel(new BorderLayout())
-  private val desc = new JLabel("<html><div align=\"right\"><i>del</i> - delete the selected session<br /><i>o</i> - open the selected session</div></html>")
+  private val desc = new JLabel(
+    "<html><div align=\"right\"><i>del</i> - delete the selected session<br /><i>o</i> - open the selected session</div></html>")
   private val pa = new JPanel(new BorderLayout(0, 10))
   pa.add(addBtn, BorderLayout.SOUTH)
   pa.add(desc, BorderLayout.CENTER)
@@ -53,7 +58,8 @@ class SessionsView extends JPanel with Observer[SessionPool] {
   right.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
   add(right, BorderLayout.SOUTH)
 
-  private def buildTable: JTable = {
+  private def buildTable: JTable =
+  {
     val table = new JTable(tableModel)
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.getColumnModel.getColumn(1).setMaxWidth(100)
@@ -62,15 +68,19 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     val actionMap = table.getActionMap
 
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "Delete")
-    actionMap.put("Delete", new AbstractAction() {
-      def actionPerformed(e: ActionEvent) {
+    actionMap.put("Delete", new AbstractAction()
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         SessionManager.removeSession(SessionManager.getSession(table.getSelectedRow))
       }
     })
 
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, 0), "Open")
-    actionMap.put("Open", new AbstractAction() {
-      def actionPerformed(e: ActionEvent) {
+    actionMap.put("Open", new AbstractAction()
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         val s = SessionManager.getSession(table.getSelectedRow)
         val v = SessionManager.getView(s).get
         if (!v.isShown) {
@@ -80,8 +90,10 @@ class SessionsView extends JPanel with Observer[SessionPool] {
       }
     })
 
-    table.getColumnModel.getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField()) {
-      override def stopCellEditing(): Boolean = {
+    table.getColumnModel.getColumn(0).setCellEditor(new DefaultCellEditor(new JTextField())
+    {
+      override def stopCellEditing(): Boolean =
+      {
         val b = !getCellEditorValue.toString.isEmpty && !SessionManager.hasSession(getCellEditorValue.toString)
         if (!b) {
           getComponent.setForeground(Color.red)
@@ -100,12 +112,16 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     table
   }
 
-  private class TableModel extends AbstractTableModel {
+  private class TableModel extends AbstractTableModel
+  {
     override def getRowCount: Int = if (!SessionManager.hasSessions) SessionManager.numberOfSessions() else 0
 
     override def getColumnCount: Int = 2
 
-    override def getValueAt(rowIndex: Int, columnIndex: Int): AnyRef = {
+    override def getValueAt(
+      rowIndex: Int,
+      columnIndex: Int): AnyRef =
+    {
       if (SessionManager.hasSessions) columnIndex match {
         case 0 => ""
         case 1 => java.lang.Boolean.FALSE
@@ -116,12 +132,18 @@ class SessionsView extends JPanel with Observer[SessionPool] {
       }
     }
 
-    override def setValueAt(aValue: scala.Any, rowIndex: Int, columnIndex: Int) {
+    override def setValueAt(
+      aValue: scala.Any,
+      rowIndex: Int,
+      columnIndex: Int)
+    {
       super.setValueAt(aValue, rowIndex, columnIndex)
       if (columnIndex == 1) SessionManager.getSession(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
     }
 
-    override def isCellEditable(rowIndex: Int, columnIndex: Int): Boolean = true
+    override def isCellEditable(
+      rowIndex: Int,
+      columnIndex: Int): Boolean = true
 
     override def getColumnName(column: Int): String = column match {
       case 0 => "Client IP"
@@ -134,18 +156,22 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     }
   }
 
-  def receiveUpdate(subject: SessionPool) {
+  def receiveUpdate(subject: SessionPool)
+  {
     tableModel.fireTableDataChanged()
   }
 
-  private object SessionAddDialog {
-    def getSession: Option[Session] = {
+  private object SessionAddDialog
+  {
+    def getSession: Option[Session] =
+    {
       val d = new SessionAddDialog()
       d.get()
     }
   }
 
-  private class SessionAddDialog {
+  private class SessionAddDialog
+  {
     private var session: Option[Session] = Option.empty
     private val dialog = new JDialog()
     private val okBtn = new JButton("Ok")
@@ -164,8 +190,10 @@ class SessionsView extends JPanel with Observer[SessionPool] {
     content.add(ipText)
     content.add(blockedBox)
 
-    okBtn.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
+    okBtn.addActionListener(new ActionListener
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         if (!ipText.getText.isEmpty) {
           session = Option(Session(Client(ipText.getText, blockedBox.isSelected), Maze.empty, Seq.empty))
           dialog.setVisible(false)

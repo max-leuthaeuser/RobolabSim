@@ -1,12 +1,13 @@
 import org.scalatest.{FunSuite, GivenWhenThen}
 import org.scalatest.matchers.ShouldMatchers
 
-class RobolabTestSpec(id: String,
-                      ip: String) extends FunSuite
-                                          with
-                                          GivenWhenThen
-                                          with
-                                          ShouldMatchers
+class RobolabTestSpec(
+  id: String,
+  ip: String) extends FunSuite
+                      with
+                      GivenWhenThen
+                      with
+                      ShouldMatchers
 {
   def fixture =
     new

@@ -25,7 +25,8 @@ import java.io.File
 import scala.collection.concurrent.TrieMap
 
 /** Holds all available mazes with their name. */
-class MazePool extends Subject[MazePool] {
+class MazePool extends Subject[MazePool]
+{
   val pool = TrieMap[String, Maze]()
 
   IOUtils.createDirectory(new File("maps/"))
@@ -49,7 +50,10 @@ class MazePool extends Subject[MazePool] {
     * @param name the desired name of the maze
     * @param maze an instance of [[tud.robolab.model.Maze]]
     */
-  def +(name: String, maze: Maze) {
+  def +(
+    name: String,
+    maze: Maze)
+  {
     pool(name) = maze
     notifyObservers()
   }
@@ -58,7 +62,8 @@ class MazePool extends Subject[MazePool] {
     *
     * @param name the name of the maze
     */
-  def -(name: String) {
+  def -(name: String)
+  {
     pool.remove(name)
     notifyObservers()
   }

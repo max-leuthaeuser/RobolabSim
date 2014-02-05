@@ -21,7 +21,11 @@ package tud.robolab.model
 import Direction._
 import spray.json._
 
-case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var token: Boolean = false, var robot: Boolean = false) extends Subject[Point] {
+case class Point(
+  private var data: Seq[Direction] = Direction.values.toSeq,
+  var token: Boolean = false,
+  var robot: Boolean = false) extends Subject[Point]
+{
   assert(data != null)
 
   private var callback: Option[() => Unit] = Option.empty
@@ -30,11 +34,15 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
 
   def has(dir: Direction): Boolean = data.contains(dir)
 
-  def addCallback(h: () => Unit) {
+  def addCallback(h: () => Unit)
+  {
     callback = Option(h)
   }
 
-  def +(dir: Direction, notify: Boolean = true) {
+  def +(
+    dir: Direction,
+    notify: Boolean = true)
+  {
     if (!has(dir)) {
       data = data :+ dir
       callback.foreach(_())
@@ -43,7 +51,10 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
     }
   }
 
-  def -(dir: Direction, notify: Boolean = true) {
+  def -(
+    dir: Direction,
+    notify: Boolean = true)
+  {
     if (has(dir)) {
       data = data diff Seq(dir)
       callback.foreach(_())
@@ -70,16 +81,20 @@ case class Point(private var data: Seq[Direction] = Direction.values.toSeq, var 
   }
 }
 
-object PointJsonProtocol extends DefaultJsonProtocol {
+object PointJsonProtocol extends DefaultJsonProtocol
+{
 
-  implicit object PointJsonFormat extends RootJsonFormat[Point] {
-    def write(p: Point) = {
+  implicit object PointJsonFormat extends RootJsonFormat[Point]
+  {
+    def write(p: Point) =
+    {
       val dirs = p.directions.map(s => JsString(s.toString))
       JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
     }
 
     def read(value: JsValue) = value.asJsObject.getFields("dirs", "token") match {
-      case Seq(JsArray(dirs), JsBoolean(token)) => Point(dirs.map(s => Direction.from(s.toString().replaceAll("\"", ""))), token)
+      case Seq(JsArray(dirs), JsBoolean(token)) => Point(
+        dirs.map(s => Direction.from(s.toString().replaceAll("\"", ""))), token)
       case _ => deserializationError("Point expected!")
     }
   }

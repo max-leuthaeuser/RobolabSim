@@ -32,7 +32,8 @@ import tud.robolab.model.PathResponse
 /**
  * Contains json conversion objects for implicit conversion json <-> some request.
  */
-object JsonProtocols {
+object JsonProtocols
+{
 
   /** Implicit conversions from [[tud.robolab.model.Request]] to json.
     *
@@ -41,7 +42,8 @@ object JsonProtocols {
     *   val json = Request(...).toJson
     * }}}
     */
-  object RequestProtocol extends DefaultJsonProtocol {
+  object RequestProtocol extends DefaultJsonProtocol
+  {
     implicit val requestFormat = jsonFormat2(Request)
   }
 
@@ -52,7 +54,8 @@ object JsonProtocols {
     *   val json = MapRequest(...).toJson
     * }}}
     */
-  object MapRequestProtocol extends DefaultJsonProtocol {
+  object MapRequestProtocol extends DefaultJsonProtocol
+  {
     implicit val mapRequestFormat = jsonFormat1(MapRequest)
   }
 
@@ -63,7 +66,8 @@ object JsonProtocols {
     *   val json = TokenRequest(...).toJson
     * }}}
     */
-  object TokenRequestProtocol extends DefaultJsonProtocol {
+  object TokenRequestProtocol extends DefaultJsonProtocol
+  {
     implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
   }
 
@@ -74,7 +78,8 @@ object JsonProtocols {
     *   val json = QueryResponse(...).toJson
     * }}}
     */
-  object QueryResponseProtocol extends DefaultJsonProtocol {
+  object QueryResponseProtocol extends DefaultJsonProtocol
+  {
     implicit val queryResponseFormat = jsonFormat5(QueryResponse)
   }
 
@@ -85,7 +90,8 @@ object JsonProtocols {
     *   val json = ErrorMessage(...).toJson
     * }}}
     */
-  object ErrorMessageProtocol extends DefaultJsonProtocol {
+  object ErrorMessageProtocol extends DefaultJsonProtocol
+  {
     implicit val ErrorMessageFormat = jsonFormat2(ErrorMessage)
   }
 
@@ -96,7 +102,8 @@ object JsonProtocols {
     *   val json = TestMessage(...).toJson
     * }}}
     */
-  object TestMessageProtocol extends DefaultJsonProtocol {
+  object TestMessageProtocol extends DefaultJsonProtocol
+  {
     implicit val TestMessageFormat = jsonFormat2(TestMessage)
   }
 
@@ -118,10 +125,13 @@ object JsonProtocols {
     *   // ...
     * }}}
     */
-  object MessageJsonProtocol extends DefaultJsonProtocol {
+  object MessageJsonProtocol extends DefaultJsonProtocol
+  {
 
-    implicit object MessageJsonFormat extends RootJsonFormat[Message] {
-      def write(p: Message) = {
+    implicit object MessageJsonFormat extends RootJsonFormat[Message]
+    {
+      def write(p: Message) =
+      {
         p match {
           case r: Ok => "Ok".toJson
           case test: TestMessage => test.toJson

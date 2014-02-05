@@ -8,6 +8,6 @@ package tud.robolab
   *
   * All requests from the same address are handled in a [[tud.robolab.model.Session]].
   */
-package object model {
-
+package object model
+{
 }

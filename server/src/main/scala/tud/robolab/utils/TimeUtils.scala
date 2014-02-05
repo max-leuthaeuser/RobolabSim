@@ -22,16 +22,19 @@ import java.util.{TimeZone, Date, Calendar}
 import java.text.SimpleDateFormat
 import java.lang.management.ManagementFactory
 
-object TimeUtils {
+object TimeUtils
+{
   private val STD_TIME_FORMAT = "HH:mm:ss:SSS"
   private lazy val date_format_peer = new SimpleDateFormat(STD_TIME_FORMAT)
 
-  def nowAsString: String = {
+  def nowAsString: String =
+  {
     val cal = Calendar.getInstance()
     date_format_peer.format(cal.getTime)
   }
 
-  def uptime: String = {
+  def uptime: String =
+  {
     val mx = ManagementFactory.getRuntimeMXBean
     val df = new SimpleDateFormat("HH 'hours', mm 'mins', ss 'seconds'")
     df.setTimeZone(TimeZone.getTimeZone("GMT+0"))

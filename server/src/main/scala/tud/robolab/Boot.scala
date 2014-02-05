@@ -25,7 +25,8 @@ import tud.robolab.utils.TimeUtils
 import tud.robolab.controller.MainController
 
 /** Application main entry point. Create and run all relevant actors and bind spray services. */
-object Boot extends App {
+object Boot extends App
+{
   // we need an ActorSystem to host our application in
   implicit val system = ActorSystem("on-spray-can")
 
@@ -42,7 +43,8 @@ object Boot extends App {
   MainController(Config.TESTING)
 
   /** Call this method on terminating the server for unbinding. */
-  def terminate() {
+  def terminate()
+  {
     log.info("Terminating server ...")
     IO(Http) ! Http.Unbind
     log.info("Done. All services terminated normally.")

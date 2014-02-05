@@ -28,13 +28,15 @@ import tud.robolab.model.MazePool
 import tud.robolab.controller.{MainController, SessionManager}
 import tud.robolab.utils.SizeUtilities
 
-object Interface extends SimpleSwingApplication {
+object Interface extends SimpleSwingApplication
+{
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
   private val status = new Label("Waiting for connections ...")
   private val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
   private val menu = createMenu()
 
-  def top = new MainFrame {
+  def top = new MainFrame
+  {
     //Look and Feel
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
@@ -55,7 +57,8 @@ object Interface extends SimpleSwingApplication {
     title = "RobolabSim"
 
     // create the status bar panel and shove it down the bottom of the frame
-    val statusPanel = new BorderPanel() {
+    val statusPanel = new BorderPanel()
+    {
       border = new BevelBorder(BevelBorder.LOWERED)
       preferredSize = new java.awt.Dimension(width, 16)
       layout(status) = BorderPanel.Position.East
@@ -78,7 +81,8 @@ object Interface extends SimpleSwingApplication {
     tabbed.addMouseListener(new PopupListener())
     contents = mainPanel
 
-    override def closeOperation() {
+    override def closeOperation()
+    {
       if (Dialogs.confirmation("Do you really want to exit the application and shut down the server?")) {
         Boot.terminate()
         super.closeOperation()
@@ -86,11 +90,14 @@ object Interface extends SimpleSwingApplication {
     }
   }
 
-  private def createMenu(): JPopupMenu = {
+  private def createMenu(): JPopupMenu =
+  {
     val result = new JPopupMenu("Tabs")
     val item = new JMenuItem("Change layout")
-    item.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
+    item.addActionListener(new ActionListener
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         tabbed.getTabPlacement match {
           case SwingConstants.TOP => tabbed.setTabPlacement(SwingConstants.RIGHT)
           case SwingConstants.RIGHT => tabbed.setTabPlacement(SwingConstants.BOTTOM)
@@ -103,20 +110,25 @@ object Interface extends SimpleSwingApplication {
     result
   }
 
-  private class PopupListener extends MouseAdapter {
-    override def mouseClicked(e: MouseEvent) {
+  private class PopupListener extends MouseAdapter
+  {
+    override def mouseClicked(e: MouseEvent)
+    {
       checkForPopup(e)
     }
 
-    override def mousePressed(e: MouseEvent) {
+    override def mousePressed(e: MouseEvent)
+    {
       checkForPopup(e)
     }
 
-    override def mouseReleased(e: MouseEvent) {
+    override def mouseReleased(e: MouseEvent)
+    {
       checkForPopup(e)
     }
 
-    private def checkForPopup(e: MouseEvent) {
+    private def checkForPopup(e: MouseEvent)
+    {
       if (e.isPopupTrigger) {
         val c = e.getComponent
         menu.show(c, e.getX, e.getY)
@@ -124,12 +136,16 @@ object Interface extends SimpleSwingApplication {
     }
   }
 
-  def removeSimTap(c: SimulationView) {
+  def removeSimTap(c: SimulationView)
+  {
     c.close()
     tabbed.remove(c)
   }
 
-  private def _addSimTap(c: SimulationView, title: String) {
+  private def _addSimTap(
+    c: SimulationView,
+    title: String)
+  {
     MainController.mazePool.addObserver(c)
     tabbed.addTab(null, c)
     val pos = tabbed.indexOfComponent(c)
@@ -151,8 +167,10 @@ object Interface extends SimpleSwingApplication {
 
     tabbed.setTabComponentAt(pos, pnlTab)
 
-    btnClose.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
+    btnClose.addActionListener(new ActionListener
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         Dialogs.closeOrBlock() match {
           case Dialog.Result.Yes => {
             c.close()
@@ -169,7 +187,11 @@ object Interface extends SimpleSwingApplication {
     tabbed.setSelectedComponent(c)
   }
 
-  def addSimTab(c: SimulationView, title: String, ask: Boolean = true): Boolean = {
+  def addSimTab(
+    c: SimulationView,
+    title: String,
+    ask: Boolean = true): Boolean =
+  {
     if (ask)
       Dialogs.addOrBlock(title) match {
         case Dialog.Result.Yes => {

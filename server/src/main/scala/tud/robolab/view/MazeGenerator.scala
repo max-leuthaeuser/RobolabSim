@@ -29,7 +29,9 @@ import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
-class MazeGenerator extends JPanel with Observer[MazePool] {
+class MazeGenerator extends JPanel
+                            with Observer[MazePool]
+{
   private var model: Maze = null
 
   private var curr_width = 7
@@ -51,13 +53,16 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
   add(content, BorderLayout.CENTER)
   add(mapsPanel, BorderLayout.EAST)
 
-  private def buildMapsPanel: JPanel = {
+  private def buildMapsPanel: JPanel =
+  {
     val result = new JPanel()
     result.setLayout(new BorderLayout())
     result.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 
-    box.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
+    box.addActionListener(new ActionListener
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
           val n = box.getSelectedItem.asInstanceOf[String]
@@ -76,20 +81,25 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     result
   }
 
-  private def buildSettingsPanel: JPanel = {
+  private def buildSettingsPanel: JPanel =
+  {
     val labelx = new JLabel("<html>Width: <br/>(#Intersections)</html>")
     val labely = new JLabel("<html>Hight: <br/>(#Intersections)</html>")
     val labeln = new JLabel("Name ")
 
-    spinnerx.addChangeListener(new ChangeListener {
-      def stateChanged(e: ChangeEvent) {
+    spinnerx.addChangeListener(new ChangeListener
+    {
+      def stateChanged(e: ChangeEvent)
+      {
         curr_width = spinnerx.getModel.asInstanceOf[SpinnerNumberModel].getNumber.intValue()
         rebuild()
       }
     })
 
-    spinnery.addChangeListener(new ChangeListener {
-      def stateChanged(e: ChangeEvent) {
+    spinnery.addChangeListener(new ChangeListener
+    {
+      def stateChanged(e: ChangeEvent)
+      {
         curr_height = spinnery.getModel.asInstanceOf[SpinnerNumberModel].getNumber.intValue()
         rebuild()
       }
@@ -107,8 +117,10 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     result.add(edit, BorderLayout.NORTH)
 
     val okbtn = new JButton("Save")
-    okbtn.addActionListener(new ActionListener {
-      def actionPerformed(e: ActionEvent) {
+    okbtn.addActionListener(new ActionListener
+    {
+      def actionPerformed(e: ActionEvent)
+      {
         var filename = name.getText
         val f = new File("maps/" + filename + ".maze")
         if (!f.isFile) {
@@ -137,7 +149,8 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     result
   }
 
-  private def rebuild() {
+  private def rebuild()
+  {
     invalidate()
     remove(content)
     content = new JScrollPane(buildMazePanel())
@@ -145,7 +158,8 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     validate()
   }
 
-  private def buildMazePanel(): JPanel = {
+  private def buildMazePanel(): JPanel =
+  {
     val result = new JPanel()
     result.setLayout(new GridLayout(curr_width, curr_height, 5, 5))
 
@@ -165,7 +179,8 @@ class MazeGenerator extends JPanel with Observer[MazePool] {
     result
   }
 
-  override def receiveUpdate(subject: MazePool) {
+  override def receiveUpdate(subject: MazePool)
+  {
     val listeners = box.getActionListeners
     box.removeActionListener(listeners(0))
     box.removeAllItems()

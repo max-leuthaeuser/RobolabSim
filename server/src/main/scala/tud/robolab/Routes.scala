@@ -31,7 +31,8 @@ import TestMessageProtocol._
 import tud.robolab.controller.{MainController, SessionManager}
 import java.net.{URLEncoder, URLDecoder}
 
-object Routes {
+object Routes
+{
   private def getUpTime: String = TimeUtils.uptime
 
   val indexRoute = path("") {
@@ -53,7 +54,8 @@ object Routes {
               SessionManager.getSessionsAsList.map(s => {
                 val tests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase).map(n => {
                   val mr = URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")
-                  "<li><a href=\"/runtest?id=%s&values=%s\">Run test for maze: <b>%s</b></a></li>".format(s.client.ip, mr, n)
+                  "<li><a href=\"/runtest?id=%s&values=%s\">Run test for maze: <b>%s</b></a></li>"
+                    .format(s.client.ip, mr, n)
                 }).mkString("<ul>", "", "</ul>")
                 "<li>%s (<a href=\"/gettest?id=%s\">Test result</a>)%s</li>"
                   .format(s.client.ip, s.client.ip, tests)
@@ -65,7 +67,9 @@ object Routes {
 
   val queryRoute = path("query") {
     parameters('id, 'values) {
-      (id, values) =>
+      (
+        id,
+        values) =>
         (get | put) {
           ctx =>
             val ip = id
@@ -108,7 +112,9 @@ object Routes {
 
   val mazeRoute = path("maze") {
     parameters('id, 'values) {
-      (id, values) =>
+      (
+        id,
+        values) =>
         (get | put) {
           ctx =>
             val ip = id
@@ -137,7 +143,9 @@ object Routes {
 
   val setTestRoute = path("settest") {
     parameters('id, 'values) {
-      (id, values) =>
+      (
+        id,
+        values) =>
         put {
           ctx =>
             val ip = id
@@ -157,7 +165,9 @@ object Routes {
 
   val runTestRoute = path("runtest") {
     parameters('id, 'values) {
-      (id, values) =>
+      (
+        id,
+        values) =>
         (get | put) {
           ctx =>
             val ip = id

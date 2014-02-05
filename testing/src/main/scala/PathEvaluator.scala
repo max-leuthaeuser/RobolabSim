@@ -159,14 +159,16 @@ class PathEvaluator(path: Seq[Node])
     neighbors
   }
 
-  def getSetOfNotVisitedNeighbors(pathUntil: Seq[Node],
-                                  n: Node): Seq[Node] =
+  def getSetOfNotVisitedNeighbors(
+    pathUntil: Seq[Node],
+    n: Node): Seq[Node] =
     getSetOfNeighbors(n).filter(v => pathUntil.count(t => t.x == v.x && t.y == v.y) != 0).distinct
 
   def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
 
-  def validateIfNextNodeIsAlreadyVisited(next: Node,
-                                         notVisitedNeighborsOfOrigin: Seq[Node]): Boolean =
+  def validateIfNextNodeIsAlreadyVisited(
+    next: Node,
+    notVisitedNeighborsOfOrigin: Seq[Node]): Boolean =
   {
     if (!notVisitedNeighborsOfOrigin.isEmpty) {
       val pseudoNodeOfNext = new Node(next.x, next.y)

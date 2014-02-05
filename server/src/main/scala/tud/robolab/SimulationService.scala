@@ -23,7 +23,9 @@ import spray.routing._
 import Routes._
 
 /** Holding the context actor system and the standard route for our service. */
-class SimulationServiceActor extends Actor with SimulationService {
+class SimulationServiceActor extends Actor
+                                     with SimulationService
+{
   // we don't implement our route structure directly in the service actor because
   // we want to be able to test it independently, without having to spin up an actor
 
@@ -40,8 +42,8 @@ class SimulationServiceActor extends Actor with SimulationService {
 }
 
 /** Defines our service behavior independently from the service actor. */
-trait SimulationService extends HttpService {
-
+trait SimulationService extends HttpService
+{
   val myRoute =
     indexRoute ~
       queryRoute ~
@@ -52,5 +54,4 @@ trait SimulationService extends HttpService {
       setTestRoute ~
       runTestRoute ~
       getTestRoute
-
 }

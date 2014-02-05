@@ -8,10 +8,11 @@ object Main
                   The ip address of the simulation server
               """
 
-  def parseOptions(args: List[String],
-                   required: List[Symbol],
-                   optional: Map[String, Symbol],
-                   options: Map[Symbol, String]): Map[Symbol, String] =
+  def parseOptions(
+    args: List[String],
+    required: List[Symbol],
+    optional: Map[String, Symbol],
+    options: Map[Symbol, String]): Map[Symbol, String] =
   {
     args match {
       // Empty list
