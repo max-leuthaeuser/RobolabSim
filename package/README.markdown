@@ -12,7 +12,7 @@ Follow these steps to develop your Robolab solution and test them with the simul
 
 4. You can now write your solution in solution/c/src/
 
-5. Compile your solution. ** see the README in solution/ **
+5. Compile your solution. **see the README in solution/**
 
 6. Start the simulation server:
 	
