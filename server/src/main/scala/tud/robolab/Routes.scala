@@ -25,6 +25,7 @@ import tud.robolab.utils.TimeUtils
 import tud.robolab.model._
 import JsonProtocols._
 import spray.json._
+import spray.httpx.TwirlSupport._
 import RequestProtocol._
 import MapRequestProtocol._
 import TestMessageProtocol._
@@ -39,27 +40,13 @@ object Routes
     get {
       respondWithMediaType(`text/html`) {
         complete {
-          """<html>
-              <body>
-                <h1>Welcome to <i>RobolabSim</i></h1>
-                <b>Server status page</b><br/>
-                <ul>
-                  <li><i>Uptime:</i> %s</li>
-                  <li><i>Sessions:</i> %s</li>
-                  %s
-                </ul>
-              </body>
-            </html>""".format(getUpTime,
-              SessionManager.numberOfSessions(),
-              SessionManager.getSessionsAsList.map(s => {
-                val maps = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase).map(n => {
-                  val mr = URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")
-                  "<li><a href=\"/maze?id=%s&values=%s\">Set maze <b>%s</b></a></li>"
-                    .format(s.client.ip, mr, n)
-                }).mkString("<ul>", "", "</ul>")
-                "<li>%s (<a href=\"/runtest?id=%s\">Run tests</a> | <a href=\"/gettest?id=%s\">Test result</a> | <a href=\"/reset?id=%s\">Reset</a>)%s</li>"
-                  .format(s.client.ip, s.client.ip, s.client.ip, s.client.ip, maps)
-              }).mkString("<ul>", "", "</ul>"))
+          val uptime = TimeUtils.uptime
+          val sessions = SessionManager.numberOfSessions()
+          val mazeNameRequests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase)
+            .map(n => (n, URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")))
+          val ids = SessionManager.getSessionsAsList.map(_.client.ip)
+
+          tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
         }
       }
     }
@@ -122,7 +109,8 @@ object Routes
             val req = values.toString.asJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
-            ctx.complete(SessionManager.handleMapRequest(ip, req).toJson.compactPrint)
+            SessionManager.handleMapRequest(ip, req)
+            ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
         }
     }
   }
@@ -185,7 +173,8 @@ object Routes
             val ip = id
             import MessageJsonProtocol._
             Boot.log.info("Incoming [Reset] request from ID [%s]".format(ip))
-            ctx.complete(SessionManager.handleResetRequest(ip).toJson.compactPrint)
+            SessionManager.handleResetRequest(ip)
+            ctx.redirect("/", StatusCodes.Found)
         }
     }
   }
@@ -201,17 +190,10 @@ object Routes
             SessionManager.handleTestRequest(ip) match {
               case t: TestMessage =>
                 val s = SessionManager.getSession(ip).get
+                val path = s.path
+                val maze = s.maze.asHtml
                 complete {
-                  """<html>
-                          <body>
-                            <b>Map:</b><br/>
-                            %s<br/><br/>
-                            <b>Path:</b><br/>
-                            %s
-                            <b>Test result for %s:</b><br/>
-                            %s
-                          </body>
-                         </html>""".format(s.maze.asAsciiArt, s.pathToHtml, ip, t.asHtml)
+                  tud.robolab.html.testresult(maze, path, ip, t)
                 }
               case m: Message => complete {
                 m.toJson.compactPrint

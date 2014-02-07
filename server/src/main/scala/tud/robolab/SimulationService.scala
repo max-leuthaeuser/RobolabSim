@@ -44,15 +44,20 @@ class SimulationServiceActor extends Actor
 /** Defines our service behavior independently from the service actor. */
 trait SimulationService extends HttpService
 {
-  val myRoute =
-    indexRoute ~
-      queryRoute ~
-      historyRoute ~
-      numberOfTokensRoute ~
-      mazeRoute ~
-      pathRoute ~
-      resetRoute ~
-      setTestRoute ~
-      runTestRoute ~
-      getTestRoute
+  val myRoute = indexRoute ~
+    queryRoute ~
+    historyRoute ~
+    numberOfTokensRoute ~
+    mazeRoute ~
+    pathRoute ~
+    resetRoute ~
+    setTestRoute ~
+    runTestRoute ~
+    getTestRoute ~
+    path(Rest) {
+      path =>
+        get {
+          getFromResource("bootstrap/%s" format path)
+        }
+    }
 }

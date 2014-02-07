@@ -10,6 +10,10 @@ scalaVersion  := "2.10.2"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
+unmanagedResourceDirectories in Compile <++= baseDirectory { base =>
+  Seq( base / "src/main/webapp" )
+}
+
 resolvers ++= Seq(
   "spray repo" at "http://repo.spray.io/"
 )
@@ -25,6 +29,8 @@ libraryDependencies ++= Seq(
 )
 
 seq(Revolver.settings: _*)
+
+seq(Twirl.settings: _*)
 
 mainClass in Compile := Some("tud.robolab.Boot")
 

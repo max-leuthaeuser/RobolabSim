@@ -51,16 +51,6 @@ case class PathResponse(way: Seq[(Request, QueryResponse)]) extends Message
 case class TestMessage(
   result: String,
   status: Boolean) extends Message
-{
-  def asHtml =
-  {
-    val r = status match {
-      case true => "<i>*** SUCCESS ***</i>"
-      case false => "<i>*** FAILED ***</i>"
-    }
-    r + "<br/><br/><b>Reason:</b><br/>" + result
-  }
-}
 
 case class ErrorMessage(
   code: Int,

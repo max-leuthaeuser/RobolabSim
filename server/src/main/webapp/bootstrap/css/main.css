@@ -1,0 +1,10 @@
+.source-code {
+  font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace;
+  color: #000000;
+  background-color: #eee;
+  font-size: 12px;
+  padding: 5px;
+  overflow: scroll;
+  height: 80%;
+  white-space: nowrap;
+}

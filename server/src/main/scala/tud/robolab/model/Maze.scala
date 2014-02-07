@@ -166,38 +166,36 @@ case class Maze(
     })
   }
 
-  def asAsciiArt: String =
-    "<font face=\"Courier New\">" +
-      points.map(xs => {
+  def asHtml: String =
+    points.map(xs => {
+      val a = xs.map {
+        case Some(p) if p.has(NORTH) => "| "
+        case Some(p) => "  "
+        case None => "   "
+      }.mkString + "<br/>"
 
-        val a = xs.map {
-          case Some(p) if p.has(NORTH) => "| "
-          case Some(p) => "  "
-          case None => "   "
-        }.mkString + "<br/>"
-
-        val b =
-          xs.map {
-            case Some(p) if p.directions.nonEmpty => {
-              val core = p.token match {
-                case true => "O"
-                case false => "X"
-              }
-
-              val dir = p.has(WEST) match {
-                case true => "-"
-                case false => " "
-              }
-              dir + core
+      val b =
+        xs.map {
+          case Some(p) if p.directions.nonEmpty => {
+            val core = p.token match {
+              case true => "O"
+              case false => "X"
             }
-            case _ => "  "
-          }.mkString
 
-        var res = b
-        if (b.startsWith(" "))
-          res = b.substring(1)
-        a + res
-      }).mkString("<br/>").replaceAll(" ", "&nbsp;") + "</font>"
+            val dir = p.has(WEST) match {
+              case true => "-"
+              case false => " "
+            }
+            dir + core
+          }
+          case _ => "  "
+        }.mkString
+
+      var res = b
+      if (b.startsWith(" "))
+        res = b.substring(1)
+      a + res
+    }).mkString("<br/>").replaceAll(" ", "&nbsp;")
 }
 
 /** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
