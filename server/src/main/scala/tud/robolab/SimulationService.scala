@@ -53,6 +53,7 @@ trait SimulationService extends HttpService
     resetRoute ~
     setTestRoute ~
     runTestRoute ~
+    waitTestRoute ~
     getTestRoute ~
     path(Rest) {
       path =>

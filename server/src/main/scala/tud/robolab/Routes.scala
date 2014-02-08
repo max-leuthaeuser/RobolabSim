@@ -159,7 +159,21 @@ object Routes
             val ip = id
             Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
             SessionManager.handleRunTestRequest(ip)
-            ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
+            ctx.redirect("/waittest?id=" + ip, StatusCodes.Found)
+        }
+    }
+  }
+
+  val waitTestRoute = path("waittest") {
+    parameter('id) {
+      id
+      =>
+        get {
+          respondWithMediaType(`text/html`) {
+            complete {
+              tud.robolab.html.waittest(id)
+            }
+          }
         }
     }
   }
