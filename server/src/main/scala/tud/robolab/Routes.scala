@@ -44,7 +44,7 @@ object Routes
           val sessions = SessionManager.numberOfSessions()
           val mazeNameRequests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase)
             .map(n => (n, URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")))
-          val ids = SessionManager.getSessionsAsList.map(_.client.ip)
+          val ids = SessionManager.getSessionsAsList.map(_.client.ip).sortWith(_.toLowerCase < _.toLowerCase)
 
           tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
         }

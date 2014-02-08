@@ -24,7 +24,10 @@
     </style>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.0.min.css">
 
+    <script src="js/vendor/jquery-1.10.1.min.js"></script>
+    <script src="js/vendor/jquery.mobile-1.4.0.min.js"></script>
     <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 </head>
 <body>
@@ -48,11 +51,13 @@
     <div class="row">
         <div class="col-lg-2">
             <h2>Control</h2>
-            <p><a href="/runtest?id=@ip">Run tests again</a></p>
-            <p><a href="/reset?id=@ip">Reset</a></p>
+            <p>
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/runtest?id=@ip">Run tests again</a>
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/reset?id=@ip">Reset</a>
+            </p>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-4" style="margin-left:50px;">
             <h2>Map</h2>
             <p>
                 <font face="Courier New">
@@ -78,7 +83,7 @@
             </p>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-5">
             <h2>Test result</h2>
             <p>
                 @if(testResult.status) {
@@ -99,7 +104,7 @@
     <hr>
 
     <footer>
-        <p>&copy; Max Leuthäuser 2013</p>
+        <p>&copy; Max Leuthäuser 2014</p>
     </footer>
 </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
@@ -107,5 +112,6 @@
 <script src="js/vendor/bootstrap.min.js"></script>
 
 <script src="js/main.js"></script>
+
 </body>
 </html>

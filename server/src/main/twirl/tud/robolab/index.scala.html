@@ -21,7 +21,10 @@
     </style>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.0.min.css">
 
+    <script src="js/vendor/jquery-1.10.1.min.js"></script>
+    <script src="js/vendor/jquery.mobile-1.4.0.min.js"></script>
     <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 </head>
 <body>
@@ -51,35 +54,36 @@
         </div>
         <div class="col-lg-4">
             <h2>Sessions</h2>
+            @ids.map{ id =>
             <p>
-                <ul>
-                    @ids.map{ id =>
-                    <li>@id (<a href="/runtest?id=@id">Run tests</a>
-                        | <a href="/gettest?id=@id">Test result</a>
-                        | <a href="/reset?id=@id">Reset</a>)
+                Group: <b>@id</b><br/>
+                <a id="runtest" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true" data-mini="true" href="/runtest?id=@id">Run Tests</a>
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true" data-mini="true" href="/gettest?id=@id">See test results</a>
 
-                        <ul>
+                <ul class="menu">
+                    <li><a data-role="button" data-icon="arrow-d" data-iconpos="right" data-inline="true" data-mini="true">Set maze</a>
+                        <ul class="subMenu">
                             @mazeNameRequests.map{ maze =>
-                            <li><a href="/maze?id=@id&values=@maze._2">Set maze <b>@maze._1</b></a></li>
+                            <li><a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/maze?id=@id&values=@maze._2">@maze._1</a></li>
                             }
                         </ul>
                     </li>
-                    }
                 </ul>
             </p>
+            }
         </div>
     </div>
 
     <hr>
 
     <footer>
-        <p>&copy; Max Leuthäuser 2013</p>
+        <p>&copy; Max Leuthäuser 2014</p>
     </footer>
-</div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+</div>
 
 <script src="js/vendor/bootstrap.min.js"></script>
 
 <script src="js/main.js"></script>
+
 </body>
 </html>
