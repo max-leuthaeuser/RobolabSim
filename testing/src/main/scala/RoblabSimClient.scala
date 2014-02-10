@@ -70,7 +70,7 @@ class RoblabSimClient(
   import system.dispatcher
 
   private val mapEntityContentTypeToJson: HttpResponse => HttpResponse = response =>
-    response.withEntity(HttpEntity(`application/json`, response.entity.buffer))
+    response.withEntity(HttpEntity(`application/json`, response.entity.data))
 
   val pipelinePath = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[Path]
   val pipelineTokens = sendReceive ~> mapEntityContentTypeToJson ~> unmarshal[TokenRequest]

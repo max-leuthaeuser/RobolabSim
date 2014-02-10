@@ -1,5 +1,4 @@
-import org.scalatest.{FunSuite, GivenWhenThen}
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{Matchers, FunSuite, GivenWhenThen}
 
 class RobolabTestSpec(
   id: String,
@@ -7,7 +6,7 @@ class RobolabTestSpec(
                       with
                       GivenWhenThen
                       with
-                      ShouldMatchers
+                      Matchers
 {
   def fixture =
     new
