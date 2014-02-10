@@ -17,16 +17,19 @@
         <div class="col-lg-4" style="margin-left:50px;">
             <h2>Map</h2>
             <p>
+                <div class="source-code">
                 <font face="Courier New">
                     @Html(maze)
                 </font>
+		</div>
             </p>
 
             <h2>Path</h2>
             <p>
-            <ul>
-                @if(path.isEmpty) {
-                <i>*** No path was driven yet ***</i><br/><br/>
+            <div class="source-code">
+             	<ul class="noindent">
+		@if(path.isEmpty) {
+                <i>*** No path was driven yet ***</i>
                 } else {
                 @path.map{ e =>
                 <li>[@e.time] x: <b>@e.x</b> y: <b>@e.y</b>
@@ -36,7 +39,8 @@
                 </li>
                 }
                 }
-            </ul>
+		</ul>
+	    </div>
             </p>
         </div>
 

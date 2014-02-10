@@ -168,11 +168,14 @@ case class Maze(
 
   def asHtml: String =
     points.map(xs => {
-      val a = xs.map {
-        case Some(p) if p.has(NORTH) => "| "
-        case Some(p) => "  "
-        case None => "   "
-      }.mkString + "<br/>"
+      var a = xs.map {
+        case Some(p) if p.has(NORTH) => "|   "
+        case Some(p) => "    "
+        case None => "     "
+      }.mkString
+
+      if(a.trim.isEmpty) a = ""
+      else a = a + "<br/>"
 
       val b =
         xs.map {
@@ -183,8 +186,8 @@ case class Maze(
             }
 
             val dir = p.has(WEST) match {
-              case true => "-"
-              case false => " "
+              case true => "---"
+              case false => "   "
             }
             dir + core
           }
@@ -192,8 +195,8 @@ case class Maze(
         }.mkString
 
       var res = b
-      if (b.startsWith(" "))
-        res = b.substring(1)
+      if (b.startsWith("   "))
+        res = b.substring(3)
       a + res
     }).mkString("<br/>").replaceAll(" ", "&nbsp;")
 }
