@@ -5,8 +5,9 @@
     <div class="row">
         <div class="col-lg-4">
             <h2>Server status</h2>
+
             <p><i>Uptime:</i><br>
-                    @uptime
+                @uptime
             </p>
         </div>
         <div class="col-lg-4">
@@ -14,18 +15,22 @@
             @ids.map{ id =>
             <p>
                 Group: <b>@id</b><br/>
-                <a id="runtest" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true" data-mini="true" href="/runtest?id=@id">Run Tests</a>
-                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true" data-mini="true" href="/gettest?id=@id">See test results</a>
+                <a id="runtest" data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true"
+                   data-mini="true" href="/runtest?id=@id">Run Tests</a>
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-inline="true" data-mini="true"
+                   href="/gettest?id=@id">See test results</a>
 
-                <ul class="menu">
-                    <li><a data-role="button" data-icon="arrow-d" data-iconpos="right" data-inline="true" data-mini="true">Set maze</a>
-                        <ul class="subMenu">
-                            @mazeNameRequests.map{ maze =>
-                            <li><a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/maze?id=@id&values=@maze._2">@maze._1</a></li>
-                            }
-                        </ul>
-                    </li>
-                </ul>
+            <ul class="menu">
+                <li><a data-role="button" data-icon="arrow-d" data-iconpos="right" data-inline="true" data-mini="true">Set
+                    maze</a>
+                    <ul class="subMenu">
+                        @mazeNameRequests.map{ maze =>
+                        <li><a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true"
+                               href="/maze?id=@id&values=@maze._2">@maze._1</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
             </p>
             }
         </div>

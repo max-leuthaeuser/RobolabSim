@@ -5,8 +5,10 @@
     <div class="row">
         <div class="col-lg-4">
             <h2>Running the tests...</h2>
+
             <p id="finished" style="display: none">
-                <a style="width: 50%" data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/gettest?id=@id">See test results</a>
+                <a style="width: 50%" data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true"
+                   href="/gettest?id=@id">See test results</a>
             </p>
         </div>
     </div>
@@ -31,5 +33,6 @@ setTimeout(function() {
         $.mobile.changePage("/gettest?id=@id");
     }, 5000);
 }, 20);
+
 </script>
 }

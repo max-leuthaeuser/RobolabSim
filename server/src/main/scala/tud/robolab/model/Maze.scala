@@ -174,7 +174,7 @@ case class Maze(
         case None => "     "
       }.mkString
 
-      if(a.trim.isEmpty) a = ""
+      if (a.trim.isEmpty) a = ""
       else a = a + "<br/>"
 
       val b =
