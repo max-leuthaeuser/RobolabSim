@@ -21,26 +21,26 @@
                 <font face="Courier New">
                     @Html(maze)
                 </font>
-		</div>
-            </p>
+				</div>
+			</p>
 
             <h2>Path</h2>
             <p>
             <div class="source-code">
              	<ul class="noindent">
-		@if(path.isEmpty) {
-                <i>*** No path was driven yet ***</i>
+				@if(path.isEmpty) {
+					<i>*** No path was driven yet ***</i>
                 } else {
-                @path.map{ e =>
-                <li>[@e.time] x: <b>@e.x</b> y: <b>@e.y</b>
-                    @if(e.token) {
-                    &nbsp;(T)
-                    }
-                </li>
+					@path.map{ e =>
+						<li>[@e.time] x: <b>@e.x</b> y: <b>@e.y</b>
+							@if(e.token) {
+							&nbsp;(T)
+							}
+						</li>
+					}
                 }
-                }
-		</ul>
-	    </div>
+				</ul>
+			</div>
             </p>
         </div>
 
