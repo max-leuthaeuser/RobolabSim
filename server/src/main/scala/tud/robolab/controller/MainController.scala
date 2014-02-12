@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,38 +18,13 @@
 
 package tud.robolab.controller
 
-import tud.robolab.view.{SimulationView, Interface}
-import tud.robolab.model.{Maze, MazePool, Session}
-import java.io.File
-import tud.robolab.utils.{TimeUtils, IOUtils}
-import spray.json._
-import tud.robolab.model.MazeJsonProtocol._
+import tud.robolab.view.Interface
 
 object MainController
 {
-  val mazePool = new MazePool
-
-  def changeMap(
-    m: String,
-    session: Session,
-    view: Option[SimulationView],
-    remove: Boolean = true): Boolean =
-  {
-    val f = new File("maps/" + m + ".maze")
-    if (!f.isFile) return false
-    session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
-    view.foreach(_ rebuild remove)
-
-    if (remove) {
-      session.clearWay()
-      session.clearHistory()
-    }
-    true
-  }
-
   def apply(testing: Boolean = false)
   {
-    SessionManager.testing = testing
+    SessionController.testing = testing
     if (!testing) Interface.startup(Array.empty)
   }
 }

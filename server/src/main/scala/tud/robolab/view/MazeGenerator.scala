@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{ChangeEvent, ChangeListener}
 import tud.robolab.model.{MazePool, Observer, Maze}
-import tud.robolab.controller.MainController
+import tud.robolab.controller.MapController
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
@@ -38,7 +38,7 @@ class MazeGenerator extends JPanel
   private var curr_height = 7
 
   private val name = new JTextField("maze")
-  private val box = new JComboBox(MainController.mazePool.mazeNames.toArray)
+  private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 12, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 12, 1))
 
@@ -140,7 +140,7 @@ class MazeGenerator extends JPanel
             }
           }
         }
-        MainController.mazePool +(filename, model)
+        MapController.mazePool +(filename, model)
       }
     })
 

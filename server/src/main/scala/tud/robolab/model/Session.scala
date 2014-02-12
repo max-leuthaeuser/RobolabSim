@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 package tud.robolab.model
 
 case class Client(
-  var ip: String,
+  var id: String,
   var blocked: Boolean = false)
 
 case class WayElement(
@@ -58,9 +58,9 @@ case class Session(
   def latestPosition: WayElement = path.last
 
   override def equals(o: Any) = o match {
-    case that: Session => that.client.ip.equals(this.client.ip)
+    case that: Session => that.client.id.equals(this.client.id)
     case _ => false
   }
 
-  override def hashCode = client.ip.hashCode
+  override def hashCode = client.id.hashCode
 }

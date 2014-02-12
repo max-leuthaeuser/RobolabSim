@@ -1,18 +1,36 @@
-@(maze: String, path: Seq[tud.robolab.model.WayElement], ip: String, testResult: tud.robolab.model.TestMessage)
+@(maze: String, path: Seq[tud.robolab.model.WayElement], id: String, testResult: tud.robolab.model.TestMessage)
 
 @import tud.robolab.model.WayElement
 @import tud.robolab.model.TestMessage
 
 @main(title = "Robolab - Test results") {
+<!--
+  ~ RobolabSim
+  ~ Copyright (C) 2014  Max Leuthaeuser
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see [http://www.gnu.org/licenses/].
+  -->
+
 <div class="container">
     <div class="row">
         <div class="col-lg-2">
             <h2>Control</h2>
 
             <p>
-                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/runtest?id=@ip">Run
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/runtest?id=@id">Run
                     tests again</a>
-                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/reset?id=@ip">Reset</a>
+                <a data-role="button" data-icon="arrow-r" data-iconpos="right" data-mini="true" href="/reset?id=@id">Reset</a>
             </p>
         </div>
 
@@ -35,7 +53,7 @@
             <div class="source-code">
                 <ul class="noindent">
                     @if(path.isEmpty) {
-                    <i>*** No path was driven yet ***</i>
+                    *** No path was driven yet ***
                     } else {
                     @path.map{ e =>
                     <li>[@e.time] x: <b>@e.x</b> y: <b>@e.y</b>
@@ -53,11 +71,13 @@
         <div class="col-lg-5">
             <h2>Test result</h2>
 
+            <p>Group: @id</p>
+
             <p>
                 @if(testResult.status) {
-                <i><span style="color:green">*** SUCCESS ***</span></i>
+                <span style="color:green">*** SUCCESS ***</span>
                 } else {
-                <i><span style="color:red">*** FAILED ***</span></i>
+                <span style="color:red">*** FAILED ***</span>
                 }
             </p>
 

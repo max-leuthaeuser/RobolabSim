@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import javax.swing._
 import java.awt._
 import java.awt.event.{ActionEvent, ActionListener}
 import tud.robolab.model.{MazePool, Observer}
-import tud.robolab.controller.{MainController, SessionManager}
+import tud.robolab.controller.{MapController, SessionController}
 import tud.robolab.model.Session
 
 class SimulationView(
@@ -30,10 +30,10 @@ class SimulationView(
   var isShown: Boolean = true) extends JPanel
                                        with Observer[MazePool]
 {
-  private val box = new JComboBox(MainController.mazePool.mazeNames.toArray)
+  private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
 
-  private val settings = buildSettingsPanel
+  private val settings = buildSettingsPanel()
 
   private var content = new JScrollPane(buildMazePanel())
 
@@ -73,7 +73,7 @@ class SimulationView(
       {
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
-          MainController.changeMap(box.getSelectedItem.asInstanceOf[String], session, Option(SimulationView.this))
+          MapController.changeMap(box.getSelectedItem.asInstanceOf[String], session, Option(SimulationView.this))
         }
       }
     })
@@ -84,7 +84,7 @@ class SimulationView(
 
   def close(block: Boolean = false)
   {
-    SessionManager.blockSession(session.client.ip, block)
+    SessionController.blockSession(session.client.id, block)
     isShown = false
   }
 
@@ -119,11 +119,10 @@ class SimulationView(
   {
     invalidate()
     splitPane.getRightComponent match {
-      case p: JPanel => {
+      case p: JPanel =>
         p.remove(content)
         content = new JScrollPane(buildMazePanel())
         p.add(content, BorderLayout.CENTER)
-      }
       case _ =>
     }
     if (remove) listModel.removeAllElements()

@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,7 @@ import tud.robolab.Boot
 import javax.swing.border.BevelBorder
 import java.awt.{BorderLayout, FlowLayout}
 import java.awt.event.{MouseEvent, MouseAdapter, ActionEvent, ActionListener}
-import tud.robolab.model.MazePool
-import tud.robolab.controller.{MainController, SessionManager}
+import tud.robolab.controller.{MapController, SessionController}
 import tud.robolab.utils.SizeUtilities
 
 object Interface extends SimpleSwingApplication
@@ -75,8 +74,8 @@ object Interface extends SimpleSwingApplication
     tabbed.addTab("SessionsEditor", sessionsEditor)
 
     /** Attach Observers here **/
-    MainController.mazePool.addObserver(mazeGenerator)
-    SessionManager.getSessions.addObserver(sessionsEditor)
+    MapController.mazePool.addObserver(mazeGenerator)
+    SessionController.getSessions.addObserver(sessionsEditor)
 
     tabbed.addMouseListener(new PopupListener())
     contents = mainPanel
@@ -146,7 +145,7 @@ object Interface extends SimpleSwingApplication
     c: SimulationView,
     title: String)
   {
-    MainController.mazePool.addObserver(c)
+    MapController.mazePool.addObserver(c)
     tabbed.addTab(null, c)
     val pos = tabbed.indexOfComponent(c)
 
@@ -172,14 +171,12 @@ object Interface extends SimpleSwingApplication
       def actionPerformed(e: ActionEvent)
       {
         Dialogs.closeOrBlock() match {
-          case Dialog.Result.Yes => {
+          case Dialog.Result.Yes =>
             c.close()
             tabbed.remove(c)
-          }
-          case Dialog.Result.Cancel => {
+          case Dialog.Result.Cancel =>
             c.close(block = true)
             tabbed.remove(c)
-          }
           case _ =>
         }
       }
@@ -194,14 +191,12 @@ object Interface extends SimpleSwingApplication
   {
     if (ask)
       Dialogs.addOrBlock(title) match {
-        case Dialog.Result.Yes => {
+        case Dialog.Result.Yes =>
           _addSimTap(c, title)
           return true
-        }
-        case Dialog.Result.Cancel => {
+        case Dialog.Result.Cancel =>
           c.close(block = true)
           return false
-        }
         case _ => return false
       }
     else _addSimTap(c, title)

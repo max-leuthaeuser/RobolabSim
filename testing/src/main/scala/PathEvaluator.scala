@@ -1,3 +1,21 @@
+/*
+ * RobolabSim
+ * Copyright (C) 2014 Max Leuthaeuser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see [http://www.gnu.org/licenses/].
+ */
+
 import org.jgrapht.alg.DijkstraShortestPath
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -188,6 +206,7 @@ class PathEvaluator(path: Seq[Node])
         case hd :: hd2 :: tail =>
           validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)
         case hd :: Nil => true
+        case Nil => throw new IllegalArgumentException("The path is empty!")
       }
     }
     eval(path.reverse)

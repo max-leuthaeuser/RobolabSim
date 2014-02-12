@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ package tud.robolab.model
 import PointJsonProtocol._
 import spray.json._
 import Direction._
-import tud.robolab.controller.MainController
+import tud.robolab.controller.MapController
 import tud.robolab.Config
 
 /** Case class representing a maze. Points (see [[tud.robolab.model.Point]]) are stored in a Seq.
@@ -242,8 +242,8 @@ object Maze
    * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]]
    *         with the `width` = 7 and `height` = 7 if configuration is invalid
    */
-  def default: Maze = MainController.mazePool.mazeNames.contains(Config.MAP) match {
-    case true => MainController.mazePool(Config.MAP)
+  def default: Maze = MapController.mazePool.mazeNames.contains(Config.MAP) match {
+    case true => MapController.mazePool(Config.MAP)
     case false => empty
   }
 }

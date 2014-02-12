@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,22 +29,20 @@ import spray.httpx.TwirlSupport._
 import RequestProtocol._
 import MapRequestProtocol._
 import TestMessageProtocol._
-import tud.robolab.controller.{MainController, SessionManager}
+import tud.robolab.controller.{MapController, SessionController}
 import java.net.{URLEncoder, URLDecoder}
 
 object Routes
 {
-  private def getUpTime: String = TimeUtils.uptime
-
   val indexRoute = path("") {
     get {
       respondWithMediaType(`text/html`) {
         complete {
           val uptime = TimeUtils.uptime
-          val sessions = SessionManager.numberOfSessions()
-          val mazeNameRequests = MainController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase)
+          val sessions = SessionController.numberOfSessions()
+          val mazeNameRequests = MapController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase)
             .map(n => (n, URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")))
-          val ids = SessionManager.getSessionsAsList.map(_.client.ip).sortWith(_.toLowerCase < _.toLowerCase)
+          val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
 
           tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
         }
@@ -64,7 +62,7 @@ object Routes
             val req = values.toString.asJson.convertTo[Request]
 
             Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
-            ctx.complete(SessionManager.handleQueryRequest(ip, req).toJson.compactPrint)
+            ctx.complete(SessionController.handleQueryRequest(ip, req).toJson.compactPrint)
         }
     }
   }
@@ -78,7 +76,7 @@ object Routes
             Boot.log.info("Incoming [History] request from ID [%s]".format(ip))
 
             import MessageJsonProtocol._
-            ctx.complete(SessionManager.handleHistoryRequest(ip).toJson.compactPrint)
+            ctx.complete(SessionController.handleHistoryRequest(ip).toJson.compactPrint)
         }
     }
   }
@@ -92,7 +90,7 @@ object Routes
             Boot.log.info("Incoming [NumberOfTokens] request from ID [%s]".format(ip))
 
             import MessageJsonProtocol._
-            ctx.complete(SessionManager.handleNumberOfTokensRequest(ip).toJson.compactPrint)
+            ctx.complete(SessionController.handleNumberOfTokensRequest(ip).toJson.compactPrint)
         }
     }
   }
@@ -109,7 +107,7 @@ object Routes
             val req = values.toString.asJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
-            SessionManager.handleMapRequest(ip, req)
+            SessionController.handleMapRequest(ip, req)
             ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
         }
     }
@@ -124,7 +122,7 @@ object Routes
             Boot.log.info("Incoming [Path] request from ID [%s]".format(ip))
 
             import MessageJsonProtocol._
-            ctx.complete(SessionManager.handlePathRequest(ip).toJson.compactPrint)
+            ctx.complete(SessionController.handlePathRequest(ip).toJson.compactPrint)
         }
     }
   }
@@ -145,7 +143,7 @@ object Routes
               .asJson.convertTo[TestMessage]
 
             Boot.log.info("Incoming [Test] put request from ID [%s]".format(ip))
-            ctx.complete(SessionManager.handleTestRequest(ip, dec).toJson.compactPrint)
+            ctx.complete(SessionController.handleTestRequest(ip, dec).toJson.compactPrint)
         }
     }
   }
@@ -158,7 +156,7 @@ object Routes
           ctx =>
             val ip = id
             Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
-            SessionManager.handleRunTestRequest(ip)
+            SessionController.handleRunTestRequest(ip)
             ctx.redirect("/waittest?id=" + ip, StatusCodes.Found)
         }
     }
@@ -185,9 +183,8 @@ object Routes
         (get | put) {
           ctx =>
             val ip = id
-            import MessageJsonProtocol._
             Boot.log.info("Incoming [Reset] request from ID [%s]".format(ip))
-            SessionManager.handleResetRequest(ip)
+            SessionController.handleResetRequest(ip)
             ctx.redirect("/", StatusCodes.Found)
         }
     }
@@ -201,9 +198,9 @@ object Routes
             val ip = id
             import MessageJsonProtocol._
             Boot.log.info("Incoming [Test] get request from ID [%s]".format(ip))
-            SessionManager.handleTestRequest(ip) match {
+            SessionController.handleTestRequest(ip) match {
               case t: TestMessage =>
-                val s = SessionManager.getSession(ip).get
+                val s = SessionController.getSession(ip).get
                 val path = s.path
                 val maze = s.maze.asHtml
                 complete {

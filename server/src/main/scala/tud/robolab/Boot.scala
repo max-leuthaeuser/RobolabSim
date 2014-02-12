@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ package tud.robolab
 import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import spray.can.Http
-import tud.robolab.utils.TimeUtils
 import tud.robolab.controller.MainController
 
 /** Application main entry point. Create and run all relevant actors and bind spray services. */

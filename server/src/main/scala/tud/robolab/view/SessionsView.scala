@@ -1,6 +1,6 @@
 /*
  * RobolabSim
- * Copyright (C) 2013  Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,15 @@
 
 package tud.robolab.view
 
-import tud.robolab.model.{Maze, Client, Session, Observer}
+import tud.robolab.model._
 import javax.swing._
-import tud.robolab.controller.SessionManager.SessionPool
 import java.awt.{Color, GridLayout, BorderLayout}
 import javax.swing.table.AbstractTableModel
 import java.awt.event.{MouseEvent, ActionListener, ActionEvent, KeyEvent}
-import tud.robolab.controller.SessionManager
+import tud.robolab.controller.SessionController
 import tud.robolab.utils.SizeUtilities
+import tud.robolab.model.Session
+import tud.robolab.model.Client
 
 class SessionsView extends JPanel
                            with Observer[SessionPool]
@@ -39,7 +40,7 @@ class SessionsView extends JPanel
     {
       val r = SessionAddDialog.getSession
       if (r.isDefined) {
-        SessionManager.addSession(r.get)
+        SessionController.addSession(r.get)
         tableModel.fireTableDataChanged()
       }
     }
@@ -72,7 +73,7 @@ class SessionsView extends JPanel
     {
       def actionPerformed(e: ActionEvent)
       {
-        SessionManager.removeSession(SessionManager.getSession(table.getSelectedRow))
+        SessionController.removeSession(SessionController.getSession(table.getSelectedRow))
       }
     })
 
@@ -81,11 +82,11 @@ class SessionsView extends JPanel
     {
       def actionPerformed(e: ActionEvent)
       {
-        val s = SessionManager.getSession(table.getSelectedRow)
-        val v = SessionManager.getView(s).get
+        val s = SessionController.getSession(table.getSelectedRow)
+        val v = SessionController.getView(s).get
         if (!v.isShown) {
           v.isShown = true
-          Interface.addSimTab(v, s.client.ip, ask = false)
+          Interface.addSimTab(v, s.client.id, ask = false)
         }
       }
     })
@@ -94,16 +95,16 @@ class SessionsView extends JPanel
     {
       override def stopCellEditing(): Boolean =
       {
-        val b = !getCellEditorValue.toString.isEmpty && !SessionManager.hasSession(getCellEditorValue.toString)
+        val b = !getCellEditorValue.toString.isEmpty && !SessionController.hasSession(getCellEditorValue.toString)
         if (!b) {
           getComponent.setForeground(Color.red)
         } else {
           getComponent.setForeground(new Color(0, 100, 0))
-          val s = SessionManager.getSession(table.getSelectedRow)
-          val v = SessionManager.getView(s)
-          SessionManager.removeSession(s)
-          s.client.ip = getCellEditorValue.toString
-          SessionManager.set(s, v)
+          val s = SessionController.getSession(table.getSelectedRow)
+          val v = SessionController.getView(s)
+          SessionController.removeSession(s)
+          s.client.id = getCellEditorValue.toString
+          SessionController.set(s, v)
         }
         b
       }
@@ -114,7 +115,7 @@ class SessionsView extends JPanel
 
   private class TableModel extends AbstractTableModel
   {
-    override def getRowCount: Int = if (!SessionManager.hasSessions) SessionManager.numberOfSessions() else 0
+    override def getRowCount: Int = if (!SessionController.hasSessions) SessionController.numberOfSessions() else 0
 
     override def getColumnCount: Int = 2
 
@@ -122,13 +123,13 @@ class SessionsView extends JPanel
       rowIndex: Int,
       columnIndex: Int): AnyRef =
     {
-      if (SessionManager.hasSessions) columnIndex match {
+      if (SessionController.hasSessions) columnIndex match {
         case 0 => ""
         case 1 => java.lang.Boolean.FALSE
       }
       else columnIndex match {
-        case 0 => SessionManager.getSession(rowIndex).client.ip
-        case 1 => java.lang.Boolean.valueOf(SessionManager.getSession(rowIndex).client.blocked)
+        case 0 => SessionController.getSession(rowIndex).client.id
+        case 1 => java.lang.Boolean.valueOf(SessionController.getSession(rowIndex).client.blocked)
       }
     }
 
@@ -138,7 +139,7 @@ class SessionsView extends JPanel
       columnIndex: Int)
     {
       super.setValueAt(aValue, rowIndex, columnIndex)
-      if (columnIndex == 1) SessionManager.getSession(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
+      if (columnIndex == 1) SessionController.getSession(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
     }
 
     override def isCellEditable(
