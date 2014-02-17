@@ -22,7 +22,7 @@ Follow these steps to get started:
 
     6.2. Windows:
     
-        $ gcc -lpython27 -LC:/Python27/libs -IC:/Python27/include -o RobolabSimClient.exe *.c
+        $ gcc -LC:/Python27/libs -IC:/Python27/include -o RobolabSimClient.exe *.c -lpython27
 
     6.3. MacOS X:
     
