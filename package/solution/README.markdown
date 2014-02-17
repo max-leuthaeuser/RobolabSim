@@ -2,7 +2,7 @@
 
 Follow these steps to get started:
 
-1. Install Python 2.7 from [here][python].
+1. Install Python 2.7 from [here][python]. (use the 32-bit version !!)
 
 2. Download and install [MinGW][gcc] and install the base package to get GCC on your system.
 
