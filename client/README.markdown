@@ -30,7 +30,13 @@ Follow these steps to get started:
 
 7. Start the application:
 
+    7.1. Linux & MacOS X:
+        
         $ ./RobolabSimClient
+        
+    7.2. Windows:
+        
+        $ ./RobolabSimClient.exe
 
 [python]: http://www.python.org/download/releases/2.7.6/ "Python"
 [gcc]: http://sourceforge.net/projects/mingw/files/ "MinGW"
