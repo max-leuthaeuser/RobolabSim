@@ -8,7 +8,7 @@ Follow these steps to develop your Robolab solution and test them with the simul
 
         $ cd RobolabSim/package
 
-3. Edit ```solution/c/h/Communication.h``` with your group ID.
+3. Edit ```solution/c/h/Configuration.h``` with your group ID.
 
 4. You can now write your solution in ```solution/c/src/```.
 
