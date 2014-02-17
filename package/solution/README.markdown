@@ -8,11 +8,11 @@ Follow these steps to get started:
 
 3. Git-clone this repository.
 
-4. Change directory into your clone and the ```src/``` directory.
+4. Edit ```h/Configuration.h``` with your group ID.
 
-        $ cd RobolabSim/client/c/src/
+5. Change directory into your clone and the ```src/``` directory.
 
-5. Edit ```h/Configuration.h``` with your group ID.
+        $ cd RobolabSim/package/solution/c/src/
 
 6. Compile it (**you need to have GCC and Python 2.7 installed, see steps 1 and 2!**).
 
