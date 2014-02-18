@@ -1,26 +1,24 @@
 ## Development with Eclipse on Windows
+----------------------
+1. Download **Eclipse for C&C++** Developers & start it
 
-1. Download Eclipse for C&C++ Developers
+2. Create a new C project ```File > New > C Project```
 
-2. Start Eclipse and create a new workspace
+4. In the Wizard choose **Hello World ANSI C Project** and a Compiler which is adequate to your system (in my case ***MinGW gcc***). Additionaly give the Project a nice name =)
 
-3. Create a new C project (```File > New > C Project```)
+5. Build it (*small hammer icon*) & run it (*small green arrow button*)
 
-4. In the Wizard choose "Hello World ANSI C Project" and a Compiler which is adequate to your system (in my case MinGW gcc). Additionaly give the Project a nice name =)
+6. If this works your compiler is OK, if not **STOP HERE** and try to get this to work!
 
-5. Build it (small hammer icon) & run it (small green arrow button)
-
-6. If this works your compiler is OK, if not STOP HERE and try to get this to work!
-
-7. Create 2 new subfolders in your src folder named ```h/``` and ```c/```.
+7. Create a ```c/``` Folder. Additionaly reate 2 new subfolders in your ```c/``` folder named ```h/``` and ```src/```
 
 8. Copy the 4 files ```Communication.h```, ```Configuration.h```, ```RobotProxy.h``` & ```Urlcode.h``` from the provided ```solution/``` folder in the created h folder.
 
-9. Do the same with the ```*.c``` files and the ```c/``` folder.
+9. Do the same with the ```*.c``` files and the ```src/``` folder.
 
 10. Delete the auto-created ```.c``` file ```Your_project_name.c``` in your ```src/``` folder (it includes the "Hello World output").
 
-11. FOR THE NEXT STEPS YOU NEED PYTHON INSTALLED
+11. **FOR THE NEXT STEPS YOU NEED PYTHON INSTALLED**
 
 12. Right click on your ```Project > Properties > C/C++ General > Path and Symbols > Includes Tab > GNU C > Add...```
 
@@ -32,6 +30,6 @@
 
 16. In the window below click on the plus icon next to "Libary search path (-L)" and add there the path to your python/libs folder (e.g. in my case ```C:\Python27\libs```).
 
-17. It's possible now to build the application (via the hammer icon) and run it (via the green arrow).
+17. It's possible now to build the application (*via the hammer icon* or ```CTRL+B```) and run it (*via the green arrow*).
 
 Your can now follow the instructions in our README.
