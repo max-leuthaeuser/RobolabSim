@@ -4,7 +4,7 @@
 
 2. Start Eclipse and create a new workspace
 
-3. Create a new C project (File > New > C Project)
+3. Create a new C project (```File > New > C Project```)
 
 4. In the Wizard choose "Hello World ANSI C Project" and a Compiler which is adequate to your system (in my case MinGW gcc). Additionaly give the Project a nice name =)
 
@@ -22,13 +22,13 @@
 
 11. FOR THE NEXT STEPS YOU NEED PYTHON INSTALLED
 
-12. Right click on your Project > Properties > C/C++ General > Path and Symbols > Includes Tab > GNU C > Add...
+12. Right click on your ```Project > Properties > C/C++ General > Path and Symbols > Includes Tab > GNU C > Add...```
 
 13. Add the python/include path from your filesystem (e.g. in my case ```C:\Python27\include```).
 
-14. Right click on your Project > Properties > C/C++ Build > MinGW C Linker (or your linker) > plus icon next to "Libaries (-l)".
+14. Right click on your ```Project > Properties > C/C++ Build > Settings > MinGW C Linker > Libaries``` (or your linker) > plus icon next to "Libaries (-l)".
 
-15. There type "python27" (without these --> "").
+15. There type ```python27```
 
 16. In the window below click on the plus icon next to "Libary search path (-L)" and add there the path to your python/libs folder (e.g. in my case ```C:\Python27\libs```).
 
