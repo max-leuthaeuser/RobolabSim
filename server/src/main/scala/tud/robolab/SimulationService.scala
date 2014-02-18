@@ -55,6 +55,8 @@ trait SimulationService extends HttpService
     runTestRoute ~
     waitTestRoute ~
     getTestRoute ~
+    adminRoute ~
+    removeIDRoute ~
     path(Rest) {
       path =>
         get {

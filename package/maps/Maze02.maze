@@ -1,0 +1,28 @@
+[[{
+  "dirs": ["SOUTH", "EAST"],
+  "token": false
+}, {
+  "dirs": ["SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": [],
+  "token": false
+}], [{
+  "dirs": ["EAST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["WEST", "SOUTH"],
+  "token": false
+}], [{
+  "dirs": [],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "WEST"],
+  "token": false
+}]]

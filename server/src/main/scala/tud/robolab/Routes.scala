@@ -29,8 +29,11 @@ import spray.httpx.TwirlSupport._
 import RequestProtocol._
 import MapRequestProtocol._
 import TestMessageProtocol._
-import tud.robolab.controller.{MapController, SessionController}
+import tud.robolab.controller.{AuthController, MapController, SessionController}
 import java.net.{URLEncoder, URLDecoder}
+import scala.concurrent.ExecutionContext
+import spray.routing.authentication.BasicAuth
+import ExecutionContext.Implicits.global
 
 object Routes
 {
@@ -210,6 +213,37 @@ object Routes
                 m.toJson.compactPrint
               }
             }
+          }
+        }
+    }
+  }
+
+  val removeIDRoute = path("remove") {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+      auth =>
+        parameter('id) {
+          id
+          =>
+            (get | put) {
+              ctx =>
+                val ip = id
+                Boot.log.info("Incoming [Remove ID] request from ID [%s]".format(ip))
+                SessionController.handleRemoveIDRequest(ip)
+                ctx.redirect("/admin", StatusCodes.Found)
+            }
+        }
+    }
+  }
+
+  val adminRoute = path("admin") {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+      auth =>
+        get {
+          complete {
+            val sessions = SessionController.numberOfSessions()
+            val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
+
+            tud.robolab.html.admin(sessions, ids).toString()
           }
         }
     }

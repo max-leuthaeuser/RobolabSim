@@ -1,0 +1,37 @@
+[[{
+  "dirs": ["SOUTH", "EAST"],
+  "token": false
+}, {
+  "dirs": ["WEST", "SOUTH"],
+  "token": true
+}, {
+  "dirs": [],
+  "token": false
+}], [{
+  "dirs": ["EAST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["EAST", "SOUTH", "WEST", "NORTH"],
+  "token": false
+}, {
+  "dirs": ["WEST", "SOUTH"],
+  "token": true
+}], [{
+  "dirs": ["SOUTH", "EAST"],
+  "token": false
+}, {
+  "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
+  "token": false
+}, {
+  "dirs": ["WEST", "NORTH"],
+  "token": false
+}], [{
+  "dirs": ["EAST", "NORTH"],
+  "token": true
+}, {
+  "dirs": ["NORTH", "WEST"],
+  "token": false
+}, {
+  "dirs": [],
+  "token": false
+}]]

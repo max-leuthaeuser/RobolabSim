@@ -26,6 +26,7 @@ import tud.robolab.utils.TimeUtils
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import scala.sys.process._
+import tud.robolab.Config
 
 /** Handles incoming requests and sessions.
   *
@@ -345,7 +346,7 @@ object SessionController
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    val cmd = "java -jar RobolabSimTest.jar --ID " + id + " --IP localhost"
+    val cmd = "java -jar RobolabSimTest.jar --ID " + id + " --IP " + Config.IP
     future {
       blocking {
         cmd.!!
@@ -365,6 +366,14 @@ object SessionController
     s.clearWay()
     s.maze = Maze.default
     s.test = Test()
+    Ok()
+  }
+
+  def handleRemoveIDRequest(
+    id: String): Message =
+  {
+    if (!hasSession(id)) return ErrorType.NO_ID
+    removeSession(id)
     Ok()
   }
 }

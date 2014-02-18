@@ -1,0 +1,58 @@
+@(sessions: Int, ids: Seq[String])
+
+@main(title = "Robolab - Admin") {
+<!--
+  ~ RobolabSim
+  ~ Copyright (C) 2014  Max Leuthaeuser
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see [http://www.gnu.org/licenses/].
+  -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Sessions</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Group ID</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @ids.map{ id =>
+                <tr>
+                    <td>@id</td>
+                    <td><a id="runtest" data-role="button" data-icon="delete" data-iconpos="right"
+                           data-inline="true"
+                           data-mini="true"
+                           href="/remove?id=@id">Delete</a></td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; Max Leuthäuser 2014</p>
+    </footer>
+</div>
+
+<script src="js/vendor/bootstrap.min.js"></script>
+
+<script src="js/main.js"></script>
+}
