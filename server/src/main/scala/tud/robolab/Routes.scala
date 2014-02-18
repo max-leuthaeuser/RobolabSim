@@ -243,7 +243,7 @@ object Routes
             val sessions = SessionController.numberOfSessions()
             val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
 
-            tud.robolab.html.admin(sessions, ids).toString()
+            tud.robolab.html.admin(sessions, ids)
           }
         }
     }
