@@ -26,7 +26,7 @@
 
 13. Add the python/include path from your filesystem (e.g. in my case ```C:\Python27\include```).
 
-14. Right click on your ```Project > Properties > C/C++ Build > Settings > MinGW C Linker > Libaries > plus icon next to "Libaries (-l)"``` .
+14. Right click on your Project > ```Properties > C/C++ Build > Settings > MinGW C Linker > Libaries > plus icon next to "Libaries (-l)"``` .
 
 15. There type ```python27```
 
