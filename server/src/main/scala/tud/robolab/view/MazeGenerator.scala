@@ -39,8 +39,8 @@ class MazeGenerator extends JPanel
 
   private val name = new JTextField("maze")
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
-  private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 12, 1))
-  private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 12, 1))
+  private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 30, 1))
+  private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 30, 1))
 
   private val settings = buildSettingsPanel
 
