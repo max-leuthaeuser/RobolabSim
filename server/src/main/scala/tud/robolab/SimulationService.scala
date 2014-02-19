@@ -21,6 +21,8 @@ package tud.robolab
 import akka.actor.Actor
 import spray.routing._
 import Routes._
+import spray.routing.directives.CachingDirectives._
+import scala.concurrent.duration.Duration
 
 /** Holding the context actor system and the standard route for our service. */
 class SimulationServiceActor extends Actor
@@ -44,6 +46,8 @@ class SimulationServiceActor extends Actor
 /** Defines our service behavior independently from the service actor. */
 trait SimulationService extends HttpService
 {
+  val simpleCache = routeCache(maxCapacity = 1000, timeToLive = Duration("30 min"))
+
   val myRoute = indexRoute ~
     queryRoute ~
     historyRoute ~
@@ -58,9 +62,14 @@ trait SimulationService extends HttpService
     adminRoute ~
     removeIDRoute ~
     path(Rest) {
+      // serving static files for bootstrap, cached and gzip compressed
       path =>
         get {
-          getFromResource("bootstrap/%s" format path)
+          cache(simpleCache) {
+            compressResponse() {
+              getFromResource("bootstrap/%s" format path)
+            }
+          }
         }
     }
 }

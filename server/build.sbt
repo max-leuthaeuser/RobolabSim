@@ -21,6 +21,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "org.scala-lang"      %   "scala-swing"   % "2.10.2",
   "io.spray"            %   "spray-can"     % "1.2.0",
+  "io.spray"            %   "spray-caching" % "1.2.0",
   "io.spray"            %   "spray-routing" % "1.2.0",
   "io.spray"            %%  "spray-json"    % "1.2.5",
   "io.spray"            %   "spray-testkit" % "1.2.0",
