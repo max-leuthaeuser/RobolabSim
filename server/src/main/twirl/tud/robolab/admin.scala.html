@@ -1,4 +1,4 @@
-@(sessions: Int, ids: Seq[String])
+@(sessions: Int, ids: Seq[String], hidden: Boolean)
 
 @main(title = "Robolab - Admin") {
 <!--
@@ -21,6 +21,13 @@
 
 <div class="container">
     <div class="row">
+        <div class="col-lg-2">
+            <h2>Control</h2>
+
+            <p>
+                <a data-role="button" data-icon="arrow-l" data-iconpos="right" data-mini="true" href="/">Back</a>
+            </p>
+        </div>
         <div class="col-lg-4">
             <h2>Sessions</h2>
             <table class="table">
@@ -34,14 +41,33 @@
                 @ids.map{ id =>
                 <tr>
                     <td>@id</td>
-                    <td><a data-role="button" data-icon="delete" data-iconpos="right"
-                           data-inline="true"
-                           data-mini="true"
-                           href="/remove?id=@id">Delete</a></td>
+                    <td>
+                        <p style="text-align:right">
+                            <a data-role="button" data-icon="delete" data-iconpos="right"
+                               data-inline="true"
+                               data-mini="true"
+                               href="/remove?id=@id">Delete</a>
+                        </p>
+                    </td>
                 </tr>
                 }
                 </tbody>
             </table>
+        </div>
+        <div class="col-lg-4">
+            <h2>Toggle hide mazes</h2>
+            @if(hidden) {
+            Mazes are hidden <a data-role="button" data-icon="forward" data-iconpos="right"
+                                data-inline="true"
+                                data-mini="true"
+                                href="/hideMazes">Show</a>
+            } else {
+            Mazes are not hidden <a data-role="button" data-icon="back" data-iconpos="right"
+                                    data-inline="true"
+                                    data-mini="true"
+                                    href="/hideMazes">Hide</a>
+            }
+
         </div>
     </div>
 

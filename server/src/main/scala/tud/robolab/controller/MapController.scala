@@ -29,6 +29,8 @@ object MapController
 {
   val mazePool = new MazePool
 
+  var hideMazes = false
+
   def changeMap(
     m: String,
     session: Session,

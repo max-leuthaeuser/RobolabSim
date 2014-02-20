@@ -61,6 +61,7 @@ trait SimulationService extends HttpService
     getTestRoute ~
     adminRoute ~
     removeIDRoute ~
+    hideMazesRoute ~
     path(Rest) {
       // serving static files for bootstrap, cached and gzip compressed
       path =>

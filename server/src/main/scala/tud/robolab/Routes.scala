@@ -205,7 +205,10 @@ object Routes
               case t: TestMessage =>
                 val s = SessionController.getSession(ip).get
                 val path = s.path
-                val maze = s.maze.asHtml
+                val maze = MapController.hideMazes match {
+                  case false => s.maze.asHtml
+                  case true => "Maze hidden"
+                }
                 complete {
                   tud.robolab.html.testresult(maze, path, ip, t)
                 }
@@ -235,6 +238,18 @@ object Routes
     }
   }
 
+  val hideMazesRoute = path("hideMazes") {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+      auth =>
+        (get | put) {
+          ctx =>
+            Boot.log.info("Incoming [Hide Maze] request")
+            MapController.hideMazes = !MapController.hideMazes
+            ctx.redirect("/admin", StatusCodes.Found)
+        }
+    }
+  }
+
   val adminRoute = path("admin") {
     authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
       auth =>
@@ -243,7 +258,7 @@ object Routes
             val sessions = SessionController.numberOfSessions()
             val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
 
-            tud.robolab.html.admin(sessions, ids)
+            tud.robolab.html.admin(sessions, ids, MapController.hideMazes)
           }
         }
     }
