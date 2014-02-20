@@ -25,6 +25,6 @@
 
 // define maze size here
 #define MAZE_WIDTH 6
-#define MAZE_HIGHT 6
+#define MAZE_HEIGHT 6
 
 #endif /* CONFIGURATION_H_ */
