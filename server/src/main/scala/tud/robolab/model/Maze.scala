@@ -60,6 +60,11 @@ case class Maze(
   def points: Seq[Seq[Option[Point]]] = data
 
   /**
+   * @return all points ([[tud.robolab.model.Point]]) as Seq but will return only valid points, no Options
+   */
+  def validPoints: Seq[Point] = points.flatten.flatten
+
+  /**
    * Set the robot position.
    * @param x x coordinate (min: 0, max: width)
    * @param y y coordinate (min: 0, max: height)

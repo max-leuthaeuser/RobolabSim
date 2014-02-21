@@ -24,6 +24,7 @@ import java.awt.event.{ActionEvent, ActionListener}
 import tud.robolab.model.{MazePool, Observer}
 import tud.robolab.controller.{MapController, SessionController}
 import tud.robolab.model.Session
+import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
 
 class SimulationView(
   session: Session,
@@ -100,6 +101,20 @@ class SimulationView(
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     list.setLayoutOrientation(JList.VERTICAL)
     list.setVisibleRowCount(-1)
+    list.addListSelectionListener(new ListSelectionListener()
+    {
+      override def valueChanged(e: ListSelectionEvent)
+      {
+        if (!e.getValueIsAdjusting) {
+          val index = list.getSelectedIndex
+          val point = session.path(index)
+          val maze = session.maze
+          maze.validPoints.foreach(_.robot = false)
+          session.maze(point.x)(point.y).foreach(_.robot = true)
+          content.repaint()
+        }
+      }
+    })
     result.add(new JScrollPane(list), BorderLayout.CENTER)
     val clearBtn = new JButton("Clear")
     clearBtn.addActionListener(new ActionListener
