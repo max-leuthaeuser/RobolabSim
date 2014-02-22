@@ -28,4 +28,5 @@ object Config
   lazy val PORT = conf.getInt("spray.can.server.port")
   lazy val TESTING = conf.getBoolean("spray.can.server.testing")
   lazy val MAP = conf.getString("spray.can.server.default-map")
+  lazy val ADMIN = conf.getString("spray.can.server.admin.pass")
 }

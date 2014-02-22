@@ -22,6 +22,7 @@ import spray.routing.authentication.UserPass
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import tud.robolab.utils.HashString
+import tud.robolab.Config
 
 case class AuthUser(
   username: String,
@@ -31,7 +32,7 @@ object AuthController
 {
   val admin = AuthUser(
     username = "admin",
-    password = "41a9ac6a84fae0d7a042b88fcc784c5c28041cc0fa584bdb691c28cffa3b286f160762f89faee129bc80d7d2eed38d8f652a91d192e0236acc92df29246e23f8"
+    password = Config.ADMIN
   )
 
   def userPassAuthenticator(userPass: Option[UserPass]): Future[Option[String]] =
