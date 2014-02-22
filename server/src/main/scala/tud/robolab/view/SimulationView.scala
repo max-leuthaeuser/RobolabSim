@@ -105,7 +105,7 @@ class SimulationView(
     {
       override def valueChanged(e: ListSelectionEvent)
       {
-        if (!e.getValueIsAdjusting) {
+        if (!e.getValueIsAdjusting && list.getSelectedIndex >= 0) {
           val index = list.getSelectedIndex
           val point = session.path(index)
           val maze = session.maze
