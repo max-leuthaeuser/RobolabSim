@@ -22,9 +22,9 @@ import tud.robolab.view.Interface
 
 object MainController
 {
-  def apply(testing: Boolean = false)
+  def apply(swing: Boolean = false)
   {
-    SessionController.testing = testing
-    if (!testing) Interface.startup(Array.empty)
+    SessionController.swing = swing
+    if (!swing) Interface.startup(Array.empty)
   }
 }

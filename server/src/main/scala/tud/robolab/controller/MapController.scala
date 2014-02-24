@@ -24,12 +24,13 @@ import java.io.File
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
+import tud.robolab.Config
 
 object MapController
 {
   val mazePool = new MazePool
 
-  var hideMazes = false
+  var hideMazes = Config.MAZES
 
   def changeMap(
     m: String,

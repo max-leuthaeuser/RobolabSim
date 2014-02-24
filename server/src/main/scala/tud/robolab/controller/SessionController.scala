@@ -35,7 +35,7 @@ import tud.robolab.Config
 object SessionController
 {
   private val sessions = new SessionPool()
-  var testing = false
+  var swing = false
 
   /**
    * See [[tud.robolab.model.SessionPool]] for doc.
@@ -129,7 +129,7 @@ object SessionController
   def addSession(s: Session)
   {
     if (!hasSession(s.client.id)) {
-      val v: Option[SimulationView] = testing match {
+      val v: Option[SimulationView] = swing match {
         case true => Option.empty
         case false => Option(new SimulationView(s, false))
       }
@@ -144,7 +144,7 @@ object SessionController
   {
     if (!hasSession(id) && !sessionBlocked(id)) {
       val s = Session(Client(id))
-      testing match {
+      swing match {
         case false =>
           val v = new SimulationView(s)
           if (Interface.addSimTab(v, id)) {
