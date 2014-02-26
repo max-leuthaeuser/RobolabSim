@@ -47,7 +47,7 @@ class Statistics(path: Seq[Node])
     case _ => 0
   }.toSeq
 
-  def getTurns: Int = getTurnsIt.sum
+  def getTurns: Int = getUTurns + getLTurns
 
   def getUTurns: Int = getTurnsIt.count(_ == 2)
 
