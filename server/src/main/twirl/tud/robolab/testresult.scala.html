@@ -1,4 +1,4 @@
-@(maze: String, path: Seq[tud.robolab.model.WayElement], id: String, testResult: tud.robolab.model.TestMessage)
+@(maze: String, path: Seq[tud.robolab.model.WayElement], id: String, testResult: Boolean, testHead: String, testResults: Seq[(Boolean,String)], testBench: String)
 
 @import tud.robolab.model.WayElement
 @import tud.robolab.model.TestMessage
@@ -35,7 +35,7 @@
             </p>
         </div>
 
-        <div class="col-lg-4" style="margin-left:50px;">
+        <div class="col-lg-3" style="margin-left:50px;">
             <h2>Map</h2>
 
             <p>
@@ -69,25 +69,59 @@
             </p>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <h2>Test result</h2>
 
             <p>Group: @id</p>
 
+            @if(!testResults.isEmpty) {
             <p>
-                @if(testResult.status) {
-                <span style="color:green">*** SUCCESS ***</span>
+                Overall test result:
+                @if(testResult) {
+                <span style="color:green"> Okay</span>
                 } else {
-                <span style="color:red">*** FAILED ***</span>
+                <span style="color:red"> Failed</span>
                 }
             </p>
+            }
 
             <p>
-                <b>Reason:</b><br/>
+            @Html(testHead)
 
-            <div class="source-code">
-                @Html(testResult.result)
+            @if(!testResults.isEmpty) {
+            <div class="scrollable">
+            <table class="table">
+                <colgroup>
+                    <col span="1">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th style="width=20%">Result</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                @testResults.map{ c =>
+                <tr>
+                    <td>
+                        @if(!c._1) {
+                        <span style="color:green">Okay</span>
+                        } else {
+                        <span style="color:red">Failed</span>
+                        }
+                    </td>
+                    <td>
+                        @Html(c._2)
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
             </div>
+            }
+
+            @Html(testBench)
             </p>
         </div>
     </div>

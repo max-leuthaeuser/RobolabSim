@@ -38,16 +38,17 @@ class RobolabTestSpec(
   info("During the exploration of a maze the robot should")
   info("not cross any node more than once except it is")
   info("a dead end or there is no other unexplored way.")
+  info("---")
 
-  test("No empty solutions are allowed") {
+  test("No empty solutions are allowed.") {
     fixture.client.getPath.nodes.size should not be 0
   }
 
-  test("No invalid tokens are allowed (if failed, you drove out of bounds of the maze, in most cases)") {
+  test("No invalid positions are allowed (if failed, you drove out of bounds of the maze, in most cases).") {
     fixture.historyEvaluator.validateHistory should not be false
   }
 
-  test("you have to move step by step and you are not permitted to drive diagonals") {
+  test("You have to move step by step and you are not permitted to drive diagonals.") {
     fixture.evaluator.validateOneStepConstraint should not be false
   }
 
@@ -55,37 +56,38 @@ class RobolabTestSpec(
     fixture.evaluator.validateOnlyOnLineConstraint should not be false
   }
 
-  test("You should not visit a node more often then is has neighbors. (Only until you found the tokens!)") {
+  test("You should not visit a node more often then is has neighbors (only until you found the tokens).") {
     fixture.evaluator.validateMaximumVisitedCount should not be false
   }
 
-  test("find all tokens if they exist. if there are no tokens, you can not find any of them") {
+  test("Find all tokens if they exist. If there are no tokens, you can not find any of them.") {
     fixture.evaluator.foundUniqueTokens shouldEqual fixture.tokenCount
   }
 
   if (fixture.tokenCount == 0) {
-    test("if no token exists you should explore the complete maze") {
+    test("If no token exists you should explore the complete maze.") {
       fixture.evaluator.validateCompleteMazeIsExplored should not be false
     }
 
-    test("if no token exists you algorithm should terminate after the entire maze is explored") {
+    test("If no token exists your algorithm should terminate after the entire maze is explored.") {
       fixture.evaluator.validateTerminatedAfterWholeMazeIsExplored should not be false
     }
 
     test(
-      "When you explore the maze, you should not head back a known path if there are unknown ones directly available") {
+      "When you explore the maze, you should not head back a known path if there are unknown ones directly available.") {
       fixture.evaluator.validateIfThereIsADirectUnknownPathDriveIt should not be false
     }
   }
 
   if (fixture.tokenCount != 0) {
     test(
-      "if there are tokens, robot have to find the shortest path between two nodes, for driving back to start position on a optimal path")
+      "If there are tokens, the robot have to find the shortest path between two nodes, for driving back to start position on an optimal path.")
     {
       fixture.evaluator.validateShortestPath should not be false
     }
   }
 
+  info("---")
   info("Here are some statistics of your course:")
   val stats = new Statistics(fixture.client.getPath.nodes)
   val magicVisitedNodesNumber = 10

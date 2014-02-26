@@ -219,7 +219,10 @@ class PathEvaluator(path: Seq[Node])
     val knownMaze = getBuilder.constructKnownMaze
     val path = getBuilder.constructPath
 
-    knownMaze.vertexSet().size == path.vertexSet().size
+    val knownSize = knownMaze.vertexSet().size
+    val pathSize = path.vertexSet().size
+
+    knownSize != 0 && pathSize != 0 && knownMaze == pathSize
   }
 
   def validateTerminatedAfterWholeMazeIsExplored: Boolean =

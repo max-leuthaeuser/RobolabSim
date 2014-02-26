@@ -127,7 +127,7 @@ class RoblabSimClient(
 
   def sendTest(result: String)
   {
-    val success = !result.toLowerCase.contains("failed")
+    val success = !result.contains("*** FAILED ***")
     val payload = URLEncoder.encode(result, "UTF-8").replace("+", "%2B")
     val values = """{"result":"""" + payload + """","status":""" + success + """}"""
     val content = "&values=" + URLEncoder.encode(values, "UTF-8")

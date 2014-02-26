@@ -209,8 +209,17 @@ object Routes
                   case false => s.maze.asHtml
                   case true => "Maze hidden"
                 }
-                complete {
-                  tud.robolab.html.testresult(maze, path, ip, t)
+
+                if (t.result.contains("No tests done yet")) {
+                  complete(tud.robolab.html.testresult(maze, path, ip, false, t.result, Seq.empty, ""))
+                } else {
+                  val testcontent = t.result.split("---")
+                  val (head, tail) = (testcontent(0), testcontent(2))
+                  val body = testcontent(1).split("-").filterNot(_.trim.equals("<br/>")).map(s => {
+                    (s.contains("*** FAILED ***"), s.replaceAll("\\*\\*\\* FAILED \\*\\*\\*", ""))
+                  })
+
+                  complete(tud.robolab.html.testresult(maze, path, ip, t.status, head, body, tail))
                 }
               case m: Message => complete {
                 m.toJson.compactPrint

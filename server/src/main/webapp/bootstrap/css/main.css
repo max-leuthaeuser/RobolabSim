@@ -9,6 +9,11 @@
     white-space: nowrap;
 }
 
+.scrollable {
+    overflow: scroll;
+    max-height: 300px;
+}
+
 ul.menu {
     display: block;
     position: relative;
@@ -38,4 +43,14 @@ li:hover ul.subMenu {
 
 ul.noindent {
     margin-left: -40px;
+}
+
+.table {
+    max-width: none;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+col {
+    width:15%;
 }
