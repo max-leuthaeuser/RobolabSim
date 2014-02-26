@@ -196,7 +196,7 @@ case class Maze(
             }
             dir + core
           }
-          case _ => "  "
+          case _ => "    "
         }.mkString
 
       var res = b
