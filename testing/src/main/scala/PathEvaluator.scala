@@ -30,6 +30,7 @@ class PathEvaluator(path: Seq[Node])
   {
     assert(tokenCount >= 0)
     this.tokenCount = tokenCount
+    this.getBuilder.setTokenCount(tokenCount)
     this
   }
 
@@ -139,6 +140,7 @@ class PathEvaluator(path: Seq[Node])
 
     // need the pseudoNodes for the knownMaze --> see SimpleGraphBuilder.constructKnownMaze
     val pseudoLastToken = new Node(lastToken.x, lastToken.y)
+
     val pseudoHome = new Node(0, 0)
 
     //calculate one of the shortest paths
@@ -158,9 +160,9 @@ class PathEvaluator(path: Seq[Node])
         isStartIncluded = true
       }
     }
-
+    
     // only checking the length and if the endNode is the homeNode, because there are more than 1 adequate shortest paths
-    shortestPath.getPathLength == driveHome.edgeSet().size() && isStartIncluded
+    (shortestPath.getPathLength == driveHome.edgeSet().size()) && isStartIncluded
   }
 
   def getSetOfNeighbors(n: Node): Seq[Node] =
@@ -222,7 +224,7 @@ class PathEvaluator(path: Seq[Node])
     val knownSize = knownMaze.vertexSet().size
     val pathSize = path.vertexSet().size
 
-    knownSize != 0 && pathSize != 0 && knownMaze == pathSize
+    (knownSize != 0) && (pathSize != 0) && (knownSize == pathSize)
   }
 
   def validateTerminatedAfterWholeMazeIsExplored: Boolean =

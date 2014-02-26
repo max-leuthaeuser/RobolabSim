@@ -53,7 +53,7 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     graph
   }
 
-  def getLastTokenNode: Node = path.filter(_.token).toSet.take(tokenCount).last
+  def getLastTokenNode: Node = path.filter(_.token).distinct.last
 
   def setTokenCount(tokenCount: Int): GraphBuilder[Node, DefaultEdge] =
   {
