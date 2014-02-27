@@ -16,7 +16,14 @@ Follow these steps to develop your Robolab solution and test them with the simul
 
 6. Start the simulation server:
     
+   6.1. 
+
         $ java -jar RobolabSim.jar
+        
+   6.2. Or to specify some IP to start your server at:
+        
+        $ java -Dspray.can.server.ip="your.ip.here" -jar RobolabSim.jar
+        
 
 7. Run your compiled solution (see 5).
 
