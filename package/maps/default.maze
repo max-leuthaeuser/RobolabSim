@@ -18,7 +18,7 @@
   "token": false
 }], [{
   "dirs": ["SOUTH", "EAST", "NORTH"],
-  "token": true
+  "token": false
 }, {
   "dirs": ["NORTH", "EAST", "SOUTH", "WEST"],
   "token": false
@@ -36,7 +36,7 @@
   "token": true
 }], [{
   "dirs": ["EAST", "NORTH"],
-  "token": true
+  "token": false
 }, {
   "dirs": ["NORTH", "EAST", "WEST"],
   "token": false
