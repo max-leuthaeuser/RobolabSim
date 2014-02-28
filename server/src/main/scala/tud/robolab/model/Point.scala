@@ -28,7 +28,7 @@ case class Point(
 {
   assert(data != null)
 
-  private var callback: Option[() => Unit] = Option.empty
+  private var callback: Seq[() => Unit] = Seq.empty
 
   private val hash = java.util.UUID.randomUUID.toString
 
@@ -36,7 +36,13 @@ case class Point(
 
   def addCallback(h: () => Unit)
   {
-    callback = Option(h)
+    callback = callback :+ h
+  }
+
+  def setToken(enabled: Boolean)
+  {
+    token = enabled
+    callback.foreach(_())
   }
 
   def +(

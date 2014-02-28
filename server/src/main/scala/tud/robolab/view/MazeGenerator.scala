@@ -41,6 +41,7 @@ class MazeGenerator extends JPanel
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 30, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 30, 1))
+  private val numTokensLabel = new JLabel("#Tokens: 0")
 
   private val settings = buildSettingsPanel
 
@@ -72,6 +73,7 @@ class MazeGenerator extends JPanel
           spinnerx.setValue(curr_width)
           spinnery.setValue(curr_height)
           name.setText(n)
+          numTokensLabel.setText("#Tokens: " + model.getNumberOfToken)
           rebuild()
         }
       }
@@ -105,13 +107,14 @@ class MazeGenerator extends JPanel
       }
     })
 
-    val edit = new JPanel(new GridLayout(3, 2, 5, 10))
+    val edit = new JPanel(new GridLayout(4, 2, 5, 10))
     edit.add(labelx)
     edit.add(spinnerx)
     edit.add(labely)
     edit.add(spinnery)
     edit.add(labeln)
     edit.add(name)
+    edit.add(numTokensLabel)
 
     val result = new JPanel(new BorderLayout())
     result.add(edit, BorderLayout.NORTH)
@@ -172,6 +175,7 @@ class MazeGenerator extends JPanel
         val tile = new Tile(point, xs._2, p._2)
         point.addObserver(model)
         point.addCallback(result.repaint)
+        point.addCallback(() => numTokensLabel.setText("#Tokens: " + model.getNumberOfToken))
         result.add(tile)
       })
     })

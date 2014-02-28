@@ -134,7 +134,7 @@ class Tile(
       y: Int)
     {
       super.handleClick(x, y)
-      if (!model.robot) model.token = enabled
+      if (!model.robot) model.setToken(enabled)
     }
 
     override def repaint(g: Graphics)
