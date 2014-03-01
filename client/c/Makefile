@@ -10,7 +10,7 @@ CPP_OSX = clang
 
 
 INCLUDE += -I. -Ic -Ih -Icurl/curl
-LINK += curl/libs/libcurl.a -m32 -lm -ldl -lrt
+LINK += -m32 -lm -ldl -lrt
 
 CFLAGS += -std=c90 -pedantic -DPOSIX -DCURL_STATICLIB -DCOMPILER_GCC -Wall -Werror \
 	-Wno-overloaded-virtual -Wno-switch -Wno-unused -msse -DHAVE_STDINT_H -m32
@@ -27,9 +27,10 @@ OS := $(shell uname -s)
 ifeq "$(OS)" "Darwin"
 	CPP = $(CPP_OSX)
 	CFLAGS += -DOSX -D_OSX
-	LINK += -mmacosx-version-min=10.5
+	LINK += -mmacosx-version-min=10.5 curl/libs/darwin/libcurl.a
 else
 	CFLAGS += -D_LINUX
+	LINK += curl/libs/linux/libcurl.a
 endif
 
 IS_CLANG := $(shell $(CPP) --version | head -1 | grep clang > /dev/null && echo "1" || echo "0")
