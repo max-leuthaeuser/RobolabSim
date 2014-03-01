@@ -2,7 +2,8 @@
 
 Follow these steps to get started:
 
-2. For Windows only: Download and install [Visual Studio 2013](http://www.microsoft.com/de-de/download/details.aspx?id=40787) and install it.
+2. For Windows only: Download and install [Visual Studio 2013](http://www.microsoft.com/de-de/download/details.aspx?id=40787).    
+Or Download, install [Cygwin](http://cygwin.com/install.html) and add the `cygwin/bin` folder to your Path variable.
 
 3. Git-clone this repository.
 
@@ -21,7 +22,9 @@ Follow these steps to get started:
     6.2. Windows:
     
         Compile with Visual Studio:
-			Erstellen->Projektmappe erstellen
+			Create -> Create Project
+		Compile with Cygwin:
+			$ make
 
     6.3. MacOS X:
     
@@ -31,8 +34,8 @@ Follow these steps to get started:
 
     7.1. Linux & MacOS X:
         
-        $ ./RobolabSimClient
+        $ ./Release/RobolabSimClient
         
     7.2. Windows:
         
-        $ ./RobolabSimClient.exe
+        $ ./Release/RobolabSimClient.exe
