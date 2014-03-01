@@ -68,21 +68,29 @@ int Robot_Move(int x, int y) {
 
 	if (response == NULL) {
 		puts("Connection to server failed!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
 	if (contains(response, "\"code\":1")) {
 		puts("Connection declined!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
 	if (contains(response, "\"code\":2")) {
 		puts("Connection blocked!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 	
 	if (contains(response, "\"code\":3")) {
 		printf("Invalid position! (x=%d, y=%d)\n", x, y);
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
@@ -102,6 +110,7 @@ int Robot_Move(int x, int y) {
 		token = true;
 
 	free(query);
+	free(response);
 
 	currentIntersection = foundIntersection;
 	if (token)
