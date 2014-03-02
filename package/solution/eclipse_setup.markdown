@@ -4,7 +4,7 @@
 
 2. Create a new C project ```File > New > C Project```
 
-3. In the Wizard choose **Hello World ANSI C Project** and a Compiler which is adequate to your system (in my case ***MinGW gcc***). Additionaly give the Project a nice name =)
+3. In the Wizard choose **Hello World ANSI C Project** and a Compiler which is adequate to your system (in my case ***Cygwin gcc***). Additionaly give the Project a nice name =)
 
 4. Build it (*small hammer icon*) & run it (*small green arrow button*)
 
@@ -20,18 +20,14 @@
 
 9. Delete the auto-created ```.c``` file ```Your_project_name.c``` in your ```c/``` folder (it includes the "Hello World output").
 
-10. **FOR THE NEXT STEPS YOU NEED PYTHON INSTALLED**
+10. Right click on your ```Project > Properties > C/C++ General > Path and Symbols > Includes Tab > GNU C > Add...```
 
-11. Right click on your ```Project > Properties > C/C++ General > Path and Symbols > Includes Tab > GNU C > Add...```
+11. Add the curl include path ```curl/curl```.
 
-12. Add the python/include path from your filesystem (e.g. in my case ```C:\Python27\include```).
+12. Right click on your Project > ```Properties > C/C++ Build > Settings > Cygwin C Linker > Libaries > plus icon next to "Libaries (-l)"``` .
 
-13. Right click on your Project > ```Properties > C/C++ Build > Settings > MinGW C Linker > Libaries > plus icon next to "Libaries (-l)"``` .
+13. There type ```curl/libs/cygwin/libcurl.a```
 
-14. There type ```python27```
-
-15. In the window below click on the plus icon next to "Libary search path (-L)" and add there the path to your python/libs folder (e.g. in my case ```C:\Python27\libs```).
-
-16. It's possible now to build the application (*via the hammer icon* or ```CTRL+B```) and run it (*via the green arrow*).
+14. It's possible now to build the application (*via the hammer icon* or ```CTRL+B```) and run it (*via the green arrow*).
 
 Your can now follow the instructions in our README.
