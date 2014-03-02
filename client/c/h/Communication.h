@@ -2,7 +2,6 @@
 #define COMMUNICATION_H_
 
 #include "Configuration.h"
-#include <Python.h>
 
 char* sendAndRecieve(const char* url);
 
