@@ -3,6 +3,7 @@
 Follow these steps to get started:
 
 1. Install Python 2.7 from [here][python]. (use the 32-bit version !!)
+        - For Ubuntu install python and python-dev (sudo apt-get install python python-dev)
 
 2. For Windows only: Download and install [MinGW][gcc] and install the base package to get GCC on your system. And don't forget to add ```C:\MinGW\bin``` to your PATH variable.
 
@@ -18,7 +19,7 @@ Follow these steps to get started:
 
     6.1. Linux:
     
-        $ gcc -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
+        $ gcc -I/usr/include/python2.7 -o RobolabSimClient *.c -lpython2.7
 
     6.2. Windows:
     
