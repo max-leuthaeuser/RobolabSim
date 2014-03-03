@@ -13,3 +13,7 @@ echo "*** Copying to builds/ ***"
 cp target/scala-2.10/RobolabSimTest.jar builds/RobolabSimTest-latest.jar
 echo "*** Copying to package/ ***"
 cp target/scala-2.10/RobolabSimTest.jar ../package/RobolabSimTest.jar
+
+cd ..
+echo "*** Copying content from client/ to package/ ***"
+cp -r client/* package/solution
