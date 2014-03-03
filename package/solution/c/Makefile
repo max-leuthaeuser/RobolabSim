@@ -4,7 +4,7 @@ C = gcc
 C_OSX = clang
 
 INCLUDE += -I. -Ic -Ih -Icurl/curl
-LINK += -m32 -lm -ldl -lrt
+LINK += -m32 -lm -ldl
 
 CFLAGS += -std=c99 -DPOSIX -DCURL_STATICLIB -DCOMPILER_GCC -Wall -Werror \
 	-msse -DHAVE_STDINT_H -m32
@@ -22,10 +22,10 @@ endif
 
 ifeq "$(OS)" "Linux"
 	CFLAGS += -D_LINUX
-	LINK += curl/libs/linux/libcurl.a
+	LINK += curl/libs/linux/libcurl.a -lrt
 else
 	CFLAGS += -D_CYGWIN
-	LINK += curl/libs/cygwin/libcurl.a
+	LINK += curl/libs/cygwin/libcurl.a -lrt
 endif
 
 OBJ_BIN := $(OBJECTS:%.c=$(BIN_DIR)/%.o)
