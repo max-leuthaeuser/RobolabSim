@@ -70,34 +70,6 @@ object Routes
     }
   }
 
-  val historyRoute = path("history") {
-    parameter('id) {
-      id =>
-        get {
-          ctx =>
-            val ip = id
-            Boot.log.info("Incoming [History] request from ID [%s]".format(ip))
-
-            import MessageJsonProtocol._
-            ctx.complete(SessionController.handleHistoryRequest(ip).toJson.compactPrint)
-        }
-    }
-  }
-
-  val numberOfTokensRoute = path("numberOfTokens") {
-    parameter('id) {
-      id =>
-        get {
-          ctx =>
-            val ip = id
-            Boot.log.info("Incoming [NumberOfTokens] request from ID [%s]".format(ip))
-
-            import MessageJsonProtocol._
-            ctx.complete(SessionController.handleNumberOfTokensRequest(ip).toJson.compactPrint)
-        }
-    }
-  }
-
   val mazeRoute = path("maze") {
     parameters('id, 'values) {
       (
@@ -126,27 +98,6 @@ object Routes
 
             import MessageJsonProtocol._
             ctx.complete(SessionController.handlePathRequest(ip).toJson.compactPrint)
-        }
-    }
-  }
-
-  val setTestRoute = path("settest") {
-    parameters('id, 'values) {
-      (
-        id,
-        values) =>
-        put {
-          ctx =>
-            val ip = id
-            import MessageJsonProtocol._
-            val req = values.toString
-            val dec = URLDecoder.decode(req, "UTF-8")
-              .replace("+", " ") // URLEncoder messes up with whitespaces...
-              .replaceAll(System.getProperty("line.separator"), "<br/>") // and we need explicite linebreaks in HTML
-              .asJson.convertTo[TestMessage]
-
-            Boot.log.info("Incoming [Test] put request from ID [%s]".format(ip))
-            ctx.complete(SessionController.handleTestRequest(ip, dec).toJson.compactPrint)
         }
     }
   }
@@ -211,11 +162,12 @@ object Routes
                 }
 
                 if (t.result.contains("No tests done yet")) {
-                  complete(tud.robolab.html.testresult(maze, path, ip, false, t.result, Seq.empty, ""))
+                  complete(tud.robolab.html.testresult(maze, path, ip, testResult = false, t.result, Seq.empty, ""))
                 } else {
                   val testcontent = t.result.split("---")
                   val (head, tail) = (testcontent(0), testcontent(2))
-                  val body = testcontent(1).split("-").filterNot(_.trim.equals("<br/>")).map(s => {
+                  val body = testcontent(1).split("-").filterNot(e => e.trim.equals("<br/>") || e.trim.isEmpty)
+                    .map(s => {
                     (s.contains("*** FAILED ***"), s.replaceAll("\\*\\*\\* FAILED \\*\\*\\*", ""))
                   })
 

@@ -50,12 +50,9 @@ trait SimulationService extends HttpService
 
   val myRoute = indexRoute ~
     queryRoute ~
-    historyRoute ~
-    numberOfTokensRoute ~
     mazeRoute ~
     pathRoute ~
     resetRoute ~
-    setTestRoute ~
     runTestRoute ~
     waitTestRoute ~
     getTestRoute ~
