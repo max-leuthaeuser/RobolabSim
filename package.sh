@@ -1,3 +1,4 @@
+#!/bin/sh
 cd server/
 echo "*** Building server jar ***"
 sbt assembly
