@@ -184,7 +184,7 @@ class PathEvaluator(path: Seq[Node])
   def getSetOfNotVisitedNeighbors(
     pathUntil: Seq[Node],
     n: Node): Seq[Node] =
-    getSetOfNeighbors(n).filter(v => pathUntil.count(t => t.x == v.x && t.y == v.y) != 0).distinct
+    getSetOfNeighbors(n).filter(v => pathUntil.contains(v)).distinct
 
   def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
 
@@ -207,8 +207,7 @@ class PathEvaluator(path: Seq[Node])
     def eval(revPath: Seq[Node]): Boolean =
     {
       revPath match {
-        case hd :: hd2 :: tail =>
-          validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd2)) && eval(hd2 :: tail)
+        case hd :: hd2 :: tail => validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd)) && eval(hd2 :: tail)
         case hd :: Nil => true
         case Nil => throw new IllegalArgumentException("The path is empty!")
       }
