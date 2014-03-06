@@ -28,8 +28,6 @@ case class Request(
 
 case class MapRequest(map: String) extends Message
 
-case class TokenRequest(numberOfTokens: Int) extends Message
-
 case class QueryResponse(
   north: Boolean,
   east: Boolean,

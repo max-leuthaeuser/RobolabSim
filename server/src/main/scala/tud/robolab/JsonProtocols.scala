@@ -26,7 +26,6 @@ import tud.robolab.model.ErrorMessage
 import tud.robolab.model.TestMessage
 import tud.robolab.model.Ok
 import tud.robolab.model.Request
-import tud.robolab.model.TokenRequest
 import tud.robolab.model.PathResponse
 
 /**
@@ -57,18 +56,6 @@ object JsonProtocols
   object MapRequestProtocol extends DefaultJsonProtocol
   {
     implicit val mapRequestFormat = jsonFormat1(MapRequest)
-  }
-
-  /** Implicit conversions from [[tud.robolab.model.TokenRequest]] to json.
-    *
-    * {{{
-    *   import TokenRequestProtocol._
-    *   val json = TokenRequest(...).toJson
-    * }}}
-    */
-  object TokenRequestProtocol extends DefaultJsonProtocol
-  {
-    implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
   }
 
   /** Implicit conversions from [[tud.robolab.model.QueryResponse]] to json.
@@ -110,7 +97,6 @@ object JsonProtocols
   import RequestProtocol._
   import QueryResponseProtocol._
   import ErrorMessageProtocol._
-  import TokenRequestProtocol._
   import MapRequestProtocol._
   import TestMessageProtocol._
 
@@ -136,7 +122,6 @@ object JsonProtocols
           case r: Ok => "Ok".toJson
           case test: TestMessage => test.toJson
           case m: MapRequest => m.toJson
-          case t: TokenRequest => t.toJson
           case r: QueryResponse => r.toJson
           case b: ErrorMessage => b.toJson
           case p: PathResponse => JsArray(p.way.map(t =>

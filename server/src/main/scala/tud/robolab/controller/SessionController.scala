@@ -25,8 +25,7 @@ import tud.robolab.model.Client
 import tud.robolab.utils.TimeUtils
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-import scala.sys.process._
-import tud.robolab.Config
+import tud.robolab.testing.TestRunner
 
 /** Handles incoming requests and sessions.
   *
@@ -288,40 +287,6 @@ object SessionController
   }
 
   /**
-   * Handle the incoming request, returning the number of tokens of the related session maze if possible.
-   *
-   * @param id the group ID
-   * @return a [[tud.robolab.model.Message]] containing the number of tokens regarding to the result of this call.
-   */
-  def handleNumberOfTokensRequest(id: String): Message =
-  {
-    if (!hasSession(id)) return ErrorType.NO_MAP
-    if (sessionBlocked(id)) return ErrorType.BLOCKED
-
-    val s = getSession(id).get
-    TokenRequest(s.maze.getNumberOfToken)
-  }
-
-  /**
-   * Handle the incoming request, set a test result and return the the appropriate result.
-   *
-   * @param id the group ID
-   * @param r the [[tud.robolab.model.TestMessage]]
-   * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
-   */
-  def handleTestRequest(
-    id: String,
-    r: TestMessage): Message =
-  {
-    if (!hasSession(id)) return ErrorType.NO_ID
-    if (sessionBlocked(id)) return ErrorType.BLOCKED
-
-    val s = getSession(id).get
-    s.test = Test(r.result, r.status)
-    Ok()
-  }
-
-  /**
    * Handle the incoming request, return the the appropriate test result.
    *
    * @param id the group ID
@@ -346,10 +311,9 @@ object SessionController
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    val cmd = "java -jar RobolabSimTest.jar --ID " + id + " --IP " + Config.IP
     future {
       blocking {
-        cmd.!!
+        TestRunner.run(id)
       }
     }
     Ok()
