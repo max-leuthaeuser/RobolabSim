@@ -73,7 +73,7 @@ object IOUtils
   def getFileTreeFilter(
     f: File,
     str: String): Array[String] = getFileTree(f).filter(_.getName.endsWith(str))
-    .map(_.getName.replaceAll(".maze", "")).toArray
+    .map(_.getName.dropRight(5)).toArray
 
   def readFromFile(f: File): String =
   {
