@@ -51,7 +51,7 @@ object Interface extends SimpleSwingApplication
     location = pos
     minimumSize = dim
     preferredSize = dim
-    maximumSize = dim
+    //maximumSize = dim
     peer.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
     title = "RobolabSim"
 

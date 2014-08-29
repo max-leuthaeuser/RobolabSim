@@ -21,15 +21,15 @@ package tud.robolab.view
 import javax.swing._
 import java.awt._
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.{MazePool, Observer}
+import tud.robolab.model.{Coordinate, MazePool, Observer, Session}
 import tud.robolab.controller.{MapController, SessionController}
-import tud.robolab.model.Session
 import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
 
 class SimulationView(
   session: Session,
-  var isShown: Boolean = true) extends JPanel
-                                       with Observer[MazePool]
+  var isShown: Boolean = true
+  ) extends JPanel
+            with Observer[MazePool]
 {
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
@@ -108,10 +108,8 @@ class SimulationView(
         if (!e.getValueIsAdjusting && list.getSelectedIndex >= 0) {
           val index = list.getSelectedIndex
           val point = session.path(index)
-          val maze = session.maze
-          maze.validPoints.foreach(_.robot = false)
-          session.maze(point.x)(point.y).foreach(_.robot = true)
-          content.repaint()
+          session.maze.setRobot(Coordinate(point.x, point.y))
+          // TODO: content.repaint()
         }
       }
     })
@@ -144,17 +142,7 @@ class SimulationView(
     validate()
   }
 
-  private def buildMazePanel(): JPanel =
-  {
-    val result = new JPanel()
-    result.setLayout(new GridLayout(session.maze.width, session.maze.height, 5, 5))
-    session.maze.points.view.zipWithIndex.foreach(xs => {
-      xs._1.view.zipWithIndex.foreach(p => {
-        result.add(new Tile(p._1.get, xs._2, p._2, readOnly = true))
-      })
-    })
-    result
-  }
+  private def buildMazePanel(): JPanel = new MazeView(session.maze, readOnly = true)
 
   override def receiveUpdate(subject: MazePool)
   {
@@ -176,7 +164,8 @@ class SimulationView(
       cell: String,
       index: Int,
       isSelected: Boolean,
-      cellHasFocus: Boolean): Component =
+      cellHasFocus: Boolean
+      ): Component =
     {
       val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus)
         .asInstanceOf[JComponent]

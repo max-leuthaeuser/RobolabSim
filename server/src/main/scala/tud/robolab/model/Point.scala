@@ -22,54 +22,33 @@ import Direction._
 import spray.json._
 
 case class Point(
-  private var data: Seq[Direction] = Direction.values.toSeq,
+  var directions: Seq[Direction] = Direction.values.toSeq,
   var token: Boolean = false,
-  var robot: Boolean = false) extends Subject[Point]
+  var robot: Boolean = false
+  )
 {
-  assert(data != null)
 
-  private var callback: Seq[() => Unit] = Seq.empty
-
-  private val hash = java.util.UUID.randomUUID.toString
-
-  def has(dir: Direction): Boolean = data.contains(dir)
-
-  def addCallback(h: () => Unit)
-  {
-    callback = callback :+ h
-  }
-
-  def setToken(enabled: Boolean)
-  {
-    token = enabled
-    callback.foreach(_())
-  }
+  def has(dir: Direction): Boolean = directions.contains(dir)
 
   def +(
     dir: Direction,
-    notify: Boolean = true)
+    notify: Boolean = true
+    )
   {
     if (!has(dir)) {
-      data = data :+ dir
-      callback.foreach(_())
-      if (notify)
-        notifyObservers()
+      directions = directions :+ dir
     }
   }
 
   def -(
     dir: Direction,
-    notify: Boolean = true)
+    notify: Boolean = true
+    )
   {
     if (has(dir)) {
-      data = data diff Seq(dir)
-      callback.foreach(_())
-      if (notify)
-        notifyObservers()
+      directions = directions diff Seq(dir)
     }
   }
-
-  def directions: Seq[Direction] = data
 
   def asTuple: (Boolean, Boolean, Boolean, Boolean, Boolean) = (
     has(NORTH),
@@ -78,13 +57,6 @@ case class Point(
     has(WEST),
     token
     )
-
-  override def hashCode(): Int = hash.hashCode
-
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case other: Point => this.hashCode() == other.hashCode()
-    case _ => false
-  }
 }
 
 object PointJsonProtocol extends DefaultJsonProtocol

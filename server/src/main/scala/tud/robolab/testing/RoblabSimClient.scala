@@ -19,16 +19,17 @@
 package tud.robolab.testing
 
 import tud.robolab.controller.{MapController, SessionController}
-import tud.robolab.model.{WayElement, Session, QueryResponseFactory, Test}
+import tud.robolab.model._
 
 class RoblabSimClient(id: String)
 {
   private def toPath(
     path: Seq[WayElement],
-    s: Session): Path =
+    s: Session
+    ): Path =
   {
     Path(path.map(p => {
-      s.maze(p.x)(p.y) match {
+      s.maze.getNode(Coordinate(p.x, p.y)) match {
         case Some(point) =>
           val r = QueryResponseFactory.fromPoint(point)
           val north = r.north

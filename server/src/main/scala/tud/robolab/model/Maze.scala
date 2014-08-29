@@ -18,161 +18,99 @@
 
 package tud.robolab.model
 
+import java.util.Observable
+
 import PointJsonProtocol._
 import spray.json._
 import Direction._
 import tud.robolab.controller.MapController
 import tud.robolab.Config
 
-/** Case class representing a maze. Points (see [[tud.robolab.model.Point]]) are stored in a Seq.
+import scala.collection.mutable
+
+/** Class representing a maze. Points (see [[tud.robolab.model.Point]]) are stored in a Map with their
+  * corresponding [[tud.robolab.model.Coordinate]].
   *
-  * @param data the initial Seq of points ([[tud.robolab.model.Point]]) representing all intersections
-  * @param robot an instance of [[tud.robolab.model.Robot]] representing the initial position.
+  * @param width the initial width of the maze
+  * @param height the initial height of the maize
+  * @param data the initial map of points ([[tud.robolab.model.Point]]) representing all intersections
   */
-case class Maze(
-  private val data: Seq[Seq[Option[Point]]],
-  robot: Robot = Robot()) extends Observer[Point]
+class Maze(
+  val width: Int,
+  val height: Int,
+  val data: mutable.HashMap[Coordinate, Point] = mutable.HashMap.empty,
+  var origin: Coordinate = Coordinate(0, 0)
+  ) extends Observable
 {
-  assert(data != null && data(0) != null)
-  robotPosition(robot.x, robot.y)
-
-  /**
-   * @return the height of this maze as Int
-   */
-  def height: Int = data(0).size
-
-  /**
-   * @return the width of this maze as Int
-   */
-  def width: Int = data.size
-
-  /**
-   * @param x x coordinate (min: 0, max: width)
-   * @param y y coordinate (min: 0, max: height)
-   * @return the [[tud.robolab.model.Point]] at the given coordinates if there is one.
-   */
-  def apply(x: Int)
-    (y: Int): Option[Point] = data(x)(y)
-
-  /**
-   * @return all points ([[tud.robolab.model.Point]]) as Seq
-   */
-  def points: Seq[Seq[Option[Point]]] = data
-
-  /**
-   * @return all points ([[tud.robolab.model.Point]]) as Seq but will return only valid points, no Options
-   */
-  def validPoints: Seq[Point] = points.flatten.flatten
-
-  /**
-   * Set the robot position.
-   * @param x x coordinate (min: 0, max: width)
-   * @param y y coordinate (min: 0, max: height)
-   * @return true if `x` and `y` are representing a valid position, false otherwise
-   */
-  def robotPosition(
-    x: Int,
-    y: Int): Boolean =
-  {
-    if (!isValidPosition(x, y)) return false
-    data(robot.x)(robot.y).get.robot = false
-    robot.x = x
-    robot.y = y
-    data(x)(y).get.robot = true
-    true
-  }
+  // TODO data.get(Relation.offset(at, origin))
+  def getNode(at: Coordinate): Option[Point] = data.get(Coordinate(at.x + origin.x, -1 * at.y + origin.y))
 
   /** Check if parameters `x` and `y` describe a valid position.
     *
-    * @param x x coordinate (min: 0, max: width)
-    * @param y y coordinate (min: 0, max: height)
-    * @return if point with `x` and `y` is a valid position
+    * @param at the [[tud.robolab.model.Coordinate]] to check
+    * @return true if `at` is within the maze, false otherwise
     */
-  def isValidPosition(
-    x: Int,
-    y: Int): Boolean = x < width && y < height && x >= 0 && y >= 0
+  // TODO data.get(Relation.offset(at, origin))
+  def isValid(at: Coordinate): Boolean = data.contains(Coordinate(at.x + origin.x, -1 * at.y + origin.y))
 
-  /**
-   * @param p an instance of [[tud.robolab.model.Point]]
-   * @return the coordinates for `p` as a Tuple of the type `(Int, Int)`
-   */
-  private def getXY(p: Point): Option[(Int, Int)] =
+  private def saveSetAt(
+    at: Coordinate,
+    func: () => Unit
+    ): Boolean =
   {
-    (0 to width - 1).foreach(x => {
-      (0 to height - 1).foreach(y => {
-        val r = data(x)(y)
-        if (r.isDefined && r.get == p) {
-          return Option((x, y))
-        }
-      })
+    if (data.contains(at)) {
+      func()
+      setChanged()
+      notifyObservers()
+      true
+    } else
+      false
+  }
+
+  def setRobot(at: Coordinate): Boolean =
+  {
+    val t_at = Coordinate(at.x + origin.x, -1 * at.y + origin.y) // TODO: Relation.offset(at, origin)
+    saveSetAt(t_at, () => {
+      data.values.foreach(_.robot = false)
+      data(t_at).robot = true
     })
-    Option.empty
+  }
+
+  def setToken(
+    at: Coordinate,
+    token: Boolean
+    ): Boolean =
+  {
+    // TODO: val t_at = Relation.offset(at, origin)
+    saveSetAt(at, () => {
+      getNode(at).foreach(_.token = token)
+    })
+  }
+
+  def setOrigin(at: Coordinate): Boolean =
+  {
+    val t_at = Coordinate(at.x, -1 * at.y)
+    saveSetAt(t_at, () => {
+      origin = t_at
+    })
   }
 
   /**
    * @return the number of tokens in this maze
    */
-  def getNumberOfToken: Int = data.flatten.count(p => p.isDefined && p.get.token)
+  def getNumberOfToken: Int = data.values.count(_.token)
 
-  /** Calculates the neighbour for the [[tud.robolab.model.Point]] `p` in the given
-    * [[tud.robolab.model.Direction.Direction]] `dir`.
-    *
-    * @param p an instance of [[tud.robolab.model.Point]]
-    * @param dir an instance of [[tud.robolab.model.Direction.Direction]]
-    * @return the neighbour for the [[tud.robolab.model.Point]] `p` in the given [[tud.robolab.model.Direction.Direction]] `dir`
-    */
-  private def neighbour(
-    p: Point,
-    dir: Direction): Option[Point] = dir match {
-    case NORTH => {
-      val c = getXY(p)
-      if (!c.isDefined) return Option.empty
-      val (x, y) = c.get
-      if (x == 0) return Option.empty
-      data(x - 1)(y)
-    }
-    case EAST => {
-      val c = getXY(p)
-      if (!c.isDefined) return Option.empty
-      val (x, y) = c.get
-      if (y == height - 1) return Option.empty
-      data(x)(y + 1)
-    }
-    case SOUTH => {
-      val c = getXY(p)
-      if (!c.isDefined) return Option.empty
-      val (x, y) = c.get
-      if (x == width - 1) return Option.empty
-      data(x + 1)(y)
-    }
-    case WEST => {
-      val c = getXY(p)
-      if (!c.isDefined) return Option.empty
-      val (x, y) = c.get
-      if (y == 0) return Option.empty
-      data(x)(y - 1)
-    }
-    case _ => throw new IllegalArgumentException
-  }
-
-  def receiveUpdate(subject: Point)
+  def pointsAsSeq: Seq[Seq[Option[Point]]] =
   {
-    Direction.values.foreach(d => subject.has(d) match {
-      case true => {
-        val n = neighbour(subject, d)
-        if (n.isDefined)
-          n.get +(Direction.opposite(d), notify = false)
-      }
-      case false => {
-        val n = neighbour(subject, d)
-        if (n.isDefined)
-          n.get -(Direction.opposite(d), notify = false)
-      }
+    (0 to height - 1).map(y => {
+      (0 to width - 1).map(x => {
+        data.get(Coordinate(x, y))
+      })
     })
   }
 
   def asHtml: String =
-    points.map(xs => {
+    pointsAsSeq.map(xs => {
       var a = xs.map {
         case Some(p) if p.has(NORTH) => "|   "
         case Some(p) => "    "
@@ -184,7 +122,7 @@ case class Maze(
 
       val b =
         xs.map {
-          case Some(p) if p.directions.nonEmpty => {
+          case Some(p) if p.directions.nonEmpty =>
             val core = p.token match {
               case true => "O"
               case false => "X"
@@ -195,7 +133,6 @@ case class Maze(
               case false => "   "
             }
             dir + core
-          }
           case _ => "    "
         }.mkString
 
@@ -216,26 +153,31 @@ object Maze
    */
   def empty(
     width: Int,
-    height: Int): Maze =
+    height: Int
+    ): Maze =
   {
     val max_x = width - 1
     val max_y = height - 1
-    Maze((0 to max_x).map(x =>
-      (0 to max_y).map(y => {
+
+    val initialMap = mutable.HashMap[Coordinate, Point]()
+
+    (0 to max_y).foreach(y =>
+      (0 to max_x).foreach(x => {
         val p = (x, y) match {
-          case (0, 0) => Point(Seq(SOUTH, EAST))
-          case (xs, xy) if xs == max_x && xy == max_y => Point(Seq(NORTH, WEST))
-          case (xs, xy) if xs == 0 && xy == max_y => Point(Seq(WEST, SOUTH))
-          case (xs, xy) if xs == max_x && xy == 0 => Point(Seq(EAST, NORTH))
-          case (xs, xy) if xs == max_x => Point(Seq(NORTH, EAST, WEST))
-          case (xs, xy) if xy == max_y => Point(Seq(SOUTH, WEST, NORTH))
-          case (xs, xy) if xs == 0 => Point(Seq(SOUTH, EAST, WEST))
-          case (xs, xy) if xy == 0 => Point(Seq(SOUTH, EAST, NORTH))
-          case _ => Point()
+          case (0, 0) => initialMap(Coordinate(0, 0)) = Point(Seq(SOUTH, EAST))
+          case (xs, xy) if xs == max_x && xy == max_y => initialMap(Coordinate(xs, xy)) = Point(Seq(NORTH, WEST))
+          case (xs, xy) if xs == 0 && xy == max_y => initialMap(Coordinate(xs, xy)) = Point(Seq(NORTH, EAST))
+          case (xs, xy) if xs == max_x && xy == 0 => initialMap(Coordinate(xs, xy)) = Point(Seq(WEST, SOUTH))
+          case (xs, xy) if xs == max_x => initialMap(Coordinate(xs, xy)) = Point(Seq(NORTH, SOUTH, WEST))
+          case (xs, xy) if xy == max_y => initialMap(Coordinate(xs, xy)) = Point(Seq(EAST, WEST, NORTH))
+          case (xs, xy) if xs == 0 => initialMap(Coordinate(xs, xy)) = Point(Seq(SOUTH, EAST, NORTH))
+          case (xs, xy) if xy == 0 => initialMap(Coordinate(xs, xy)) = Point(Seq(SOUTH, EAST, WEST))
+          case _ => initialMap(Coordinate(x, y)) = Point()
         }
-        Option(p)
-      }).toSeq
-    ).toSeq)
+      })
+    )
+
+    new Maze(width, height, initialMap)
   }
 
   /**
@@ -259,9 +201,9 @@ object MazeJsonProtocol extends DefaultJsonProtocol
 
   implicit object MazeJsonFormat extends RootJsonFormat[Maze]
   {
-    def write(p: Maze) =
+    def write(p: Maze): JsArray =
     {
-      val points: List[List[JsValue]] = p.points.map(ys => {
+      val points: List[List[JsValue]] = p.pointsAsSeq.map(ys => {
         ys.map {
           case None => JsString("None")
           case Some(e) => e.toJson
@@ -271,19 +213,26 @@ object MazeJsonProtocol extends DefaultJsonProtocol
       JsArray(points.map(JsArray(_)))
     }
 
-    def read(value: JsValue) = value match {
-      case s: JsArray => {
-        val points = s.elements.map {
-          case l: JsArray => l.elements.map {
-            case e if e.compactPrint.contains("None") => Option.empty
-            case e => Option(e.convertTo[Point])
-          }.toSeq
-          case _ => deserializationError("Maze expected!")
-        }.toSeq
+    def read(value: JsValue): Maze = value match {
+      case s: JsArray =>
+        try {
+          val initialMap = mutable.HashMap[Coordinate, Point]()
+          val width = s.elements(0).asInstanceOf[JsArray].elements.size
+          val height = s.elements.size
 
-        Maze(points)
-      }
-      case _ => deserializationError("Maze expected!")
+          (0 to height - 1).foreach(y => {
+            (0 to width - 1).foreach(x => {
+              val elem = s.elements(y).asInstanceOf[JsArray].elements(x)
+              if (!elem.compactPrint.contains("None"))
+                initialMap(Coordinate(x, y)) = elem.convertTo[Point]
+            })
+          })
+
+          new Maze(width, height, initialMap)
+        } catch {
+          case e: Exception => deserializationError("Valid maze expected!", e)
+        }
+      case _ => deserializationError("Valid maze expected!")
     }
   }
 

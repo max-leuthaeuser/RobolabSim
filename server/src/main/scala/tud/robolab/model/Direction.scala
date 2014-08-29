@@ -26,11 +26,7 @@ object Direction extends Enumeration
   type Direction = Value
   val NORTH, EAST, SOUTH, WEST = Value
 
-  /**
-   * @param dir the [[tud.robolab.model.Direction.Direction]] you want to get the opposite for
-   * @return the opposite direction for `dir`
-   */
-  def opposite(dir: Direction): Direction = dir match {
+  def oppositeOf(dir: Direction): Direction = dir match {
     case NORTH => SOUTH
     case EAST => WEST
     case SOUTH => NORTH

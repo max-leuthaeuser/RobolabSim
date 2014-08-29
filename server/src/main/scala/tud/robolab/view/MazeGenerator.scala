@@ -41,7 +41,7 @@ class MazeGenerator extends JPanel
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 30, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 30, 1))
-  private val numTokensLabel = new JLabel("#Tokens: 0")
+  private val numTokensLabel = TokenLabel()
 
   private val settings = buildSettingsPanel
 
@@ -73,7 +73,6 @@ class MazeGenerator extends JPanel
           spinnerx.setValue(curr_width)
           spinnery.setValue(curr_height)
           name.setText(n)
-          numTokensLabel.setText("#Tokens: " + model.getNumberOfToken)
           rebuild()
         }
       }
@@ -134,13 +133,12 @@ class MazeGenerator extends JPanel
           Dialogs.info("File exists already! Choose another one.")
           IOUtils.letUserChooseFile(f.getCanonicalPath) match {
             case None => Dialogs.info("Aborted. No file was written.")
-            case Some(p) => {
+            case Some(p) =>
               var n = p
               if (!p.endsWith(".maze")) n = n + ".maze"
               IOUtils.writeToFile(n, model.toJson.prettyPrint)
               Dialogs.info("Successfully written to file.")
               filename = new File(n).getName.replace(".maze", "")
-            }
           }
         }
         MapController.mazePool +(filename, model)
@@ -163,24 +161,11 @@ class MazeGenerator extends JPanel
 
   private def buildMazePanel(): JPanel =
   {
-    val result = new JPanel()
-    result.setLayout(new GridLayout(curr_width, curr_height, 5, 5))
-
     if (model == null || curr_height != model.height || curr_width != model.width)
       model = Maze.empty(curr_width, curr_height)
-
-    model.points.view.zipWithIndex.foreach(xs => {
-      xs._1.view.zipWithIndex.foreach(p => {
-        val point = p._1.get
-        val tile = new Tile(point, xs._2, p._2)
-        point.addObserver(model)
-        point.addCallback(result.repaint)
-        point.addCallback(() => numTokensLabel.setText("#Tokens: " + model.getNumberOfToken))
-        result.add(tile)
-      })
-    })
-
-    result
+    numTokensLabel.setText("" + model.getNumberOfToken)
+    model.addObserver(numTokensLabel)
+    new MazeView(model)
   }
 
   override def receiveUpdate(subject: MazePool)

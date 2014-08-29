@@ -70,7 +70,8 @@ object SessionController
    */
   def set(
     s: Session,
-    v: Option[SimulationView])
+    v: Option[SimulationView]
+    )
   {
     sessions.set(s, v)
   }
@@ -164,7 +165,8 @@ object SessionController
    */
   def blockSession(
     id: String,
-    block: Boolean = true)
+    block: Boolean = true
+    )
   {
     if (!hasSession(id)) {
       val s = Session(Client(id))
@@ -185,7 +187,8 @@ object SessionController
    */
   def handleQueryRequest(
     id: String,
-    r: Request): Message =
+    r: Request
+    ): Message =
   {
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
@@ -194,13 +197,11 @@ object SessionController
         return ErrorType.DENIED
 
     val s = getSession(id).get
-    var err = false
-
-    if (!s.maze.robotPosition(r.x, r.y)) err = true
+    val err = !s.maze.setRobot(Coordinate(r.x, r.y))
 
     val token = err match {
       case true => false
-      case false => s.maze(r.x)(r.y).get.token
+      case false => s.maze.getNode(Coordinate(r.x, r.y)).get.token
     }
     val wayElememt = WayElement(r.x, r.y, token, TimeUtils.nowAsString)
 
@@ -209,7 +210,7 @@ object SessionController
     if (err) return ErrorType.INVALID
     else s.addWayElement(wayElememt)
 
-    val n = s.maze(r.x)(r.y).get
+    val n = s.maze.getNode(Coordinate(r.x, r.y)).get
     val v = sessions.get(s)
     v.foreach(view => {
       view.updateSession()
@@ -237,7 +238,7 @@ object SessionController
     val s = getSession(id).get
     PathResponse(
       s.path.map(p => {
-        s.maze(p.x)(p.y) match {
+        s.maze.getNode(Coordinate(p.x, p.y)) match {
           case Some(point) => (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
           case None => throw new IllegalArgumentException
         }
@@ -253,7 +254,8 @@ object SessionController
    */
   def handleMapRequest(
     id: String,
-    r: MapRequest): Message =
+    r: MapRequest
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_PATH
     if (sessionBlocked(id)) return ErrorType.BLOCKED
@@ -278,8 +280,8 @@ object SessionController
 
     val s = getSession(id).get
     PathResponse(s.history.map(p => {
-      val point = s.maze.isValidPosition(p.x, p.y) match {
-        case true => s.maze(p.x)(p.y).get
+      val point = s.maze.isValid(Coordinate(p.x, p.y)) match {
+        case true => s.maze.getNode(Coordinate(p.x, p.y)).get
         case false => Point(Seq.empty)
       }
       (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
@@ -306,7 +308,8 @@ object SessionController
   }
 
   def handleRunTestRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
@@ -320,7 +323,8 @@ object SessionController
   }
 
   def handleResetRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
@@ -334,7 +338,8 @@ object SessionController
   }
 
   def handleRemoveIDRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     removeSession(id)
