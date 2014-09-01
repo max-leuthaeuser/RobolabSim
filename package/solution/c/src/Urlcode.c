@@ -16,7 +16,7 @@ bool contains(char* a, char* b) {
 
 /* Converts a hex character to its integer value */
 char from_hex(char ch) {
-	return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
+	return isdigit((unsigned char)ch) ? ch - '0' : tolower((unsigned char)ch) - 'a' + 10;
 }
 
 /* Converts an integer value to its hex character*/
@@ -30,7 +30,7 @@ char to_hex(char code) {
 char *url_encode(char *str) {
 	char *pstr = str, *buf = malloc(strlen(str) * 3 + 1), *pbuf = buf;
 	while (*pstr) {
-		if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.'
+		if (isalnum((unsigned char)*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.'
 				|| *pstr == '~')
 			*pbuf++ = *pstr;
 		else if (*pstr == ' ')

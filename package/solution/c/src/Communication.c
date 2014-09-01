@@ -1,74 +1,62 @@
 #include "../h/Communication.h"
+#include "../curl/curl/curl.h"
+
+typedef struct {
+	char *pResultString;
+	size_t size;
+
+} CurlReturn;
+
+
+size_t PageReceive(void *buffer, size_t size, size_t nmemb, void *stream);
+
 
 char* sendAndRecieve(const char* url) {
-	Py_Initialize();
+	CURL *curl = curl_easy_init();
 
-	PyObject *pArgs, *pValue, *pFunc;
-	PyObject *pGlobal = PyDict_New();
-	PyObject *pLocal;
+	if (curl != NULL) {
+		CurlReturn pReturn;
 
-	PyRun_SimpleString("import types,sys");
+		pReturn.pResultString = malloc(1);
+		pReturn.size = 0;
 
-	//create the new module in python
-	PyRun_SimpleString("mymod = types.ModuleType(\"mymod\")");
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 0);
+		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, PageReceive);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &pReturn);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 
-	//add it to the sys modules so that it can be imported by other modules
-	PyRun_SimpleString("sys.modules[\"mymod\"] = mymod");
+		if (curl_easy_perform(curl) == CURLE_OK) {
+			curl_easy_cleanup(curl);
 
-	//import sys so that path will be available in mymod so that other/newly created modules can be imported
-	PyRun_SimpleString("exec 'import sys' in mymod.__dict__");
+			return pReturn.pResultString;
+		}
 
-	//import it to the current python interpreter
-	PyObject *pNewMod = PyImport_Import(PyString_FromString("mymod"));
-
-	//Get the dictionary object from my module so I can pass this to PyRun_String
-	pLocal = PyModule_GetDict(pNewMod);
-
-	//import urllib2 to global namespace
-	PyMapping_SetItemString(pGlobal, "urllib2",
-			PyImport_ImportModule("urllib2"));
-
-	//Define my function in the newly created module
-	pValue =
-			PyRun_String("def get(url):\n\treturn urllib2.urlopen(url).read()\n", Py_file_input, pGlobal, pLocal);
-	Py_DECREF(pValue);
-
-	//Get a pointer to the function I just defined
-	pFunc = PyObject_GetAttrString(pNewMod, "get");
-	if (pFunc == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
+		else if (pReturn.pResultString != NULL) {
+			free(pReturn.pResultString);
+		}
 	}
 
-	//Build a tuple to hold my arguments (just the number 4 in this case)
-	pArgs = PyTuple_New(1);
-	pValue = PyString_FromString(url);
-	PyTuple_SetItem(pArgs, 0, pValue);
+	curl_easy_cleanup(curl);
 
-	//Call my function, passing it the number four
-	pValue = PyObject_CallObject(pFunc, pArgs);
-	if (pValue == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
+	return NULL;
+}
+
+
+size_t PageReceive(void *buffer, size_t size, size_t nmemb, void *stream) {
+	size_t realsize = size * nmemb;
+	CurlReturn *pReturn = (CurlReturn *)stream;
+
+	pReturn->pResultString = (char *)realloc(pReturn->pResultString, pReturn->size + realsize + 1);
+
+	if (pReturn->pResultString == NULL) {
+		return 0;
 	}
 
-	Py_DECREF(pArgs);
-	char* result = PyString_AsString(pValue);
-	if (result == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
-	}
+	memcpy(&(pReturn->pResultString[pReturn->size]), buffer, realsize);
+	pReturn->size += realsize;
+	pReturn->pResultString[pReturn->size] = 0;
 
-	Py_DECREF(pValue);
-	Py_XDECREF(pFunc);
-	Py_DECREF(pNewMod);
-	Py_Finalize();
-
-	return result;
+	return realsize;
 }

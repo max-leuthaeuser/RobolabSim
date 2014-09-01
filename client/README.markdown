@@ -2,43 +2,48 @@
 
 Follow these steps to get started:
 
-1. Install Python 2.7 from [here][python]. (use the 32-bit version !!)
+1. For Windows only:
 
+    1.a. Download and install [Visual Studio 2013](http://www.microsoft.com/de-de/download/details.aspx?id=40787).    
+    
+    **Or**
+    
+    1.b. Download, install [Cygwin](http://cygwin.com/install.html) and add the `cygwin\bin` folder to your Path variable.
    For Ubuntu install ```python``` and ```python-dev``` (```sudo apt-get install python python-dev```)
 
 2. For Windows only: Download and install [MinGW][gcc] and install the base package to get GCC on your system. And don't forget to add ```C:\MinGW\bin``` to your PATH variable.
 
-3. Git-clone this repository.
 
-4. Edit ```h/Configuration.h``` with your group ID.
+2. Git-clone this repository.
 
-5. Change directory into your clone and the ```src/``` directory.
+3. Edit ```h/Configuration.h``` with your group ID.
 
-        $ cd RobolabSim/package/solution/c/src/
+4. Change directory into your clone.
 
-6. Compile it (**you need to have GCC and Python 2.7 installed, see steps 1 and 2!**).
+        $ cd RobolabSim/package/solution/
 
-    6.1. Linux:
-    
+5. Compile it
+
+    5.1. Linux:
+        $ make
+        
+    5.2. Windows:   
+        5.2.a. Compile with Visual Studio:
+            Create -> Create Project  
+            
+    **Or**
         $ gcc -I/usr/include/python2.7 -o RobolabSimClient *.c -lpython2.7
 
-    6.2. Windows:
-    
-        $ gcc -LC:/Python27/libs -IC:/Python27/include -o RobolabSimClient.exe *.c -lpython27
+        5.2.b. Compile with Cygwin:
+            $ make
 
-    6.3. MacOS X:
-    
-        $ gcc -ansi -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
+    5.3. MacOS X:
+        $ make
 
-7. Start the application:
+6. Start the application:
 
-    7.1. Linux & MacOS X:
+    6.1. Linux & MacOS X:
+        $ ./Release/RobolabSimClient
         
-        $ ./RobolabSimClient
-        
-    7.2. Windows:
-        
-        $ ./RobolabSimClient.exe
-
-[python]: http://www.python.org/download/releases/2.7.6/ "Python"
-[gcc]: http://sourceforge.net/projects/mingw/files/ "MinGW"
+    6.2. Windows:   
+        $ ./Release/RobolabSimClient.exe
