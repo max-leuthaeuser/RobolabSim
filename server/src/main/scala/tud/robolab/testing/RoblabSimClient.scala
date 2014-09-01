@@ -29,7 +29,7 @@ class RoblabSimClient(id: String)
     ): Path =
   {
     Path(path.map(p => {
-      s.maze.getNode(Coordinate(p.x, p.y)) match {
+      s.maze.getPoint(Coordinate(p.x, p.y)) match {
         case Some(point) =>
           val r = QueryResponseFactory.fromPoint(point)
           val north = r.north

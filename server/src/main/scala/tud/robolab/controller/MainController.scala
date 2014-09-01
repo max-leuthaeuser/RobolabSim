@@ -20,6 +20,9 @@ package tud.robolab.controller
 
 import tud.robolab.view.Interface
 
+/**
+ * The main controller steering the start of the GUI.
+ */
 object MainController
 {
   def apply(swing: Boolean = false)

@@ -42,17 +42,27 @@ class Maze(
   var origin: Coordinate = Coordinate(0, 0)
   ) extends Observable
 {
-  // TODO data.get(Relation.offset(at, origin))
-  def getNode(at: Coordinate): Option[Point] = data.get(Coordinate(at.x + origin.x, -1 * at.y + origin.y))
+  /**
+   * Get a [[tud.robolab.model.Point]] from this Maze.
+   * @param at the desired [[tud.robolab.model.Coordinate]]
+   * @return an Option containing the [[tud.robolab.model.Point]]
+   */
+  def getPoint(at: Coordinate): Option[Point] = data.get(Coordinate(at.x + origin.x, -1 * at.y + origin.y))
 
   /** Check if parameters `x` and `y` describe a valid position.
     *
     * @param at the [[tud.robolab.model.Coordinate]] to check
     * @return true if `at` is within the maze, false otherwise
     */
-  // TODO data.get(Relation.offset(at, origin))
   def isValid(at: Coordinate): Boolean = data.contains(Coordinate(at.x + origin.x, -1 * at.y + origin.y))
 
+  /**
+   * Apply the given function for some specific [[tud.robolab.model.Coordinate]].
+   *
+   * @param at the [[tud.robolab.model.Coordinate]]
+   * @param func the function to execute at the [[tud.robolab.model.Coordinate]] `at`.
+   * @return `true` if this [[tud.robolab.model.Maze]] contains the [[tud.robolab.model.Coordinate]] `at`, `false` otherwise.
+   */
   private def saveSetAt(
     at: Coordinate,
     func: () => Unit
@@ -67,26 +77,44 @@ class Maze(
       false
   }
 
+  /**
+   * Set the robot at the given [[tud.robolab.model.Coordinate]].
+   *
+   * @param at the [[tud.robolab.model.Coordinate]]
+   * @return `true` if the robot could be placed successfully, `false` otherwise.
+   */
   def setRobot(at: Coordinate): Boolean =
   {
-    val t_at = Coordinate(at.x + origin.x, -1 * at.y + origin.y) // TODO: Relation.offset(at, origin)
+    val t_at = Coordinate(at.x + origin.x, -1 * at.y + origin.y)
     saveSetAt(t_at, () => {
       data.values.foreach(_.robot = false)
       data(t_at).robot = true
     })
   }
 
+  /**
+   * Set the token at the given [[tud.robolab.model.Coordinate]].
+   *
+   * @param at the [[tud.robolab.model.Coordinate]]
+   * @param token boolean value if the token should be set or not.
+   * @return `true` if the token could be placed successfully, `false` otherwise.
+   */
   def setToken(
     at: Coordinate,
     token: Boolean
     ): Boolean =
   {
-    // TODO: val t_at = Relation.offset(at, origin)
     saveSetAt(at, () => {
-      getNode(at).foreach(_.token = token)
+      getPoint(at).foreach(_.token = token)
     })
   }
 
+  /**
+   * Set the origin at the given [[tud.robolab.model.Coordinate]].
+   *
+   * @param at the [[tud.robolab.model.Coordinate]]
+   * @return `true` if the origin could be placed successfully, `false` otherwise.
+   */
   def setOrigin(at: Coordinate): Boolean =
   {
     val t_at = Coordinate(at.x, -1 * at.y)
@@ -100,6 +128,9 @@ class Maze(
    */
   def getNumberOfToken: Int = data.values.count(_.token)
 
+  /**
+   * @return the points of this maze es Seq of Seqs.
+   */
   def pointsAsSeq: Seq[Seq[Option[Point]]] =
   {
     (0 to height - 1).map(y => {
@@ -109,6 +140,9 @@ class Maze(
     })
   }
 
+  /**
+   * @return an HTML String representing this maze.
+   */
   def asHtml: String =
     pointsAsSeq.map(xs => {
       var a = xs.map {

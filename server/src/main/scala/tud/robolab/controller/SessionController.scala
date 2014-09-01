@@ -201,7 +201,7 @@ object SessionController
 
     val token = err match {
       case true => false
-      case false => s.maze.getNode(Coordinate(r.x, r.y)).get.token
+      case false => s.maze.getPoint(Coordinate(r.x, r.y)).get.token
     }
     val wayElememt = WayElement(r.x, r.y, token, TimeUtils.nowAsString)
 
@@ -210,7 +210,7 @@ object SessionController
     if (err) return ErrorType.INVALID
     else s.addWayElement(wayElememt)
 
-    val n = s.maze.getNode(Coordinate(r.x, r.y)).get
+    val n = s.maze.getPoint(Coordinate(r.x, r.y)).get
     val v = sessions.get(s)
     v.foreach(view => {
       view.updateSession()
@@ -238,7 +238,7 @@ object SessionController
     val s = getSession(id).get
     PathResponse(
       s.path.map(p => {
-        s.maze.getNode(Coordinate(p.x, p.y)) match {
+        s.maze.getPoint(Coordinate(p.x, p.y)) match {
           case Some(point) => (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
           case None => throw new IllegalArgumentException
         }
@@ -281,7 +281,7 @@ object SessionController
     val s = getSession(id).get
     PathResponse(s.history.map(p => {
       val point = s.maze.isValid(Coordinate(p.x, p.y)) match {
-        case true => s.maze.getNode(Coordinate(p.x, p.y)).get
+        case true => s.maze.getPoint(Coordinate(p.x, p.y)).get
         case false => Point(Seq.empty)
       }
       (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
