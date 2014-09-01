@@ -18,6 +18,8 @@
 
 package tud.robolab.model
 
+import java.util.Observable
+
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 import tud.robolab.utils.IOUtils
@@ -25,7 +27,7 @@ import java.io.File
 import scala.collection.concurrent.TrieMap
 
 /** Holds all available mazes with their name. */
-class MazePool extends Subject[MazePool]
+class MazePool extends Observable
 {
   val pool = TrieMap[String, Maze]()
 
@@ -52,9 +54,11 @@ class MazePool extends Subject[MazePool]
     */
   def +(
     name: String,
-    maze: Maze)
+    maze: Maze
+    )
   {
     pool(name) = maze
+    setChanged()
     notifyObservers()
   }
 
@@ -65,6 +69,7 @@ class MazePool extends Subject[MazePool]
   def -(name: String)
   {
     pool.remove(name)
+    setChanged()
     notifyObservers()
   }
 }

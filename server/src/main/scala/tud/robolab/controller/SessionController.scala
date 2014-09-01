@@ -80,7 +80,7 @@ object SessionController
    * @param id the group ID
    * @return the [[tud.robolab.model.Session]] with the given IP `ip`.
    */
-  def getSession(id: String): Option[Session] = sessions.all.keys.find(_.client.id.equals(id))
+  def getSession(id: String): Option[Session] = sessions.all.keys.find(_.client.id == id)
 
   /**
    * @param i the index
@@ -96,7 +96,7 @@ object SessionController
    * @param id the group ID
    * @return true if there is a [[tud.robolab.model.Session]] with the given IP `id` is stored, false otherwise.
    */
-  def hasSession(id: String): Boolean = sessions.all.keys.exists(_.client.id.equals(id))
+  def hasSession(id: String): Boolean = sessions.all.keys.exists(_.client.id == id)
 
   /**
    * @param id id the group ID

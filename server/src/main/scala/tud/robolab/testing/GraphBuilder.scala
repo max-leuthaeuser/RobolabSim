@@ -53,5 +53,5 @@ trait GraphBuilder[N, E <: DefaultEdge]
 
   def makeMultiGraph: GraphBuilder[N, E]
 
-  def addStartPoint: GraphBuilder[N, E]
+  def addStartPoint(): GraphBuilder[N, E]
 }

@@ -106,7 +106,7 @@ class PathEvaluator(path: Seq[Node])
   {
     // a multigraph of the exploration (the path until the last token was found). A multigraph allows multiple edges between two vertexes
     // there is also a pseudo start point added to this. Reason --> see the for loop
-    val multigraph = getBuilder.makeMultiGraph.addStartPoint.constructExplorationPhaseGraph
+    val multigraph = getBuilder.makeMultiGraph.addStartPoint().constructExplorationPhaseGraph
 
     // the graph representation of the exploration phase
     val graph = getBuilder.constructExplorationPhaseGraph
@@ -192,7 +192,7 @@ class PathEvaluator(path: Seq[Node])
     next: Node,
     notVisitedNeighborsOfOrigin: Seq[Node]): Boolean =
   {
-    if (!notVisitedNeighborsOfOrigin.isEmpty) {
+    if (notVisitedNeighborsOfOrigin.nonEmpty) {
       val pseudoNodeOfNext = new Node(next.x, next.y)
       if (notVisitedNeighborsOfOrigin.contains(pseudoNodeOfNext)) {
         return true

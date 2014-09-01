@@ -19,18 +19,19 @@
 package tud.robolab.view
 
 import java.io.File
+import java.util.{Observable, Observer}
 import javax.swing._
 import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{ChangeEvent, ChangeListener}
-import tud.robolab.model.{MazePool, Observer, Maze}
+import tud.robolab.model.{MazePool, Maze}
 import tud.robolab.controller.MapController
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
 class MazeGenerator extends JPanel
-                            with Observer[MazePool]
+                            with Observer
 {
   private var model: Maze = null
 
@@ -168,12 +169,16 @@ class MazeGenerator extends JPanel
     new MazeView(model)
   }
 
-  override def receiveUpdate(subject: MazePool)
-  {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    subject.mazeNames.foreach(box.addItem)
-    box.addActionListener(listeners(0))
+  override def update(
+    o: Observable,
+    arg: scala.Any
+    ): Unit = o match {
+    case s: MazePool =>
+      val listeners = box.getActionListeners
+      box.removeActionListener(listeners(0))
+      box.removeAllItems()
+      s.mazeNames.foreach(box.addItem)
+      box.addActionListener(listeners(0))
+    case _ => // do nothing
   }
 }

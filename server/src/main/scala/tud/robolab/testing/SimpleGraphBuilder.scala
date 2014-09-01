@@ -69,7 +69,7 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
     this
   }
 
-  def addStartPoint: GraphBuilder[Node, DefaultEdge] =
+  def addStartPoint(): GraphBuilder[Node, DefaultEdge] =
   {
     this.addPseudoStartPoint = true
     this

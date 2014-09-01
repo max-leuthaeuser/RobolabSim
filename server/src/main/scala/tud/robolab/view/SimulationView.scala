@@ -18,10 +18,11 @@
 
 package tud.robolab.view
 
+import java.util.{Observable, Observer}
 import javax.swing._
 import java.awt._
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.{Coordinate, MazePool, Observer, Session}
+import tud.robolab.model.{Coordinate, MazePool, Session}
 import tud.robolab.controller.{MapController, SessionController}
 import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
 
@@ -29,7 +30,7 @@ class SimulationView(
   session: Session,
   var isShown: Boolean = true
   ) extends JPanel
-            with Observer[MazePool]
+            with Observer
 {
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
@@ -109,7 +110,6 @@ class SimulationView(
           val index = list.getSelectedIndex
           val point = session.path(index)
           session.maze.setRobot(Coordinate(point.x, point.y))
-          // TODO: content.repaint()
         }
       }
     })
@@ -144,15 +144,6 @@ class SimulationView(
 
   private def buildMazePanel(): JPanel = new MazeView(session.maze, readOnly = true)
 
-  override def receiveUpdate(subject: MazePool)
-  {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    subject.mazeNames.foreach(box.addItem)
-    box.addActionListener(listeners(0))
-  }
-
   private class CustomCellRenderer extends ListCellRenderer[String]
   {
     private val peerRenderer: ListCellRenderer[String] = (new DefaultListCellRenderer)
@@ -178,5 +169,16 @@ class SimulationView(
     }
   }
 
+  override def update(
+    o: Observable,
+    arg: scala.Any
+    ): Unit = o match {
+    case s: MazePool => val listeners = box.getActionListeners
+      box.removeActionListener(listeners(0))
+      box.removeAllItems()
+      s.mazeNames.foreach(box.addItem)
+      box.addActionListener(listeners(0))
+    case _ => // do nothing
+  }
 }
 

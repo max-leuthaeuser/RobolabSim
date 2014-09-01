@@ -17,7 +17,7 @@ package tud.robolab.testing
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see [http://www.gnu.org/licenses/].
  */
-
+// TODO: test if this is still running with the new coordinate system
 object TestRunner
 {
   /**

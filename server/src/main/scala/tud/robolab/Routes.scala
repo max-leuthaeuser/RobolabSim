@@ -28,9 +28,8 @@ import spray.json._
 import spray.httpx.TwirlSupport._
 import RequestProtocol._
 import MapRequestProtocol._
-import TestMessageProtocol._
 import tud.robolab.controller.{AuthController, MapController, SessionController}
-import java.net.{URLEncoder, URLDecoder}
+import java.net.URLEncoder
 import scala.concurrent.ExecutionContext
 import spray.routing.authentication.BasicAuth
 import ExecutionContext.Implicits.global
@@ -62,7 +61,7 @@ object Routes
           ctx =>
             val ip = id
             import MessageJsonProtocol._
-            val req = values.toString.asJson.convertTo[Request]
+            val req = values.asJson.convertTo[Request]
 
             Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
             ctx.complete(SessionController.handleQueryRequest(ip, req).toJson.compactPrint)
@@ -79,7 +78,7 @@ object Routes
           ctx =>
             val ip = id
             import MessageJsonProtocol._
-            val req = values.toString.asJson.convertTo[MapRequest]
+            val req = values.asJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
             SessionController.handleMapRequest(ip, req)
