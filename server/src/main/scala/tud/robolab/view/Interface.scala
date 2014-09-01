@@ -31,7 +31,7 @@ object Interface extends SimpleSwingApplication
 {
   private val CLOSE_TAB_ICON = new ImageIcon("img/closeTabButton.png")
   private val status = new Label("Waiting for connections ...")
-  private val tabbed = new JTabbedPane(SwingConstants.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
+  private val tabbed = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT)
   private val menu = createMenu()
 
   def top = new MainFrame
@@ -143,7 +143,8 @@ object Interface extends SimpleSwingApplication
 
   private def _addSimTap(
     c: SimulationView,
-    title: String)
+    title: String
+    )
   {
     MapController.mazePool.addObserver(c)
     tabbed.addTab(null, c)
@@ -187,7 +188,8 @@ object Interface extends SimpleSwingApplication
   def addSimTab(
     c: SimulationView,
     title: String,
-    ask: Boolean = true): Boolean =
+    ask: Boolean = true
+    ): Boolean =
   {
     if (ask)
       Dialogs.addOrBlock(title) match {
