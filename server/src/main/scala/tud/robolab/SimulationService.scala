@@ -18,6 +18,8 @@
 
 package tud.robolab
 
+import java.io.File
+
 import akka.actor.{ActorContext, Actor}
 import spray.routing._
 import Routes._

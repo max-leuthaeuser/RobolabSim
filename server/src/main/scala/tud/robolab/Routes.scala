@@ -65,7 +65,11 @@ object Routes
             val req = values.asJson.convertTo[Request]
 
             Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
-            ctx.complete(SessionController.handleQueryRequest(ip, req).toJson.compactPrint)
+            SessionController.handleQueryRequest(ip, req) match {
+              case ErrorType.DENIED | ErrorType.BLOCKED =>
+                ctx.complete(tud.robolab.html.error())
+              case m: Message => ctx.complete(m.toJson.compactPrint)
+            }
         }
     }
   }
@@ -79,12 +83,14 @@ object Routes
         (get | put) {
           ctx =>
             val ip = id
-            import MessageJsonProtocol._
             val req = values.asJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
-            SessionController.handleMapRequest(ip, req)
-            ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
+            SessionController.handleMapRequest(ip, req) match {
+              case ErrorType.NO_PATH | ErrorType.BLOCKED | ErrorType.NO_MAP =>
+                ctx.complete(tud.robolab.html.error())
+              case m: Message => ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
+            }
         }
     }
   }
@@ -98,7 +104,11 @@ object Routes
             Boot.log.info("Incoming [Path] request from ID [%s]".format(ip))
 
             import MessageJsonProtocol._
-            ctx.complete(SessionController.handlePathRequest(ip).toJson.compactPrint)
+            SessionController.handlePathRequest(ip) match {
+              case ErrorType.NO_PATH | ErrorType.BLOCKED =>
+                ctx.complete(tud.robolab.html.error())
+              case m: Message => ctx.complete(m.toJson.compactPrint)
+            }
         }
     }
   }
@@ -111,8 +121,11 @@ object Routes
           ctx =>
             val ip = id
             Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
-            SessionController.handleRunTestRequest(ip)
-            ctx.redirect("/waittest?id=" + ip, StatusCodes.Found)
+            SessionController.handleRunTestRequest(ip) match {
+              case ErrorType.NO_ID | ErrorType.BLOCKED =>
+                ctx.complete(tud.robolab.html.error())
+              case _ => ctx.redirect("/waittest?id=" + ip, StatusCodes.Found)
+            }
         }
     }
   }
@@ -139,8 +152,11 @@ object Routes
           ctx =>
             val ip = id
             Boot.log.info("Incoming [Reset] request from ID [%s]".format(ip))
-            SessionController.handleResetRequest(ip)
-            ctx.redirect("/", StatusCodes.Found)
+            SessionController.handleResetRequest(ip) match {
+              case ErrorType.NO_ID | ErrorType.BLOCKED =>
+                ctx.complete(tud.robolab.html.error())
+              case _ => ctx.redirect("/", StatusCodes.Found)
+            }
         }
     }
   }
@@ -151,7 +167,6 @@ object Routes
         get {
           respondWithMediaType(`text/html`) {
             val ip = id
-            import MessageJsonProtocol._
             Boot.log.info("Incoming [Test] get request from ID [%s]".format(ip))
             SessionController.handleTestRequest(ip) match {
               case t: TestMessage =>
@@ -174,9 +189,7 @@ object Routes
 
                   complete(tud.robolab.html.testresult(maze, path, ip, t.status, head, body, tail))
                 }
-              case m: Message => complete {
-                m.toJson.compactPrint
-              }
+              case _ => complete(tud.robolab.html.error())
             }
           }
         }
@@ -193,8 +206,11 @@ object Routes
               ctx =>
                 val ip = id
                 Boot.log.info("Incoming [Remove ID] request from ID [%s]".format(ip))
-                SessionController.handleRemoveIDRequest(ip)
-                ctx.redirect("/admin", StatusCodes.Found)
+                SessionController.handleRemoveIDRequest(ip) match {
+                  case ErrorType.NO_ID =>
+                    ctx.complete(tud.robolab.html.error())
+                  case _ => ctx.redirect("/admin", StatusCodes.Found)
+                }
             }
         }
     }
