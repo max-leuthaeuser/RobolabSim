@@ -41,8 +41,10 @@ case class AuthUser(
  */
 object AuthController
 {
+  val ADMIN = "admin"
+
   val admin = AuthUser(
-    username = "admin",
+    username = ADMIN,
     password = Config.ADMIN
   )
 
@@ -58,7 +60,11 @@ object AuthController
         val user = up.user
         val pass = HashString.hash(up.pass)
         (user == admin.username) && (pass == admin.password)
-      })) Some("admin")
-      else None
+      })) {
+        Some(ADMIN)
+      }
+      else {
+        None
+      }
     }
 }

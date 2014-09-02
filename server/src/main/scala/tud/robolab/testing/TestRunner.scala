@@ -1,8 +1,6 @@
-package tud.robolab.testing
-
 /*
  * RobolabSim
- * Copyright (C) 2014 Max Leuthaeuser
+ * Copyright (C) 2014  Max Leuthaeuser
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,13 +9,15 @@ package tud.robolab.testing
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see [http://www.gnu.org/licenses/].
+ * along with this program.  If not, see [http://www.gnu.org/licenses/].
  */
-// TODO: test if this is still running with the new coordinate system
+
+package tud.robolab.testing
+
 object TestRunner
 {
   /**

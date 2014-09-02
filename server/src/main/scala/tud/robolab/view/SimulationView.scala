@@ -161,10 +161,12 @@ class SimulationView(
       val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus)
         .asInstanceOf[JComponent]
       component.setForeground(Color.black)
-      if (index % 2 == 0)
+      if (index % 2 == 0) {
         component.setBackground(color)
-      else
+      }
+      else {
         component.setBackground(Color.white)
+      }
       component
     }
   }

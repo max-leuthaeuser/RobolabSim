@@ -39,7 +39,7 @@ class Maze(
   val width: Int,
   val height: Int,
   val data: mutable.HashMap[Coordinate, Point] = mutable.HashMap.empty,
-  var origin: Coordinate = Coordinate(0, 0)
+  var origin: Coordinate = Maze.DEFAULT_ORIGIN
   ) extends Observable
 {
   /**
@@ -73,8 +73,9 @@ class Maze(
       setChanged()
       notifyObservers()
       true
-    } else
+    } else {
       false
+    }
   }
 
   /**
@@ -143,6 +144,7 @@ class Maze(
   /**
    * @return an HTML String representing this maze.
    */
+  // TODO: needs refactoring
   def asHtml: String =
     pointsAsSeq.map(xs => {
       var a = xs.map {
@@ -151,8 +153,10 @@ class Maze(
         case None => "     "
       }.mkString
 
-      if (a.trim.isEmpty) a = ""
-      else a = a + "<br/>"
+      a = a.trim.isEmpty match {
+        case true => ""
+        case false => a + "<br/>"
+      }
 
       val b =
         xs.map {
@@ -171,8 +175,9 @@ class Maze(
         }.mkString
 
       var res = b
-      if (b.startsWith("   "))
+      if (b.startsWith("   ")) {
         res = b.substring(3)
+      }
       a + res
     }).mkString("<br/>").replaceAll(" ", "&nbsp;")
 }
@@ -180,6 +185,10 @@ class Maze(
 /** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
 object Maze
 {
+  val DEFAULT_WIDTH = 7
+  val DEFAULT_HEIGHT = 7
+  val DEFAULT_ORIGIN = Coordinate(0, 0)
+
   /**
    * @param width the width of the new maze
    * @param height the height of the new maze
@@ -217,7 +226,7 @@ object Maze
   /**
    * @return a new [[tud.robolab.model.Maze]] with the `width` = 7 and `height` = 7
    */
-  def empty: Maze = empty(7, 7)
+  def empty: Maze = empty(DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
   /**
    * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]]
@@ -257,8 +266,9 @@ object MazeJsonProtocol extends DefaultJsonProtocol
           (0 to height - 1).foreach(y => {
             (0 to width - 1).foreach(x => {
               val elem = s.elements(y).asInstanceOf[JsArray].elements(x)
-              if (!elem.compactPrint.contains("None"))
+              if (!elem.compactPrint.contains("None")) {
                 initialMap(Coordinate(x, y)) = elem.convertTo[Point]
+              }
             })
           })
 

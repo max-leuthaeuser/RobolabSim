@@ -24,7 +24,8 @@ case class Ok() extends Message
 
 case class Request(
   x: Int,
-  y: Int) extends Message
+  y: Int
+  ) extends Message
 
 case class MapRequest(map: String) extends Message
 
@@ -33,11 +34,12 @@ case class QueryResponse(
   east: Boolean,
   south: Boolean,
   west: Boolean,
-  token: Boolean) extends Message
+  token: Boolean
+  ) extends Message
 
 object QueryResponseFactory
 {
-  def fromPoint(p: Point) =
+  def fromPoint(p: Point): QueryResponse =
   {
     val t = p.asTuple
     QueryResponse(t._1, t._2, t._3, t._4, t._5)
@@ -48,11 +50,13 @@ case class PathResponse(way: Seq[(Request, QueryResponse)]) extends Message
 
 case class TestMessage(
   result: String,
-  status: Boolean) extends Message
+  status: Boolean
+  ) extends Message
 
 case class ErrorMessage(
   code: Int,
-  message: String) extends Message
+  message: String
+  ) extends Message
 
 object ErrorType
 {

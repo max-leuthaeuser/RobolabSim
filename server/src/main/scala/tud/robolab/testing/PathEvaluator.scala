@@ -1,3 +1,21 @@
+/*
+ * RobolabSim
+ * Copyright (C) 2014  Max Leuthaeuser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see [http://www.gnu.org/licenses/].
+ */
+
 package tud.robolab.testing
 
 /*
@@ -73,25 +91,25 @@ class PathEvaluator(path: Seq[Node])
       val a = graph.getEdgeSource(dE)
       val b = graph.getEdgeTarget(dE)
 
-      if (a.x + 1 == b.x) {
+      if (a.y - 1 == b.y) {
         // B is in the south of A
         if (!a.south || !b.north) {
           return false
         }
       }
-      if (b.x + 1 == a.x) {
+      if (a.y + 1 == b.y) {
         // B is in the north of A
         if (!a.north || !b.south) {
           return false
         }
       }
-      if (a.y + 1 == b.y) {
+      if (a.x + 1 == b.x) {
         // B is in the east of A
         if (!a.east || !b.west) {
           return false
         }
       }
-      if (b.y + 1 == a.y) {
+      if (a.x - 1 == b.x) {
         // B is in the west of A
         if (!a.west || !b.east) {
           return false
@@ -162,7 +180,6 @@ class PathEvaluator(path: Seq[Node])
         isStartIncluded = true
       }
     }
-    
     // only checking the length and if the endNode is the homeNode, because there are more than 1 adequate shortest paths
     (shortestPath.getPathLength == driveHome.edgeSet().size()) && isStartIncluded
   }
@@ -171,26 +188,28 @@ class PathEvaluator(path: Seq[Node])
   {
     // BE AWARE of these pseudo Nodes -- only for the x & y position, north east west south and token values are fake
 
-    var neighbors: Seq[Node] = Seq[Node]()
+    var neighbors = Seq[Node]()
 
-    if (n.east) neighbors = neighbors :+ new Node(n.x, n.y + 1)
-    if (n.west) neighbors = neighbors :+ new Node(n.x, n.y - 1)
-    if (n.north) neighbors = neighbors :+ new Node(n.x - 1, n.y)
-    if (n.south) neighbors = neighbors :+ new Node(n.x + 1, n.y)
+    if (n.east) neighbors = neighbors :+ new Node(n.x + 1, n.y)
+    if (n.west) neighbors = neighbors :+ new Node(n.x - 1, n.y)
+    if (n.north) neighbors = neighbors :+ new Node(n.x, n.y + 1)
+    if (n.south) neighbors = neighbors :+ new Node(n.x, n.y - 1)
 
     neighbors
   }
 
   def getSetOfNotVisitedNeighbors(
     pathUntil: Seq[Node],
-    n: Node): Seq[Node] =
+    n: Node
+    ): Seq[Node] =
     getSetOfNeighbors(n).filter(v => pathUntil.contains(v)).distinct
 
   def validateHistory: Int = path count (t => !t.east && !t.west && !t.north && !t.south)
 
   def validateIfNextNodeIsAlreadyVisited(
     next: Node,
-    notVisitedNeighborsOfOrigin: Seq[Node]): Boolean =
+    notVisitedNeighborsOfOrigin: Seq[Node]
+    ): Boolean =
   {
     if (notVisitedNeighborsOfOrigin.nonEmpty) {
       val pseudoNodeOfNext = new Node(next.x, next.y)
@@ -207,7 +226,8 @@ class PathEvaluator(path: Seq[Node])
     def eval(revPath: Seq[Node]): Boolean =
     {
       revPath match {
-        case hd :: hd2 :: tail => validateIfNextNodeIsAlreadyVisited(hd, getSetOfNotVisitedNeighbors(hd2 :: tail, hd)) && eval(hd2 :: tail)
+        case hd :: hd2 :: tail => validateIfNextNodeIsAlreadyVisited(hd,
+          getSetOfNotVisitedNeighbors(hd2 :: tail, hd)) && eval(hd2 :: tail)
         case hd :: Nil => true
         case Nil => throw new IllegalArgumentException("The path is empty!")
       }

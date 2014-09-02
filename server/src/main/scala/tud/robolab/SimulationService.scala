@@ -18,7 +18,7 @@
 
 package tud.robolab
 
-import akka.actor.Actor
+import akka.actor.{ActorContext, Actor}
 import spray.routing._
 import Routes._
 import spray.routing.directives.CachingDirectives._
@@ -34,19 +34,22 @@ class SimulationServiceActor extends Actor
   /** The HttpService trait defines only one abstract member, which
     * connects the services environment to the enclosing actor or test
     */
-  def actorRefFactory = context
+  def actorRefFactory: ActorContext = context
 
   /** this actor only runs our route, but you could add
     * other things here, like request stream processing
     * or timeout handling.
     */
-  def receive = runRoute(myRoute)
+  def receive: Receive = runRoute(myRoute)
 }
 
 /** Defines our service behavior independently from the service actor. */
 trait SimulationService extends HttpService
 {
-  val simpleCache = routeCache(maxCapacity = 1000, timeToLive = Duration("30 min"))
+  val CACHE_MAX_CAPACITY = 1000
+  val CACHE_DURATION = Duration("30 min")
+
+  val simpleCache = routeCache(maxCapacity = CACHE_MAX_CAPACITY, timeToLive = CACHE_DURATION)
 
   val myRoute = indexRoute ~
     queryRoute ~

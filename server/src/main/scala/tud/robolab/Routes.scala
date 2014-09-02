@@ -56,7 +56,8 @@ object Routes
     parameters('id, 'values) {
       (
         id,
-        values) =>
+        values
+        ) =>
         (get | put) {
           ctx =>
             val ip = id
@@ -73,7 +74,8 @@ object Routes
     parameters('id, 'values) {
       (
         id,
-        values) =>
+        values
+        ) =>
         (get | put) {
           ctx =>
             val ip = id
@@ -182,7 +184,7 @@ object Routes
   }
 
   val removeIDRoute = path("remove") {
-    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = AuthController.ADMIN)) {
       auth =>
         parameter('id) {
           id
@@ -199,7 +201,7 @@ object Routes
   }
 
   val hideMazesRoute = path("hideMazes") {
-    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = AuthController.ADMIN)) {
       auth =>
         (get | put) {
           ctx =>
@@ -211,7 +213,7 @@ object Routes
   }
 
   val adminRoute = path("admin") {
-    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = "admin")) {
+    authenticate(BasicAuth(AuthController.userPassAuthenticator _, realm = AuthController.ADMIN)) {
       auth =>
         get {
           complete {

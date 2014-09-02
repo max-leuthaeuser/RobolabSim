@@ -19,7 +19,7 @@
 package tud.robolab.testing
 
 import tud.robolab.controller.{MapController, SessionController}
-import tud.robolab.model._
+import tud.robolab.model.{Test, QueryResponseFactory, Coordinate, Session, WayElement}
 
 class RoblabSimClient(id: String)
 {
@@ -43,11 +43,13 @@ class RoblabSimClient(id: String)
     }))
   }
 
+  private def noID(id: String): String = "No group ID '" + id + "' found."
+
   def getPath: Path =
   {
     SessionController.getSession(id) match {
       case Some(s) => toPath(s.path, s)
-      case None => throw new IllegalArgumentException("No group ID '" + id + "' found.")
+      case None => throw new IllegalArgumentException(noID(id))
     }
   }
 
@@ -55,7 +57,7 @@ class RoblabSimClient(id: String)
   {
     SessionController.getSession(id) match {
       case Some(s) => toPath(s.history, s)
-      case None => throw new IllegalArgumentException("No group ID '" + id + "' found.")
+      case None => throw new IllegalArgumentException(noID(id))
     }
   }
 
@@ -63,7 +65,7 @@ class RoblabSimClient(id: String)
   {
     SessionController.getSession(id) match {
       case Some(s) => MapController.changeMap(name, s, SessionController.getView(s))
-      case None => throw new IllegalArgumentException("No group ID '" + id + "' found.")
+      case None => throw new IllegalArgumentException(noID(id))
     }
   }
 
@@ -72,7 +74,7 @@ class RoblabSimClient(id: String)
     val success = !result.contains("*** FAILED ***")
     SessionController.getSession(id) match {
       case Some(s) => s.test = Test(result.replaceAll("\\+", "<br/>"), success)
-      case None => throw new IllegalArgumentException("No group ID '" + id + "' found.")
+      case None => throw new IllegalArgumentException(noID(id))
     }
   }
 
@@ -80,7 +82,7 @@ class RoblabSimClient(id: String)
   {
     SessionController.getSession(id) match {
       case Some(s) => s.maze.getNumberOfToken
-      case None => throw new IllegalArgumentException("No group ID '" + id + "' found.")
+      case None => throw new IllegalArgumentException(noID(id))
     }
   }
 }

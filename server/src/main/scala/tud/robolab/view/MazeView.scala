@@ -102,9 +102,9 @@ class MazeView(
       add(item)
     }
 
-    private def dim_width = peer.getWidth
+    private def dimWidth: Int = peer.getWidth
 
-    private def dim_height = peer.getHeight
+    private def dimHeight: Int = peer.getHeight
 
     peer.setPreferredSize(new Dimension(Tile.DEF_WIDTH, Tile.DEF_HEIGHT))
     peer.setMinimumSize(new Dimension(Tile.DEF_WIDTH, Tile.DEF_HEIGHT))
@@ -140,13 +140,17 @@ class MazeView(
 
       def repaint(g: Graphics2D)
       {
-        if (enabled)
-          if (hover)
-            g.setColor(hoverColor)
-          else
-            g.setColor(color)
-        else
+        if (enabled) {
+          hover match {
+            case true =>
+              g.setColor(hoverColor)
+            case false =>
+              g.setColor(color)
+          }
+        }
+        else {
           g.setColor(Color.white)
+        }
         g.fillRect(canvas_x, canvas_y, width, height)
       }
 
@@ -158,8 +162,9 @@ class MazeView(
         if (!readOnly) {
           val ex = canvas_x + width
           val ey = canvas_y + height
-          if (x >= canvas_x && x <= ex && y >= canvas_y && y <= ey)
+          if (x >= canvas_x && x <= ex && y >= canvas_y && y <= ey) {
             enabled = !enabled
+          }
         }
         Tile.this.repaint()
       }
@@ -171,10 +176,7 @@ class MazeView(
       {
         val ex = canvas_x + width
         val ey = canvas_y + height
-        if (x >= canvas_x && x <= ex && y >= canvas_y && y <= ey)
-          hover = true
-        else
-          hover = false
+        hover = (x >= canvas_x) && (x <= ex) && (y >= canvas_y) && (y <= ey)
         Tile.this.repaint()
       }
 
@@ -183,11 +185,11 @@ class MazeView(
         val at = Coordinate(coord_x, coord_y)
         enabled match {
           case true =>
-            node + dir
-            Relation.neighbor[Point](model.data, at, dir).foreach(_ + Direction.oppositeOf(dir))
+            node addDirection dir
+            Relation.neighbor[Point](model.data, at, dir).foreach(_ addDirection Direction.oppositeOf(dir))
           case false =>
-            node - dir
-            Relation.neighbor[Point](model.data, at, dir).foreach(_ - Direction.oppositeOf(dir))
+            node removeDirection dir
+            Relation.neighbor[Point](model.data, at, dir).foreach(_ removeDirection Direction.oppositeOf(dir))
         }
         Relation.neighbor[Tile](internalModel, at, dir).foreach(_ repaint())
       }
@@ -204,16 +206,18 @@ class MazeView(
         )
       {
         super.handleClick(x, y)
-        if (!node.robot) node.token = enabled
+        if (!node.robot) {
+          node.token = enabled
+        }
         model.setToken(Coordinate(coord_x, coord_y), enabled)
       }
 
       override def repaint(g: Graphics2D)
       {
-        canvas_x = dim_width / 2 - (dim_width / 12)
-        canvas_y = dim_height / 2 - (dim_height / 12)
-        width = dim_width / 6
-        height = dim_height / 6
+        canvas_x = dimWidth / 2 - (dimWidth / 12)
+        canvas_y = dimHeight / 2 - (dimHeight / 12)
+        width = dimWidth / 6
+        height = dimHeight / 6
         enabled = node.token
         super.repaint(g)
       }
@@ -225,9 +229,9 @@ class MazeView(
 
       override def repaint(g: Graphics2D)
       {
-        canvas_x = dim_width / 2 - (dim_width / 12)
-        width = dim_width / 6
-        height = dim_height / 2 - (dim_height / 12)
+        canvas_x = dimWidth / 2 - (dimWidth / 12)
+        width = dimWidth / 6
+        height = dimHeight / 2 - (dimHeight / 12)
         enabled = node.has(NORTH)
         super.repaint(g)
       }
@@ -261,10 +265,10 @@ class MazeView(
 
       override def repaint(g: Graphics2D)
       {
-        canvas_x = dim_width / 2 + (dim_width / 12)
-        canvas_y = dim_height / 2 - (dim_height / 12)
-        width = dim_width
-        height = dim_height / 6
+        canvas_x = dimWidth / 2 + (dimWidth / 12)
+        canvas_y = dimHeight / 2 - (dimHeight / 12)
+        width = dimWidth
+        height = dimHeight / 6
         enabled = node.has(EAST)
         super.repaint(g)
       }
@@ -298,10 +302,10 @@ class MazeView(
 
       override def repaint(g: Graphics2D)
       {
-        canvas_x = dim_width / 2 - (dim_width / 12)
-        canvas_y = dim_height / 2 + (dim_height / 12)
-        width = dim_width / 6
-        height = dim_height
+        canvas_x = dimWidth / 2 - (dimWidth / 12)
+        canvas_y = dimHeight / 2 + (dimHeight / 12)
+        width = dimWidth / 6
+        height = dimHeight
         enabled = node.has(SOUTH)
         super.repaint(g)
       }
@@ -335,9 +339,9 @@ class MazeView(
 
       override def repaint(g: Graphics2D)
       {
-        canvas_y = dim_height / 2 - (dim_height / 12)
-        width = dim_width / 2 - (dim_width / 12)
-        height = dim_height / 6
+        canvas_y = dimHeight / 2 - (dimHeight / 12)
+        width = dimWidth / 2 - (dimWidth / 12)
+        height = dimHeight / 6
         enabled = node.has(WEST)
         super.repaint(g)
       }
@@ -378,10 +382,10 @@ class MazeView(
         dirs.foreach(_ repaint g)
         if (node.robot) {
           g.setColor(Color.red)
-          val _w = dim_width / 6
-          val _h = dim_height / 6
-          val x = dim_width / 2 - dim_width / 12
-          val y = dim_height / 2 - dim_height / 12
+          val _w = dimWidth / 6
+          val _h = dimHeight / 6
+          val x = dimWidth / 2 - dimWidth / 12
+          val y = dimHeight / 2 - dimHeight / 12
           g.fillRect(x, y, _w, _h)
         }
       }

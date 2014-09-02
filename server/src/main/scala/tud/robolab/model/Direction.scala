@@ -44,6 +44,6 @@ object Direction extends Enumeration
     case "EAST" => EAST
     case "SOUTH" => SOUTH
     case "WEST" => WEST
-    case c => throw new IllegalArgumentException("No valid direction: " + c)
+    case s: String => throw new IllegalArgumentException("No valid direction: " + s)
   }
 }

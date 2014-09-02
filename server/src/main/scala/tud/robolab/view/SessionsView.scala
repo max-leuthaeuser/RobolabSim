@@ -126,13 +126,17 @@ class SessionsView extends JPanel
       columnIndex: Int
       ): AnyRef =
     {
-      if (SessionController.hasSessions) columnIndex match {
-        case 0 => ""
-        case 1 => java.lang.Boolean.FALSE
+      if (SessionController.hasSessions) {
+        columnIndex match {
+          case 0 => ""
+          case 1 => java.lang.Boolean.FALSE
+        }
       }
-      else columnIndex match {
-        case 0 => SessionController.getSession(rowIndex).client.id
-        case 1 => java.lang.Boolean.valueOf(SessionController.getSession(rowIndex).client.blocked)
+      else {
+        columnIndex match {
+          case 0 => SessionController.getSession(rowIndex).client.id
+          case 1 => java.lang.Boolean.valueOf(SessionController.getSession(rowIndex).client.blocked)
+        }
       }
     }
 
@@ -199,8 +203,9 @@ class SessionsView extends JPanel
           session = Option(Session(Client(ipText.getText, blockedBox.isSelected), Maze.empty, Seq.empty))
           dialog.setVisible(false)
           dialog.dispose()
-        } else
+        } else {
           ToolTipManager.sharedInstance().mouseMoved(new MouseEvent(ipText, 0, 0, 0, 0, 0, 0, false))
+        }
       }
     })
 

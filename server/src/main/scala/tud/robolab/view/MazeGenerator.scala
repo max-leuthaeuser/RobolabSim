@@ -35,8 +35,8 @@ class MazeGenerator extends JPanel
 {
   private var model: Maze = null
 
-  private var curr_width = 7
-  private var curr_height = 7
+  private var curr_width = Maze.DEFAULT_WIDTH
+  private var curr_height = Maze.DEFAULT_HEIGHT
 
   private val name = new JTextField("maze")
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
@@ -68,7 +68,8 @@ class MazeGenerator extends JPanel
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
           val n = box.getSelectedItem.asInstanceOf[String]
-          model = IOUtils.readFromFile(new File("maps/" + n + ".maze")).asJson.convertTo[Maze]
+          model = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + n + MazePool.STD_MAPS_SUFFIX)).asJson
+            .convertTo[Maze]
           curr_width = model.width
           curr_height = model.height
           spinnerx.setValue(curr_width)
@@ -125,7 +126,7 @@ class MazeGenerator extends JPanel
       def actionPerformed(e: ActionEvent)
       {
         var filename = name.getText
-        val f = new File("maps/" + filename + ".maze")
+        val f = new File(MazePool.STD_MAPS_FOLDER + filename + MazePool.STD_MAPS_SUFFIX)
         if (!f.isFile) {
           IOUtils.writeToFile(f.getCanonicalPath, model.toJson.prettyPrint)
           Dialogs.info("Successfully written to file.")
@@ -136,13 +137,15 @@ class MazeGenerator extends JPanel
             case None => Dialogs.info("Aborted. No file was written.")
             case Some(p) =>
               var n = p
-              if (!p.endsWith(".maze")) n = n + ".maze"
+              if (!p.endsWith(MazePool.STD_MAPS_SUFFIX)) {
+                n = n + MazePool.STD_MAPS_SUFFIX
+              }
               IOUtils.writeToFile(n, model.toJson.prettyPrint)
               Dialogs.info("Successfully written to file.")
-              filename = new File(n).getName.replace(".maze", "")
+              filename = new File(n).getName.replace(MazePool.STD_MAPS_SUFFIX, "")
           }
         }
-        MapController.mazePool +(filename, model)
+        MapController.mazePool.addMaze(filename, model)
       }
     })
 
@@ -162,8 +165,9 @@ class MazeGenerator extends JPanel
 
   private def buildMazePanel(): JPanel =
   {
-    if (model == null || curr_height != model.height || curr_width != model.width)
+    if (model == null || curr_height != model.height || curr_width != model.width) {
       model = Maze.empty(curr_width, curr_height)
+    }
     numTokensLabel.setText("" + model.getNumberOfToken)
     model.addObserver(numTokensLabel)
     new MazeView(model)

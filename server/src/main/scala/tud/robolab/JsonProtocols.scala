@@ -20,13 +20,6 @@ package tud.robolab
 
 import spray.json._
 import tud.robolab.model._
-import tud.robolab.model.MapRequest
-import tud.robolab.model.QueryResponse
-import tud.robolab.model.ErrorMessage
-import tud.robolab.model.TestMessage
-import tud.robolab.model.Ok
-import tud.robolab.model.Request
-import tud.robolab.model.PathResponse
 
 /**
  * Contains json conversion objects for implicit conversion json <-> some request.
@@ -116,7 +109,7 @@ object JsonProtocols
 
     implicit object MessageJsonFormat extends RootJsonFormat[Message]
     {
-      def write(p: Message) =
+      def write(p: Message): JsValue =
       {
         p match {
           case r: Ok => "Ok".toJson
@@ -132,7 +125,7 @@ object JsonProtocols
         }
       }
 
-      def read(value: JsValue) = ???
+      override def read(json: JsValue): Message = ???
     }
 
   }

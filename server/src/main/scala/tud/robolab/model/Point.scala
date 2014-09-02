@@ -30,7 +30,7 @@ case class Point(
 
   def has(dir: Direction): Boolean = directions.contains(dir)
 
-  def +(
+  def addDirection(
     dir: Direction,
     notify: Boolean = true
     )
@@ -40,7 +40,7 @@ case class Point(
     }
   }
 
-  def -(
+  def removeDirection(
     dir: Direction,
     notify: Boolean = true
     )
@@ -64,13 +64,13 @@ object PointJsonProtocol extends DefaultJsonProtocol
 
   implicit object PointJsonFormat extends RootJsonFormat[Point]
   {
-    def write(p: Point) =
+    def write(p: Point): JsObject =
     {
       val dirs = p.directions.map(s => JsString(s.toString))
       JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
     }
 
-    def read(value: JsValue) = value.asJsObject.getFields("dirs", "token") match {
+    def read(value: JsValue): Point = value.asJsObject.getFields("dirs", "token") match {
       case Seq(JsArray(dirs), JsBoolean(token)) => Point(
         dirs.map(s => Direction.from(s.toString().replaceAll("\"", ""))), token)
       case _ => deserializationError("Point expected!")

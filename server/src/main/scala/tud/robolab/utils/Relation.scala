@@ -19,7 +19,6 @@
 package tud.robolab.utils
 
 import tud.robolab.model.Coordinate
-import tud.robolab.model.Direction
 import tud.robolab.model.Direction._
 
 import scala.collection.mutable
@@ -43,7 +42,7 @@ object Relation
   def offset(
     from: Coordinate,
     to: Coordinate
-    ) = to match {
+    ): Coordinate = to match {
     case Coordinate(0, 0) => Coordinate(from.x, -1 * from.y)
     case Coordinate(x, y) if from.x >= 0 && from.y < 0 => Coordinate(from.x - to.x, to.y + from.y)
     case Coordinate(x, y) if from.x < 0 => Coordinate(from.x + to.x, to.y - from.y)

@@ -18,10 +18,9 @@
 
 package tud.robolab.controller
 
-import tud.robolab.model._
+import tud.robolab.Boot
 import tud.robolab.view.{Interface, SimulationView}
-import tud.robolab.model.{Request, Session}
-import tud.robolab.model.Client
+import tud.robolab.model._
 import tud.robolab.utils.TimeUtils
 import scala.concurrent._
 import ExecutionContext.Implicits.global
@@ -192,9 +191,11 @@ object SessionController
   {
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    if (!hasSession(id))
-      if (!addSession(id))
+    if (!hasSession(id)) {
+      if (!addSession(id)) {
         return ErrorType.DENIED
+      }
+    }
 
     val s = getSession(id).get
     val err = !s.maze.setRobot(Coordinate(r.x, r.y))
@@ -207,8 +208,12 @@ object SessionController
 
     s.addHistoryElement(wayElememt)
 
-    if (err) return ErrorType.INVALID
-    else s.addWayElement(wayElememt)
+    if (err) {
+      return ErrorType.INVALID
+    }
+    else {
+      s.addWayElement(wayElememt)
+    }
 
     val n = s.maze.getPoint(Coordinate(r.x, r.y)).get
     val v = sessions.get(s)
@@ -317,6 +322,7 @@ object SessionController
     future {
       blocking {
         TestRunner.run(id)
+        Boot.log.info("Done [Test] run for ID [%s]".format(id))
       }
     }
     Ok()

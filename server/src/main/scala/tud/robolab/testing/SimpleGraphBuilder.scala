@@ -1,3 +1,21 @@
+/*
+ * RobolabSim
+ * Copyright (C) 2014  Max Leuthaeuser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see [http://www.gnu.org/licenses/].
+ */
+
 package tud.robolab.testing
 
 /*
@@ -116,22 +134,22 @@ class SimpleGraphBuilder(var path: Seq[Node]) extends GraphBuilder[Node, Default
       graph.addVertex(currentNode)
 
       if (n.north) {
-        val northNode: Node = new Node(n.x - 1, n.y)
+        val northNode = new Node(n.x, n.y + 1)
         graph.addVertex(northNode)
         graph.addEdge(currentNode, northNode)
       }
       if (n.south) {
-        val southNode: Node = new Node(n.x + 1, n.y)
+        val southNode = new Node(n.x, n.y - 1)
         graph.addVertex(southNode)
         graph.addEdge(currentNode, southNode)
       }
       if (n.east) {
-        val eastNode: Node = new Node(n.x, n.y + 1)
+        val eastNode = new Node(n.x + 1, n.y)
         graph.addVertex(eastNode)
         graph.addEdge(currentNode, eastNode)
       }
       if (n.west) {
-        val westNode: Node = new Node(n.x, n.y - 1)
+        val westNode = new Node(n.x - 1, n.y)
         graph.addVertex(westNode)
         graph.addEdge(currentNode, westNode)
       }

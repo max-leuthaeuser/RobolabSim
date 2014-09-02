@@ -34,13 +34,13 @@ object Interface extends SimpleSwingApplication
   private val tabbed = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT)
   private val menu = createMenu()
 
-  def top = new MainFrame
+  def top: Frame = new MainFrame
   {
     //Look and Feel
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
     } catch {
-      case e: Throwable => println(e)
+      case e: Throwable => // gets ignored, look and feel is not that important
     }
 
     val width = SizeUtilities.std_width
@@ -141,7 +141,7 @@ object Interface extends SimpleSwingApplication
     tabbed.remove(c)
   }
 
-  private def _addSimTap(
+  private def addSimTapHelper(
     c: SimulationView,
     title: String
     )
@@ -191,17 +191,20 @@ object Interface extends SimpleSwingApplication
     ask: Boolean = true
     ): Boolean =
   {
-    if (ask)
+    if (ask) {
       Dialogs.addOrBlock(title) match {
         case Dialog.Result.Yes =>
-          _addSimTap(c, title)
+          addSimTapHelper(c, title)
           return true
         case Dialog.Result.Cancel =>
           c.close(block = true)
           return false
         case _ => return false
       }
-    else _addSimTap(c, title)
+    }
+    else {
+      addSimTapHelper(c, title)
+    }
     true
   }
 }
