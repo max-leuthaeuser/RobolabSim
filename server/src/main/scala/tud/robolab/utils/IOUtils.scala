@@ -19,7 +19,6 @@
 package tud.robolab.utils
 
 import java.io.{File, PrintWriter, FileWriter}
-import tud.robolab.model.MazePool
 import io.Source.fromFile
 import javax.swing.JFileChooser
 
@@ -80,7 +79,7 @@ object IOUtils
     f: File,
     str: String
     ): Array[String] = getFileTree(f).filter(_.getName.endsWith(str))
-    .map(_.getName.dropRight(MazePool.STD_MAPS_SUFFIX.length)).toArray
+    .map(_.getName.dropRight(str.length)).toArray
 
   def readFromFile(f: File): String =
   {

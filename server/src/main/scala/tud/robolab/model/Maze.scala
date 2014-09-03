@@ -144,7 +144,6 @@ class Maze(
   /**
    * @return an HTML String representing this maze.
    */
-  // TODO: needs refactoring
   def asHtml: String =
     pointsAsSeq.map(xs => {
       var a = xs.map {
