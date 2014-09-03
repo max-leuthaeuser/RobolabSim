@@ -184,8 +184,8 @@ class Maze(
 /** Companion object for [[tud.robolab.model.Maze]] functioning as factory. */
 object Maze
 {
-  val DEFAULT_WIDTH = 7
-  val DEFAULT_HEIGHT = 7
+  val DEFAULT_WIDTH = Config.MAZE_WIDTH
+  val DEFAULT_HEIGHT = Config.MAZE_HEIGHT
   val DEFAULT_ORIGIN = Coordinate(0, 0)
 
   /**
@@ -223,13 +223,12 @@ object Maze
   }
 
   /**
-   * @return a new [[tud.robolab.model.Maze]] with the `width` = 7 and `height` = 7
+   * @return a new [[tud.robolab.model.Maze]] with `width` and `height` from [[tud.robolab.Config]]
    */
   def empty: Maze = empty(DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
   /**
-   * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]]
-   *         with the `width` = 7 and `height` = 7 if configuration is invalid
+   * @return a new default maze from configuration or a new [[tud.robolab.model.Maze]] if configuration is invalid
    */
   def default: Maze = MapController.mazePool.mazeNames.contains(Config.MAP) match {
     case true => MapController.mazePool(Config.MAP)

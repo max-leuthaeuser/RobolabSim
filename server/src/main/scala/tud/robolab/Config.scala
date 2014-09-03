@@ -30,4 +30,6 @@ object Config
   lazy val MAP = conf.getString("spray.can.server.default-map")
   lazy val ADMIN = conf.getString("spray.can.server.admin.pass")
   lazy val MAZES = conf.getBoolean("spray.can.server.mazes")
+  lazy val MAZE_WIDTH = conf.getInt("spray.can.server.maze-width")
+  lazy val MAZE_HEIGHT = conf.getInt("spray.can.server.maze-height")
 }
