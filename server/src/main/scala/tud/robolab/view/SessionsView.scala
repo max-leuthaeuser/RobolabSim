@@ -188,6 +188,13 @@ class SessionsView extends JPanel
     dialog.setModal(true)
     dialog.setLayout(new BorderLayout())
     ipText.setToolTipText("Enter a valid group ID!")
+    ipText.addActionListener(new ActionListener
+    {
+      override def actionPerformed(e: ActionEvent)
+      {
+        okBtn.doClick()
+      }
+    })
 
     private val content = new JPanel(new GridLayout(3, 1))
     content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5))
