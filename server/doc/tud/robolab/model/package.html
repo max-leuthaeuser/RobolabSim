@@ -1,0 +1,464 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>model - tud.robolab.model</title>
+          <meta name="description" content="model - tud.robolab.model" />
+          <meta name="keywords" content="model tud.robolab.model" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'tud.robolab.model.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="tud">tud</a>.<a href="../package.html" class="extype" name="tud.robolab">robolab</a></p>
+        <h1>model</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">model</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides classes that act as model elements of the domain.</p><p><a href="Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a> acts as represention for all kind of maze types
+and is managed in <a href="MazePool.html" class="extype" name="tud.robolab.model.MazePool">tud.robolab.model.MazePool</a>. Every <a href="Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a>
+contains some <a href="Point.html" class="extype" name="tud.robolab.model.Point">tud.robolab.model.Point</a>.</p><p>All requests from the same address are handled in a <a href="Session.html" class="extype" name="tud.robolab.model.Session">tud.robolab.model.Session</a>.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="tud.robolab.model"><span>model</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="tud.robolab.model.Client" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ClientextendsProductwithSerializable"></a>
+      <a id="Client:Client"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Client.html"><span class="name">Client</span></a><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="blocked">blocked: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Coordinate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CoordinateextendsProductwithSerializable"></a>
+      <a id="Coordinate:Coordinate"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Coordinate.html"><span class="name">Coordinate</span></a><span class="params">(<span name="x">x: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="y">y: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A case class representing a Coordinate in the <a href="Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a> as tuple of two Ints.</p>
+    </li><li name="tud.robolab.model.ErrorMessage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorMessageextendsMessagewithProductwithSerializable"></a>
+      <a id="ErrorMessage:ErrorMessage"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorMessage.html"><span class="name">ErrorMessage</span></a><span class="params">(<span name="code">code: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.MapRequest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MapRequestextendsMessagewithProductwithSerializable"></a>
+      <a id="MapRequest:MapRequest"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="MapRequest.html"><span class="name">MapRequest</span></a><span class="params">(<span name="map">map: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Maze" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MazeextendsObservable"></a>
+      <a id="Maze:Maze"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Maze.html"><span class="name">Maze</span></a><span class="result"> extends <span class="extype" name="java.util.Observable">Observable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Class representing a maze.</p>
+    </li><li name="tud.robolab.model.MazePool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MazePoolextendsObservable"></a>
+      <a id="MazePool:MazePool"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="MazePool.html"><span class="name">MazePool</span></a><span class="result"> extends <span class="extype" name="java.util.Observable">Observable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Holds all available mazes with their name.</p>
+    </li><li name="tud.robolab.model.Message" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="MessageextendsAnyRef"></a>
+      <a id="Message:Message"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Message.html"><span class="name">Message</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Ok" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OkextendsMessagewithProductwithSerializable"></a>
+      <a id="Ok:Ok"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Ok.html"><span class="name">Ok</span></a><span class="params">()</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.PathResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PathResponseextendsMessagewithProductwithSerializable"></a>
+      <a id="PathResponse:PathResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="PathResponse.html"><span class="name">PathResponse</span></a><span class="params">(<span name="way">way: <span class="extype" name="scala.Seq">Seq</span>[(<a href="Request.html" class="extype" name="tud.robolab.model.Request">Request</a>, <a href="QueryResponse.html" class="extype" name="tud.robolab.model.QueryResponse">QueryResponse</a>)]</span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Point" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PointextendsProductwithSerializable"></a>
+      <a id="Point:Point"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Point.html"><span class="name">Point</span></a><span class="params">(<span name="directions">directions: <span class="extype" name="scala.Seq">Seq</span>[<a href="Direction$.html#Direction=tud.robolab.model.Direction.Value" class="extmbr" name="tud.robolab.model.Direction.Direction">Direction</a>] = <span class="symbol">Direction.values.toSeq</span></span>, <span name="token">token: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a> = <span class="symbol">false</span></span>, <span name="robot">robot: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.QueryResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="QueryResponseextendsMessagewithProductwithSerializable"></a>
+      <a id="QueryResponse:QueryResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="QueryResponse.html"><span class="name">QueryResponse</span></a><span class="params">(<span name="north">north: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="east">east: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="south">south: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="west">west: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="token">token: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Request" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RequestextendsMessagewithProductwithSerializable"></a>
+      <a id="Request:Request"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Request.html"><span class="name">Request</span></a><span class="params">(<span name="x">x: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="y">y: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Session" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SessionextendsProductwithSerializable"></a>
+      <a id="Session:Session"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Session.html"><span class="name">Session</span></a><span class="params">(<span name="client">client: <a href="Client.html" class="extype" name="tud.robolab.model.Client">Client</a></span>, <span name="maze">maze: <a href="Maze.html" class="extype" name="tud.robolab.model.Maze">Maze</a> = <span class="symbol">Maze.default</span></span>, <span name="path">path: <span class="extype" name="scala.Seq">Seq</span>[<a href="WayElement.html" class="extype" name="tud.robolab.model.WayElement">WayElement</a>] = <span class="symbol">collection.this.Seq.empty[Nothing]</span></span>, <span name="history">history: <span class="extype" name="scala.Seq">Seq</span>[<a href="WayElement.html" class="extype" name="tud.robolab.model.WayElement">WayElement</a>] = <span class="symbol">collection.this.Seq.empty[Nothing]</span></span>, <span name="test">test: <a href="Test.html" class="extype" name="tud.robolab.model.Test">Test</a> = <span class="defval" name="Test.apply(Test.apply$default$1, Test.apply$default$2)">...</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.SessionPool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SessionPoolextendsObservable"></a>
+      <a id="SessionPool:SessionPool"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SessionPool.html"><span class="name">SessionPool</span></a><span class="result"> extends <span class="extype" name="java.util.Observable">Observable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Handling all active sessions.</p>
+    </li><li name="tud.robolab.model.Test" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TestextendsProductwithSerializable"></a>
+      <a id="Test:Test"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Test.html"><span class="name">Test</span></a><span class="params">(<span name="result">result: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="&quot;No tests done yet. (Reload this page if necessary!)&quot;">...</span></span>, <span name="status">status: <a href="TestResult$.html#TestResult=tud.robolab.model.TestResult.Value" class="extmbr" name="tud.robolab.model.TestResult.TestResult">TestResult</a> = <span class="symbol">TestResult.FAILED</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.TestMessage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TestMessageextendsMessagewithProductwithSerializable"></a>
+      <a id="TestMessage:TestMessage"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TestMessage.html"><span class="name">TestMessage</span></a><span class="params">(<span name="result">result: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="status">status: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result"> extends <a href="Message.html" class="extype" name="tud.robolab.model.Message">Message</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.WayElement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WayElementextendsProductwithSerializable"></a>
+      <a id="WayElement:WayElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="WayElement.html"><span class="name">WayElement</span></a><span class="params">(<span name="x">x: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="y">y: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="token">token: <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="time">time: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="tud.robolab.model.Direction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Direction"></a>
+      <a id="Direction:Direction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Direction$.html"><span class="name">Direction</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Enumeration" class="extype" target="_top">Enumeration</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Enumeration that holds all available directions in a maze and offers
+some convenience methods.</p>
+    </li><li name="tud.robolab.model.ErrorType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorType"></a>
+      <a id="ErrorType:ErrorType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorType$.html"><span class="name">ErrorType</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Maze" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Maze"></a>
+      <a id="Maze:Maze"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Maze$.html"><span class="name">Maze</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for <a href="Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a> functioning as factory.</p>
+    </li><li name="tud.robolab.model.MazeJsonProtocol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MazeJsonProtocol"></a>
+      <a id="MazeJsonProtocol:MazeJsonProtocol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MazeJsonProtocol$.html"><span class="name">MazeJsonProtocol</span></a><span class="result"> extends <span class="extype" name="spray.json.DefaultJsonProtocol">DefaultJsonProtocol</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Implicit conversions from <a href="Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a> to json.</p>
+    </li><li name="tud.robolab.model.MazePool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MazePool"></a>
+      <a id="MazePool:MazePool"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MazePool$.html"><span class="name">MazePool</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.PointJsonProtocol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PointJsonProtocol"></a>
+      <a id="PointJsonProtocol:PointJsonProtocol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PointJsonProtocol$.html"><span class="name">PointJsonProtocol</span></a><span class="result"> extends <span class="extype" name="spray.json.DefaultJsonProtocol">DefaultJsonProtocol</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.QueryResponseFactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="QueryResponseFactory"></a>
+      <a id="QueryResponseFactory:QueryResponseFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="QueryResponseFactory$.html"><span class="name">QueryResponseFactory</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.Test" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Test"></a>
+      <a id="Test:Test"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Test$.html"><span class="name">Test</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="tud.robolab.model.TestResult" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TestResult"></a>
+      <a id="TestResult:TestResult"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TestResult$.html"><span class="name">TestResult</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Enumeration" class="extype" target="_top">Enumeration</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.2/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>

@@ -40,3 +40,9 @@ mainClass in Compile := Some("tud.robolab.Boot")
 mainClass in assembly := Some("tud.robolab.Boot")
 
 jarName in assembly := "RobolabSim.jar"
+
+scalacOptions in(Compile, doc) <+= (scalaVersion, scalaInstance) map { (
+  scalaVer,
+  scalaIn
+  ) => "-doc-external-doc:" + scalaIn.libraryJar + "#http://www.scala-lang.org/api/" + scalaVer + "/"
+}
