@@ -30,7 +30,7 @@ object MapController
 {
   val mazePool = new MazePool
 
-  var hideMazes = Config.MAZES
+  var hideMazes = Config.HIDE_MAZES
 
   def changeMap(
     m: String,

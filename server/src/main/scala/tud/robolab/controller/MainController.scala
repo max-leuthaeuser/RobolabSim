@@ -18,6 +18,7 @@
 
 package tud.robolab.controller
 
+import tud.robolab.Config
 import tud.robolab.view.Interface
 
 /**
@@ -25,9 +26,10 @@ import tud.robolab.view.Interface
  */
 object MainController
 {
-  def apply(swing: Boolean = false)
+  def apply()
   {
-    SessionController.swing = swing
-    if (!swing) Interface.startup(Array.empty)
+    if (!Config.HIDE_SWING) {
+      Interface.startup(Array.empty)
+    }
   }
 }

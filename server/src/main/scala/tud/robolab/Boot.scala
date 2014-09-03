@@ -39,7 +39,7 @@ object Boot extends App
   IO(Http) ! Http.Bind(service, interface = Config.IP, port = Config.PORT)
 
   // start the server itself
-  MainController(Config.SWING)
+  MainController()
 
   /** Call this method on terminating the server for unbinding. */
   def terminate()

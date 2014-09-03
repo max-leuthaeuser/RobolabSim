@@ -18,7 +18,7 @@
 
 package tud.robolab.controller
 
-import tud.robolab.Boot
+import tud.robolab.{Config, Boot}
 import tud.robolab.view.{Interface, SimulationView}
 import tud.robolab.model._
 import tud.robolab.utils.TimeUtils
@@ -33,7 +33,7 @@ import tud.robolab.testing.TestRunner
 object SessionController
 {
   private val sessions = new SessionPool()
-  var swing = false
+  var hide_swing = Config.HIDE_SWING
 
   /**
    * See [[tud.robolab.model.SessionPool]] for doc.
@@ -128,7 +128,7 @@ object SessionController
   def addSession(s: Session)
   {
     if (!hasSession(s.client.id)) {
-      val v: Option[SimulationView] = swing match {
+      val v: Option[SimulationView] = hide_swing match {
         case true => Option.empty
         case false => Option(new SimulationView(s, false))
       }
@@ -143,7 +143,7 @@ object SessionController
   {
     if (!hasSession(id) && !sessionBlocked(id)) {
       val s = Session(Client(id))
-      swing match {
+      hide_swing match {
         case false =>
           val v = new SimulationView(s)
           if (Interface.addSimTab(v, id)) {
