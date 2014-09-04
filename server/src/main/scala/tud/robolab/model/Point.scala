@@ -31,8 +31,7 @@ case class Point(
   def has(dir: Direction): Boolean = directions.contains(dir)
 
   def addDirection(
-    dir: Direction,
-    notify: Boolean = true
+    dir: Direction
     )
   {
     if (!has(dir)) {
@@ -41,8 +40,7 @@ case class Point(
   }
 
   def removeDirection(
-    dir: Direction,
-    notify: Boolean = true
+    dir: Direction
     )
   {
     if (has(dir)) {

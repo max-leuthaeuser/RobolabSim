@@ -81,6 +81,17 @@ class MazeGenerator extends JPanel
     })
 
     result.add(box, BorderLayout.NORTH)
+    result.add(new JButton("Random")
+    {
+      addActionListener(new ActionListener
+      {
+        override def actionPerformed(e: ActionEvent): Unit =
+        {
+          MazeGenerator.this.model = Maze.random(curr_width, curr_height)
+          rebuild()
+        }
+      })
+    }, BorderLayout.SOUTH)
     result
   }
 

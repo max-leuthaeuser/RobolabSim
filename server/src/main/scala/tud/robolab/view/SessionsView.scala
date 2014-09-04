@@ -156,7 +156,7 @@ class SessionsView extends JPanel
       ): Boolean = true
 
     override def getColumnName(column: Int): String = column match {
-      case 0 => "Client IP"
+      case 0 => "Client ID"
       case 1 => "Blocked?"
     }
 

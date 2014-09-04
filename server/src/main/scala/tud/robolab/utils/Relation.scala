@@ -18,7 +18,7 @@
 
 package tud.robolab.utils
 
-import tud.robolab.model.Coordinate
+import tud.robolab.model.{Direction, Coordinate}
 import tud.robolab.model.Direction._
 
 import scala.collection.mutable
@@ -38,6 +38,28 @@ object Relation
       case WEST => model.get(Coordinate(c.x - 1, c.y))
     }
   }
+
+  def neighborCoordinate(
+    c: Coordinate,
+    dir: Direction
+    ): Coordinate =
+  {
+    dir match {
+      case NORTH => Coordinate(c.x, c.y - 1)
+      case EAST => Coordinate(c.x + 1, c.y)
+      case SOUTH => Coordinate(c.x, c.y + 1)
+      case WEST => Coordinate(c.x - 1, c.y)
+    }
+  }
+
+  def neighbors[V](
+    model: mutable.Map[Coordinate, V],
+    c: Coordinate
+    ): Set[V] = Direction.values.map(neighbor(model, c, _)).flatten
+
+  def neighborsCoordinate(
+    c: Coordinate
+    ): Set[Coordinate] = Direction.values.map(neighborCoordinate(c, _))
 
   def offset(
     from: Coordinate,
