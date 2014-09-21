@@ -1,5 +1,5 @@
 #include <stdarg.h>
-#include "../h/RobotProxy.h"
+#include "RobotProxy.h"
 
 /// initialized with ROBOT_FAIL
 int currentIntersection = ROBOT_FAIL;
@@ -62,27 +62,35 @@ int asprintf(char **s, const char *format, ...) {
 int Robot_Move(int x, int y) {
 	char* buffer;
 	asprintf(&buffer, "{\"x\":%d,\"y\":%d}", x, y);
-	char* query = url_encode(buffer);
+	
+	char* response = sendAndRecieve(URL, buffer);
 	free(buffer);
-	char* response = sendAndRecieve(concat(URL, query));
-
+	
 	if (response == NULL) {
 		puts("Connection to server failed!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
 	if (contains(response, "\"code\":1")) {
 		puts("Connection declined!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
 	if (contains(response, "\"code\":2")) {
 		puts("Connection blocked!");
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 	
 	if (contains(response, "\"code\":3")) {
 		printf("Invalid position! (x=%d, y=%d)\n", x, y);
+		free(response);
+
 		return ROBOT_FAIL;
 	}
 
@@ -101,7 +109,7 @@ int Robot_Move(int x, int y) {
 	if (contains(response, "\"token\":true"))
 		token = true;
 
-	free(query);
+	free(response);
 
 	currentIntersection = foundIntersection;
 	if (token)
