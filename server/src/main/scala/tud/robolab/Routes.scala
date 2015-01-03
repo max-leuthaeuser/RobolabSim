@@ -25,7 +25,7 @@ import tud.robolab.utils.TimeUtils
 import tud.robolab.model._
 import JsonProtocols._
 import spray.json._
-import spray.httpx.TwirlSupport._
+import play.twirl.api._
 import RequestProtocol._
 import MapRequestProtocol._
 import tud.robolab.controller.{AuthController, MapController, SessionController}

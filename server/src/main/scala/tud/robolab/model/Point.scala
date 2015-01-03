@@ -65,7 +65,7 @@ object PointJsonProtocol extends DefaultJsonProtocol
     def write(p: Point): JsObject =
     {
       val dirs = p.directions.map(s => JsString(s.toString))
-      JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
+      JsObject("dirs" -> JsArray(dirs.toVector), "token" -> JsBoolean(p.token))
     }
 
     def read(value: JsValue): Point = value.asJsObject.getFields("dirs", "token") match {

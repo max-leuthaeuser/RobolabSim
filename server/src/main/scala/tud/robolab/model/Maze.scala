@@ -349,14 +349,14 @@ object MazeJsonProtocol extends DefaultJsonProtocol
   {
     def write(p: Maze): JsArray =
     {
-      val points: List[List[JsValue]] = p.pointsAsSeq.map(ys => {
+      val points = p.pointsAsSeq.map(ys => {
         ys.map {
           case None => JsString("None")
           case Some(e) => e.toJson
         }.toList
-      }).toList
+      }).toVector
 
-      JsArray(points.map(JsArray(_)))
+      JsArray(points.map(JsArray(_:_*)))
     }
 
     def read(value: JsValue): Maze = value match {

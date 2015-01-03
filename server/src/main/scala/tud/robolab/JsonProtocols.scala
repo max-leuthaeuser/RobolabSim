@@ -117,9 +117,9 @@ object JsonProtocols
           case m: MapRequest => m.toJson
           case r: QueryResponse => r.toJson
           case b: ErrorMessage => b.toJson
-          case p: PathResponse => JsArray(p.way.map(t =>
+          case p: PathResponse => JsArray(p.way.toVector.map(t =>
             JsObject("point" -> t._1.toJson,
-              "properties" -> t._2.toJson)).toList)
+              "properties" -> t._2.toJson)))
           case req: Request => req.toJson
           case _ => deserializationError("Message expected!")
         }
