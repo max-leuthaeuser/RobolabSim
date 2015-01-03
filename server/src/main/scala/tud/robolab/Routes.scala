@@ -25,7 +25,6 @@ import tud.robolab.utils.TimeUtils
 import tud.robolab.model._
 import JsonProtocols._
 import spray.json._
-import play.twirl.api._
 import RequestProtocol._
 import MapRequestProtocol._
 import tud.robolab.controller.{AuthController, MapController, SessionController}
@@ -45,14 +44,13 @@ object Routes
           val mazeNameRequests = MapController.mazePool.mazeNames.sortWith(_.toLowerCase < _.toLowerCase)
             .map(n => (n, URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")))
           val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
-
-          //tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
-          """OK"""
+  
+          tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids).toString
         }
       }
     }
   }
-/**
+
   val queryRoute = path("query") {
     parameters('id, 'values) {
       (
@@ -63,12 +61,12 @@ object Routes
           ctx =>
             val ip = id
             import MessageJsonProtocol._
-            val req = values.asJson.convertTo[Request]
+            val req = values.parseJson.convertTo[Request]
 
             Boot.log.info("Incoming [Query] request from ID [%s]: %s".format(ip, req))
             SessionController.handleQueryRequest(ip, req) match {
               case ErrorType.DENIED | ErrorType.BLOCKED =>
-                ctx.complete(tud.robolab.html.error())
+                ctx.complete(tud.robolab.html.error().toString)
               case m: Message => ctx.complete(m.toJson.compactPrint)
             }
         }
@@ -84,12 +82,12 @@ object Routes
         (get | put) {
           ctx =>
             val ip = id
-            val req = values.asJson.convertTo[MapRequest]
+            val req = values.parseJson.convertTo[MapRequest]
 
             Boot.log.info("Incoming [MapChange] request from ID [%s]".format(ip))
             SessionController.handleMapRequest(ip, req) match {
               case ErrorType.NO_PATH | ErrorType.BLOCKED | ErrorType.NO_MAP =>
-                ctx.complete(tud.robolab.html.error())
+                ctx.complete(tud.robolab.html.error().toString)
               case m: Message => ctx.redirect("/gettest?id=" + ip, StatusCodes.Found)
             }
         }
@@ -107,7 +105,7 @@ object Routes
             import MessageJsonProtocol._
             SessionController.handlePathRequest(ip) match {
               case ErrorType.NO_PATH | ErrorType.BLOCKED =>
-                ctx.complete(tud.robolab.html.error())
+                ctx.complete(tud.robolab.html.error().toString)
               case m: Message => ctx.complete(m.toJson.compactPrint)
             }
         }
@@ -124,7 +122,7 @@ object Routes
             Boot.log.info("Incoming [Test] run request from ID [%s]".format(ip))
             SessionController.handleRunTestRequest(ip) match {
               case ErrorType.NO_ID | ErrorType.BLOCKED =>
-                ctx.complete(tud.robolab.html.error())
+                ctx.complete(tud.robolab.html.error().toString)
               case _ => ctx.redirect("/waittest?id=" + ip, StatusCodes.Found)
             }
         }
@@ -138,7 +136,7 @@ object Routes
         get {
           respondWithMediaType(`text/html`) {
             complete {
-              tud.robolab.html.waittest(id)
+              tud.robolab.html.waittest(id).toString
             }
           }
         }
@@ -155,7 +153,7 @@ object Routes
             Boot.log.info("Incoming [Reset] request from ID [%s]".format(ip))
             SessionController.handleResetRequest(ip) match {
               case ErrorType.NO_ID | ErrorType.BLOCKED =>
-                ctx.complete(tud.robolab.html.error())
+                ctx.complete(tud.robolab.html.error().toString)
               case _ => ctx.redirect("/", StatusCodes.Found)
             }
         }
@@ -179,7 +177,7 @@ object Routes
                 }
 
                 if (t.result.contains("No tests done yet")) {
-                  complete(tud.robolab.html.testresult(maze, path, ip, testResult = false, t.result, Seq.empty, ""))
+                  complete(tud.robolab.html.testresult(maze, path, ip, testResult = false, t.result, Seq.empty, "").toString)
                 } else {
                   val testcontent = t.result.split("---")
                   val (head, tail) = (testcontent(0), testcontent(2))
@@ -188,9 +186,9 @@ object Routes
                     (s.contains("*** FAILED ***"), s.replaceAll("\\*\\*\\* FAILED \\*\\*\\*", ""))
                   })
 
-                  complete(tud.robolab.html.testresult(maze, path, ip, t.status, head, body, tail))
+                  complete(tud.robolab.html.testresult(maze, path, ip, t.status, head, body, tail).toString)
                 }
-              case _ => complete(tud.robolab.html.error())
+              case _ => complete(tud.robolab.html.error().toString)
             }
           }
         }
@@ -209,7 +207,7 @@ object Routes
                 Boot.log.info("Incoming [Remove ID] request from ID [%s]".format(ip))
                 SessionController.handleRemoveIDRequest(ip) match {
                   case ErrorType.NO_ID =>
-                    ctx.complete(tud.robolab.html.error())
+                    ctx.complete(tud.robolab.html.error().toString)
                   case _ => ctx.redirect("/admin", StatusCodes.Found)
                 }
             }
@@ -237,10 +235,9 @@ object Routes
             val sessions = SessionController.numberOfSessions()
             val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
 
-            tud.robolab.html.admin(sessions, ids, MapController.hideMazes)
+            tud.robolab.html.admin(sessions, ids, MapController.hideMazes).toString
           }
         }
     }
   }
-  */
 }

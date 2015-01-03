@@ -1,0 +1,317 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>robolab - tud.robolab</title>
+          <meta name="description" content="robolab - tud.robolab" />
+          <meta name="keywords" content="robolab tud.robolab" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'tud.robolab.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="tud">tud</a></p>
+        <h1>robolab</h1> <span class="permalink">
+      <a href="../../index.html#tud.robolab.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">robolab</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="tud.robolab.SimulationService" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SimulationServiceextendsHttpService"></a>
+      <a id="SimulationService:SimulationService"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SimulationService.html"><span class="name">SimulationService</span></a><span class="result"> extends <span class="extype" name="spray.routing.HttpService">HttpService</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@SimulationServiceextendsHttpService" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Defines our service behavior independently from the service actor.</p>
+    </li><li name="tud.robolab.SimulationServiceActor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimulationServiceActorextendsActorwithSimulationService"></a>
+      <a id="SimulationServiceActor:SimulationServiceActor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SimulationServiceActor.html"><span class="name">SimulationServiceActor</span></a><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <a href="SimulationService.html" class="extype" name="tud.robolab.SimulationService">SimulationService</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@SimulationServiceActorextendsActorwithSimulationService" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Holding the context actor system and the standard route for our service.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="tud.robolab.Boot" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Boot"></a>
+      <a id="Boot:Boot"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Boot$.html"><span class="name">Boot</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.4/index.html#scala.App" class="extype" target="_top">App</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@Boot" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Application main entry point.</p><div class="fullcomment"><div class="comment cmt"><p>Application main entry point. Create and run all relevant actors and bind spray services.</p></div></div>
+    </li><li name="tud.robolab.Config" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Config"></a>
+      <a id="Config:Config"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Config$.html"><span class="name">Config</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@Config" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Loads and holds the configuration for the server</p>
+    </li><li name="tud.robolab.JsonProtocols" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JsonProtocols"></a>
+      <a id="JsonProtocols:JsonProtocols"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonProtocols$.html"><span class="name">JsonProtocols</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@JsonProtocols" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Contains json conversion objects for implicit conversion json &lt;-&gt; some request.</p>
+    </li><li name="tud.robolab.Routes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Routes"></a>
+      <a id="Routes:Routes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Routes$.html"><span class="name">Routes</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@Routes" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="tud.robolab.controller" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="controller"></a>
+      <a id="controller:controller"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="controller/package.html"><span class="name">controller</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@controller" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides classes to manage and control the application.</p><div class="fullcomment"><div class="comment cmt"><p>Provides classes to manage and control the application.</p><h4>Overview</h4><p>The only class at the moment is <a href="controller/SessionController$.html" class="extype" name="tud.robolab.controller.SessionController">tud.robolab.controller.SessionController</a>,
+which allows to handle incoming requests via its <code>SessionController.handleRequest</code> methods.
+</p></div></div>
+    </li><li name="tud.robolab.html" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="html"></a>
+      <a id="html:html"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="html/package.html"><span class="name">html</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@html" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="tud.robolab.model" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="model"></a>
+      <a id="model:model"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="model/package.html"><span class="name">model</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@model" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides classes that act as model elements of the domain.</p><div class="fullcomment"><div class="comment cmt"><p>Provides classes that act as model elements of the domain.</p><p><a href="model/Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a> acts as represention for all kind of maze types
+and is managed in <a href="model/MazePool.html" class="extype" name="tud.robolab.model.MazePool">tud.robolab.model.MazePool</a>. Every <a href="model/Maze.html" class="extype" name="tud.robolab.model.Maze">tud.robolab.model.Maze</a>
+contains some <a href="model/Point.html" class="extype" name="tud.robolab.model.Point">tud.robolab.model.Point</a>.</p><p>All requests from the same address are handled in a <a href="model/Session.html" class="extype" name="tud.robolab.model.Session">tud.robolab.model.Session</a>.
+</p></div></div>
+    </li><li name="tud.robolab.testing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="testing"></a>
+      <a id="testing:testing"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="testing/package.html"><span class="name">testing</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@testing" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">All classes and objects that are important for utilizing tests for the
+users solution (path, history, etc.)
+</p>
+    </li><li name="tud.robolab.utils" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="utils"></a>
+      <a id="utils:utils"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="utils/package.html"><span class="name">utils</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@utils" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides some helper classes for simple things like handling I/O (<a href="utils/IOUtils$.html" class="extype" name="tud.robolab.utils.IOUtils">tud.robolab.utils.IOUtils</a>),
+or time relevant information (<a href="utils/TimeUtils$.html" class="extype" name="tud.robolab.utils.TimeUtils">tud.robolab.utils.TimeUtils</a>).</p>
+    </li><li name="tud.robolab.view" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="view"></a>
+      <a id="view:view"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="view/package.html"><span class="name">view</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#tud.robolab.package@view" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">All view relevant classes belong to this package, like dialogs (<a href="view/Dialogs$.html" class="extype" name="tud.robolab.view.Dialogs">tud.robolab.view.Dialogs</a>),
+the <a href="view/MazeGenerator.html" class="extype" name="tud.robolab.view.MazeGenerator">tud.robolab.view.MazeGenerator</a> and views for the simulation itself (<a href="view/SimulationView.html" class="extype" name="tud.robolab.view.SimulationView">tud.robolab.view.SimulationView</a>).</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

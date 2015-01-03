@@ -18,9 +18,7 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-caching" % "1.3.2",
   "io.spray" %% "spray-routing" % "1.3.2",
   "io.spray" %% "spray-json" % "1.3.1",
-  "io.spray" %% "spray-testkit" % "1.3.2",
   "com.typesafe.akka" %% "akka-actor" % "2.3.6",
-  "com.typesafe.akka" %% "akka-testkit" % "2.3.6",
   "org.scalatest" %% "scalatest" % "2.2.1",
   "org.jgrapht" % "jgrapht-jdk1.5" % "0.7.3"
 )
