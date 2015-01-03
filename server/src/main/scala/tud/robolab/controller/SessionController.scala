@@ -319,7 +319,7 @@ object SessionController
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    future {
+    Future {
       blocking {
         TestRunner.run(id)
         Boot.log.info("Done [Test] run for ID [%s]".format(id))

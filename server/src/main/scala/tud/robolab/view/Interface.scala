@@ -84,7 +84,6 @@ object Interface extends SimpleSwingApplication
     {
       if (Dialogs.confirmation("Do you really want to exit the application and shut down the server?")) {
         Boot.terminate()
-        super.closeOperation()
       }
     }
   }

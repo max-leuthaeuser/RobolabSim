@@ -18,6 +18,8 @@
 
 package tud.robolab.testing
 
+import scala.language.reflectiveCalls
+
 object TestRunner
 {
   /**

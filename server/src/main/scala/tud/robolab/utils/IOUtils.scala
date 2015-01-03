@@ -19,6 +19,7 @@
 package tud.robolab.utils
 
 import java.io.{File, PrintWriter, FileWriter}
+import scala.language.reflectiveCalls
 import io.Source.fromFile
 import javax.swing.JFileChooser
 

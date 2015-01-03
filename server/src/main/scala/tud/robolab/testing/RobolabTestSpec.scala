@@ -19,6 +19,7 @@
 package tud.robolab.testing
 
 import org.scalatest.{Matchers, FunSuite, GivenWhenThen}
+import scala.language.reflectiveCalls
 
 class RobolabTestSpec(id: String) extends FunSuite
                                           with

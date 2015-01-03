@@ -68,7 +68,7 @@ class MazeGenerator extends JPanel
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
           val n = box.getSelectedItem.asInstanceOf[String]
-          model = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + n + MazePool.STD_MAPS_SUFFIX)).asJson
+          model = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + n + MazePool.STD_MAPS_SUFFIX)).parseJson
             .convertTo[Maze]
           curr_width = model.width
           curr_height = model.height

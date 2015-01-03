@@ -54,6 +54,7 @@ trait SimulationService extends HttpService
   val simpleCache = routeCache(maxCapacity = CACHE_MAX_CAPACITY, timeToLive = CACHE_DURATION)
 
   val myRoute = indexRoute ~
+    /**
     queryRoute ~
     mazeRoute ~
     pathRoute ~
@@ -63,7 +64,7 @@ trait SimulationService extends HttpService
     getTestRoute ~
     adminRoute ~
     removeIDRoute ~
-    hideMazesRoute ~
+    hideMazesRoute */
     path(Rest) {
       // serving static files for bootstrap, cached and gzip compressed
       path =>

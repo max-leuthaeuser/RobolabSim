@@ -46,12 +46,13 @@ object Routes
             .map(n => (n, URLEncoder.encode( """{"map":"""" + n + """"}""", "UTF-8")))
           val ids = SessionController.getSessionsAsList.map(_.client.id).sortWith(_.toLowerCase < _.toLowerCase)
 
-          tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
+          //tud.robolab.html.index(uptime, sessions, mazeNameRequests, ids)
+          """OK"""
         }
       }
     }
   }
-
+/**
   val queryRoute = path("query") {
     parameters('id, 'values) {
       (
@@ -241,4 +242,5 @@ object Routes
         }
     }
   }
+  */
 }

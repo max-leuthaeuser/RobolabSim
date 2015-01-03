@@ -39,7 +39,7 @@ class MazePool extends Observable
 
   IOUtils.createDirectory(new File(MazePool.STD_MAPS_FOLDER))
   IOUtils.getFileTreeFilter(new File(MazePool.STD_MAPS_FOLDER), MazePool.STD_MAPS_SUFFIX).foreach(m => {
-    pool(m) = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + m + MazePool.STD_MAPS_SUFFIX)).asJson
+    pool(m) = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + m + MazePool.STD_MAPS_SUFFIX)).parseJson
       .convertTo[Maze]
   })
 

@@ -42,7 +42,7 @@ object MapController
     val f = new File(MazePool.STD_MAPS_FOLDER + m + MazePool.STD_MAPS_SUFFIX)
     f.isFile match {
       case true =>
-        session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
+        session.maze = IOUtils.readFromFile(f).parseJson.convertTo[Maze]
         view.foreach(_ rebuild remove)
         if (remove) {
           session.clearWay()
