@@ -4,9 +4,9 @@ assemblySettings
 
 organization := "tud.robolab"
 
-version := "0.1"
+version := "0.2"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.11.4"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
@@ -19,21 +19,19 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scala-lang" % "scala-swing" % "2.10.2",
-  "io.spray" % "spray-can" % "1.2.0",
-  "io.spray" % "spray-caching" % "1.2.0",
-  "io.spray" % "spray-routing" % "1.2.0",
-  "io.spray" %% "spray-json" % "1.2.5",
-  "io.spray" % "spray-testkit" % "1.2.0",
-  "com.typesafe.akka" %% "akka-actor" % "2.2.3",
-  "com.typesafe.akka" %% "akka-testkit" % "2.2.3",
-  "org.scalatest" % "scalatest_2.10" % "2.0",
+  "org.scala-lang" % "scala-swing" % "2.11.0-M7",
+  "io.spray" % "spray-can" % "1.3.2",
+  "io.spray" % "spray-caching" % "1.3.2",
+  "io.spray" % "spray-routing" % "1.3.2",
+  "io.spray" %% "spray-json" % "1.3.2",
+  "io.spray" % "spray-testkit" % "1.3.2",
+  "com.typesafe.akka" % "akka-actor_2.11" % "2.3.8",
+  "com.typesafe.akka" % "akka-testkit_2.11" % "2.3.8",
+  "org.scalatest" % "scalatest_2.11" % "2.2.3",
   "org.jgrapht" % "jgrapht-jdk1.5" % "0.7.3"
 )
 
-seq(Revolver.settings: _*)
-
-seq(Twirl.settings: _*)
+lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 
 mainClass in Compile := Some("tud.robolab.Boot")
 
