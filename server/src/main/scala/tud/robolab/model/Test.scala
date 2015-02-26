@@ -23,21 +23,18 @@ import tud.robolab.model.TestResult.TestResult
 object TestResult extends Enumeration
 {
   type TestResult = Value
-  val SUCCESS, FAILED = Value
-
-  override def toString() = this match {
-    case SUCCESS => "*** SUCCESS ***"
-    case FAILED => "*** FAILED ***"
-  }
+  val SUCCESS = Value("*** SUCCESS ***")
+  val FAILED = Value("*** FAILED ***")
 }
 
 object Test
 {
   def apply(
     result: String,
-    status: Boolean): Test =
+    status: Boolean
+    ): Test =
   {
-    def st = status match {
+    val st = status match {
       case true => TestResult.SUCCESS
       case false => TestResult.FAILED
     }
@@ -47,4 +44,5 @@ object Test
 
 case class Test(
   result: String = "No tests done yet. (Reload this page if necessary!)",
-  status: TestResult = TestResult.FAILED)
+  status: TestResult = TestResult.FAILED
+  )

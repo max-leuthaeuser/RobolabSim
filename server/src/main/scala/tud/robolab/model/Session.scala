@@ -20,20 +20,23 @@ package tud.robolab.model
 
 case class Client(
   var id: String,
-  var blocked: Boolean = false)
+  var blocked: Boolean = false
+  )
 
 case class WayElement(
   x: Int,
   y: Int,
   token: Boolean,
-  time: String)
+  time: String
+  )
 
 case class Session(
   client: Client,
   var maze: Maze = Maze.default,
   var path: Seq[WayElement] = Seq.empty,
   var history: Seq[WayElement] = Seq.empty,
-  var test: Test = Test())
+  var test: Test = Test()
+  )
 {
   def clearWay()
   {
@@ -57,10 +60,10 @@ case class Session(
 
   def latestPosition: WayElement = path.last
 
-  override def equals(o: Any) = o match {
+  override def equals(o: Any): Boolean = o match {
     case that: Session => that.client.id.equals(this.client.id)
     case _ => false
   }
 
-  override def hashCode = client.id.hashCode
+  override def hashCode: Int = client.id.hashCode
 }

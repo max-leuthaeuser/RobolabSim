@@ -54,3 +54,10 @@ ul.noindent {
 col {
     width:15%;
 }
+
+#scaled {
+   width:11%;
+   float:left;
+   margin-right:20px;
+   margin-bottom:20px;
+}

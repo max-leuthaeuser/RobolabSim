@@ -22,54 +22,31 @@ import Direction._
 import spray.json._
 
 case class Point(
-  private var data: Seq[Direction] = Direction.values.toSeq,
+  var directions: Seq[Direction] = Direction.values.toSeq,
   var token: Boolean = false,
-  var robot: Boolean = false) extends Subject[Point]
+  var robot: Boolean = false
+  )
 {
-  assert(data != null)
 
-  private var callback: Seq[() => Unit] = Seq.empty
+  def has(dir: Direction): Boolean = directions.contains(dir)
 
-  private val hash = java.util.UUID.randomUUID.toString
-
-  def has(dir: Direction): Boolean = data.contains(dir)
-
-  def addCallback(h: () => Unit)
-  {
-    callback = callback :+ h
-  }
-
-  def setToken(enabled: Boolean)
-  {
-    token = enabled
-    callback.foreach(_())
-  }
-
-  def +(
-    dir: Direction,
-    notify: Boolean = true)
+  def addDirection(
+    dir: Direction
+    )
   {
     if (!has(dir)) {
-      data = data :+ dir
-      callback.foreach(_())
-      if (notify)
-        notifyObservers()
+      directions = directions :+ dir
     }
   }
 
-  def -(
-    dir: Direction,
-    notify: Boolean = true)
+  def removeDirection(
+    dir: Direction
+    )
   {
     if (has(dir)) {
-      data = data diff Seq(dir)
-      callback.foreach(_())
-      if (notify)
-        notifyObservers()
+      directions = directions diff Seq(dir)
     }
   }
-
-  def directions: Seq[Direction] = data
 
   def asTuple: (Boolean, Boolean, Boolean, Boolean, Boolean) = (
     has(NORTH),
@@ -78,13 +55,6 @@ case class Point(
     has(WEST),
     token
     )
-
-  override def hashCode(): Int = hash.hashCode
-
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case other: Point => this.hashCode() == other.hashCode()
-    case _ => false
-  }
 }
 
 object PointJsonProtocol extends DefaultJsonProtocol
@@ -92,13 +62,13 @@ object PointJsonProtocol extends DefaultJsonProtocol
 
   implicit object PointJsonFormat extends RootJsonFormat[Point]
   {
-    def write(p: Point) =
+    def write(p: Point): JsObject =
     {
       val dirs = p.directions.map(s => JsString(s.toString))
-      JsObject("dirs" -> JsArray(dirs.toList), "token" -> JsBoolean(p.token))
+      JsObject("dirs" -> JsArray(dirs.toVector), "token" -> JsBoolean(p.token))
     }
 
-    def read(value: JsValue) = value.asJsObject.getFields("dirs", "token") match {
+    def read(value: JsValue): Point = value.asJsObject.getFields("dirs", "token") match {
       case Seq(JsArray(dirs), JsBoolean(token)) => Point(
         dirs.map(s => Direction.from(s.toString().replaceAll("\"", ""))), token)
       case _ => deserializationError("Point expected!")

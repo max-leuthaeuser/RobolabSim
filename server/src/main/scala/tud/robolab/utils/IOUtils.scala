@@ -19,9 +19,8 @@
 package tud.robolab.utils
 
 import java.io.{File, PrintWriter, FileWriter}
-import java.util.Calendar
-import java.text.SimpleDateFormat
-import io.Source._
+import scala.language.reflectiveCalls
+import io.Source.fromFile
 import javax.swing.JFileChooser
 
 object IOUtils
@@ -41,7 +40,8 @@ object IOUtils
 
   def writeToFile(
     fileName: String,
-    data: String)
+    data: String
+    )
   {
     using(new FileWriter(fileName)) {
       fileWriter => fileWriter.write(data)
@@ -50,7 +50,8 @@ object IOUtils
 
   def appendToFile(
     fileName: String,
-    textData: String)
+    textData: String
+    )
   {
     using(new FileWriter(fileName, true)) {
       fileWriter =>
@@ -62,18 +63,24 @@ object IOUtils
 
   def createDirectory(dir: File)
   {
-    if (!dir.exists && !dir.isDirectory)
+    if (!dir.exists && !dir.isDirectory) {
       dir.mkdirs()
+    }
   }
 
   def getFileTree(f: File): Stream[File] =
-    f #:: (if (f.isDirectory) f.listFiles().toStream.flatMap(getFileTree)
-    else Stream.empty)
+    f #:: (if (f.isDirectory) {
+      f.listFiles().toStream.flatMap(getFileTree)
+    }
+    else {
+      Stream.empty
+    })
 
   def getFileTreeFilter(
     f: File,
-    str: String): Array[String] = getFileTree(f).filter(_.getName.endsWith(str))
-    .map(_.getName.replaceAll(".maze", "")).toArray
+    str: String
+    ): Array[String] = getFileTree(f).filter(_.getName.endsWith(str))
+    .map(_.getName.dropRight(str.length)).toArray
 
   def readFromFile(f: File): String =
   {

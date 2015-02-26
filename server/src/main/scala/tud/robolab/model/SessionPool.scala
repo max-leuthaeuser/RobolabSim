@@ -18,13 +18,15 @@
 
 package tud.robolab.model
 
+import java.util.Observable
+
 import tud.robolab.view.{Interface, SimulationView}
 import scala.collection.concurrent.TrieMap
 
 /** Handling all active sessions.
   * They are basically a tuple (Session -> associated View).
   */
-class SessionPool extends Subject[SessionPool]
+class SessionPool extends Observable
 {
   private val peer = TrieMap[Session, Option[SimulationView]]()
 
@@ -46,9 +48,11 @@ class SessionPool extends Subject[SessionPool]
    */
   def set(
     s: Session,
-    v: Option[SimulationView])
+    v: Option[SimulationView]
+    )
   {
     peer(s) = v
+    setChanged()
     notifyObservers()
   }
 
@@ -59,6 +63,7 @@ class SessionPool extends Subject[SessionPool]
   {
     get(s).foreach(Interface.removeSimTap)
     peer.remove(s)
+    setChanged()
     notifyObservers()
   }
 
@@ -68,9 +73,11 @@ class SessionPool extends Subject[SessionPool]
    */
   def block(
     s: Session,
-    block: Boolean)
+    block: Boolean
+    )
   {
     s.client.blocked = block
+    setChanged()
     notifyObservers()
   }
 }

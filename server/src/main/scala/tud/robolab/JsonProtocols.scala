@@ -20,14 +20,6 @@ package tud.robolab
 
 import spray.json._
 import tud.robolab.model._
-import tud.robolab.model.MapRequest
-import tud.robolab.model.QueryResponse
-import tud.robolab.model.ErrorMessage
-import tud.robolab.model.TestMessage
-import tud.robolab.model.Ok
-import tud.robolab.model.Request
-import tud.robolab.model.TokenRequest
-import tud.robolab.model.PathResponse
 
 /**
  * Contains json conversion objects for implicit conversion json <-> some request.
@@ -57,18 +49,6 @@ object JsonProtocols
   object MapRequestProtocol extends DefaultJsonProtocol
   {
     implicit val mapRequestFormat = jsonFormat1(MapRequest)
-  }
-
-  /** Implicit conversions from [[tud.robolab.model.TokenRequest]] to json.
-    *
-    * {{{
-    *   import TokenRequestProtocol._
-    *   val json = TokenRequest(...).toJson
-    * }}}
-    */
-  object TokenRequestProtocol extends DefaultJsonProtocol
-  {
-    implicit val TokenRequestFormat = jsonFormat1(TokenRequest)
   }
 
   /** Implicit conversions from [[tud.robolab.model.QueryResponse]] to json.
@@ -110,7 +90,6 @@ object JsonProtocols
   import RequestProtocol._
   import QueryResponseProtocol._
   import ErrorMessageProtocol._
-  import TokenRequestProtocol._
   import MapRequestProtocol._
   import TestMessageProtocol._
 
@@ -130,24 +109,23 @@ object JsonProtocols
 
     implicit object MessageJsonFormat extends RootJsonFormat[Message]
     {
-      def write(p: Message) =
+      def write(p: Message): JsValue =
       {
         p match {
           case r: Ok => "Ok".toJson
           case test: TestMessage => test.toJson
           case m: MapRequest => m.toJson
-          case t: TokenRequest => t.toJson
           case r: QueryResponse => r.toJson
           case b: ErrorMessage => b.toJson
-          case p: PathResponse => JsArray(p.way.map(t =>
+          case p: PathResponse => JsArray(p.way.toVector.map(t =>
             JsObject("point" -> t._1.toJson,
-              "properties" -> t._2.toJson)).toList)
+              "properties" -> t._2.toJson)))
           case req: Request => req.toJson
           case _ => deserializationError("Message expected!")
         }
       }
 
-      def read(value: JsValue) = ???
+      override def read(json: JsValue): Message = ???
     }
 
   }

@@ -18,6 +18,8 @@
 
 package tud.robolab.view
 
+import java.util.{Observable, Observer}
+
 import tud.robolab.model._
 import javax.swing._
 import java.awt.{Color, GridLayout, BorderLayout}
@@ -29,7 +31,7 @@ import tud.robolab.model.Session
 import tud.robolab.model.Client
 
 class SessionsView extends JPanel
-                           with Observer[SessionPool]
+                           with Observer
 {
   private val tableModel = new TableModel()
   private val addBtn = new JButton("Add session")
@@ -121,22 +123,28 @@ class SessionsView extends JPanel
 
     override def getValueAt(
       rowIndex: Int,
-      columnIndex: Int): AnyRef =
+      columnIndex: Int
+      ): AnyRef =
     {
-      if (SessionController.hasSessions) columnIndex match {
-        case 0 => ""
-        case 1 => java.lang.Boolean.FALSE
+      if (SessionController.hasSessions) {
+        columnIndex match {
+          case 0 => ""
+          case 1 => java.lang.Boolean.FALSE
+        }
       }
-      else columnIndex match {
-        case 0 => SessionController.getSession(rowIndex).client.id
-        case 1 => java.lang.Boolean.valueOf(SessionController.getSession(rowIndex).client.blocked)
+      else {
+        columnIndex match {
+          case 0 => SessionController.getSession(rowIndex).client.id
+          case 1 => java.lang.Boolean.valueOf(SessionController.getSession(rowIndex).client.blocked)
+        }
       }
     }
 
     override def setValueAt(
       aValue: scala.Any,
       rowIndex: Int,
-      columnIndex: Int)
+      columnIndex: Int
+      )
     {
       super.setValueAt(aValue, rowIndex, columnIndex)
       if (columnIndex == 1) SessionController.getSession(rowIndex).client.blocked = aValue.asInstanceOf[Boolean]
@@ -144,10 +152,11 @@ class SessionsView extends JPanel
 
     override def isCellEditable(
       rowIndex: Int,
-      columnIndex: Int): Boolean = true
+      columnIndex: Int
+      ): Boolean = true
 
     override def getColumnName(column: Int): String = column match {
-      case 0 => "Client IP"
+      case 0 => "Client ID"
       case 1 => "Blocked?"
     }
 
@@ -155,11 +164,6 @@ class SessionsView extends JPanel
       case 0 => new String().getClass
       case 1 => java.lang.Boolean.TRUE.getClass
     }
-  }
-
-  def receiveUpdate(subject: SessionPool)
-  {
-    tableModel.fireTableDataChanged()
   }
 
   private object SessionAddDialog
@@ -184,6 +188,13 @@ class SessionsView extends JPanel
     dialog.setModal(true)
     dialog.setLayout(new BorderLayout())
     ipText.setToolTipText("Enter a valid group ID!")
+    ipText.addActionListener(new ActionListener
+    {
+      override def actionPerformed(e: ActionEvent)
+      {
+        okBtn.doClick()
+      }
+    })
 
     private val content = new JPanel(new GridLayout(3, 1))
     content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5))
@@ -199,8 +210,9 @@ class SessionsView extends JPanel
           session = Option(Session(Client(ipText.getText, blockedBox.isSelected), Maze.empty, Seq.empty))
           dialog.setVisible(false)
           dialog.dispose()
-        } else
+        } else {
           ToolTipManager.sharedInstance().mouseMoved(new MouseEvent(ipText, 0, 0, 0, 0, 0, 0, false))
+        }
       }
     })
 
@@ -218,4 +230,11 @@ class SessionsView extends JPanel
     private def get(): Option[Session] = session
   }
 
+  override def update(
+    o: Observable,
+    arg: scala.Any
+    ): Unit =
+  {
+    tableModel.fireTableDataChanged()
+  }
 }

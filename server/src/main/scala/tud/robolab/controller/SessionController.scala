@@ -18,15 +18,13 @@
 
 package tud.robolab.controller
 
-import tud.robolab.model._
+import tud.robolab.{Config, Boot}
 import tud.robolab.view.{Interface, SimulationView}
-import tud.robolab.model.{Request, Session}
-import tud.robolab.model.Client
+import tud.robolab.model._
 import tud.robolab.utils.TimeUtils
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-import scala.sys.process._
-import tud.robolab.Config
+import tud.robolab.testing.TestRunner
 
 /** Handles incoming requests and sessions.
   *
@@ -35,7 +33,7 @@ import tud.robolab.Config
 object SessionController
 {
   private val sessions = new SessionPool()
-  var swing = false
+  var hide_swing = Config.HIDE_SWING
 
   /**
    * See [[tud.robolab.model.SessionPool]] for doc.
@@ -71,7 +69,8 @@ object SessionController
    */
   def set(
     s: Session,
-    v: Option[SimulationView])
+    v: Option[SimulationView]
+    )
   {
     sessions.set(s, v)
   }
@@ -80,7 +79,7 @@ object SessionController
    * @param id the group ID
    * @return the [[tud.robolab.model.Session]] with the given IP `ip`.
    */
-  def getSession(id: String): Option[Session] = sessions.all.keys.find(_.client.id.equals(id))
+  def getSession(id: String): Option[Session] = sessions.all.keys.find(_.client.id == id)
 
   /**
    * @param i the index
@@ -96,7 +95,7 @@ object SessionController
    * @param id the group ID
    * @return true if there is a [[tud.robolab.model.Session]] with the given IP `id` is stored, false otherwise.
    */
-  def hasSession(id: String): Boolean = sessions.all.keys.exists(_.client.id.equals(id))
+  def hasSession(id: String): Boolean = sessions.all.keys.exists(_.client.id == id)
 
   /**
    * @param id id the group ID
@@ -129,7 +128,7 @@ object SessionController
   def addSession(s: Session)
   {
     if (!hasSession(s.client.id)) {
-      val v: Option[SimulationView] = swing match {
+      val v: Option[SimulationView] = hide_swing match {
         case true => Option.empty
         case false => Option(new SimulationView(s, false))
       }
@@ -144,7 +143,7 @@ object SessionController
   {
     if (!hasSession(id) && !sessionBlocked(id)) {
       val s = Session(Client(id))
-      swing match {
+      hide_swing match {
         case false =>
           val v = new SimulationView(s)
           if (Interface.addSimTab(v, id)) {
@@ -165,7 +164,8 @@ object SessionController
    */
   def blockSession(
     id: String,
-    block: Boolean = true)
+    block: Boolean = true
+    )
   {
     if (!hasSession(id)) {
       val s = Session(Client(id))
@@ -186,31 +186,36 @@ object SessionController
    */
   def handleQueryRequest(
     id: String,
-    r: Request): Message =
+    r: Request
+    ): Message =
   {
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    if (!hasSession(id))
-      if (!addSession(id))
+    if (!hasSession(id)) {
+      if (!addSession(id)) {
         return ErrorType.DENIED
+      }
+    }
 
     val s = getSession(id).get
-    var err = false
-
-    if (!s.maze.robotPosition(r.x, r.y)) err = true
+    val err = !s.maze.setRobot(Coordinate(r.x, r.y))
 
     val token = err match {
       case true => false
-      case false => s.maze(r.x)(r.y).get.token
+      case false => s.maze.getPoint(Coordinate(r.x, r.y)).get.token
     }
     val wayElememt = WayElement(r.x, r.y, token, TimeUtils.nowAsString)
 
     s.addHistoryElement(wayElememt)
 
-    if (err) return ErrorType.INVALID
-    else s.addWayElement(wayElememt)
+    if (err) {
+      return ErrorType.INVALID
+    }
+    else {
+      s.addWayElement(wayElememt)
+    }
 
-    val n = s.maze(r.x)(r.y).get
+    val n = s.maze.getPoint(Coordinate(r.x, r.y)).get
     val v = sessions.get(s)
     v.foreach(view => {
       view.updateSession()
@@ -238,7 +243,7 @@ object SessionController
     val s = getSession(id).get
     PathResponse(
       s.path.map(p => {
-        s.maze(p.x)(p.y) match {
+        s.maze.getPoint(Coordinate(p.x, p.y)) match {
           case Some(point) => (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
           case None => throw new IllegalArgumentException
         }
@@ -254,7 +259,8 @@ object SessionController
    */
   def handleMapRequest(
     id: String,
-    r: MapRequest): Message =
+    r: MapRequest
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_PATH
     if (sessionBlocked(id)) return ErrorType.BLOCKED
@@ -279,46 +285,12 @@ object SessionController
 
     val s = getSession(id).get
     PathResponse(s.history.map(p => {
-      val point = s.maze.isValidPosition(p.x, p.y) match {
-        case true => s.maze(p.x)(p.y).get
+      val point = s.maze.isValid(Coordinate(p.x, p.y)) match {
+        case true => s.maze.getPoint(Coordinate(p.x, p.y)).get
         case false => Point(Seq.empty)
       }
       (Request(p.x, p.y), QueryResponseFactory.fromPoint(point))
     }))
-  }
-
-  /**
-   * Handle the incoming request, returning the number of tokens of the related session maze if possible.
-   *
-   * @param id the group ID
-   * @return a [[tud.robolab.model.Message]] containing the number of tokens regarding to the result of this call.
-   */
-  def handleNumberOfTokensRequest(id: String): Message =
-  {
-    if (!hasSession(id)) return ErrorType.NO_MAP
-    if (sessionBlocked(id)) return ErrorType.BLOCKED
-
-    val s = getSession(id).get
-    TokenRequest(s.maze.getNumberOfToken)
-  }
-
-  /**
-   * Handle the incoming request, set a test result and return the the appropriate result.
-   *
-   * @param id the group ID
-   * @param r the [[tud.robolab.model.TestMessage]]
-   * @return a [[tud.robolab.model.Message]] regarding to the result of this call.
-   */
-  def handleTestRequest(
-    id: String,
-    r: TestMessage): Message =
-  {
-    if (!hasSession(id)) return ErrorType.NO_ID
-    if (sessionBlocked(id)) return ErrorType.BLOCKED
-
-    val s = getSession(id).get
-    s.test = Test(r.result, r.status)
-    Ok()
   }
 
   /**
@@ -341,22 +313,24 @@ object SessionController
   }
 
   def handleRunTestRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
 
-    val cmd = "java -jar RobolabSimTest.jar --ID " + id + " --IP " + Config.IP
-    future {
+    Future {
       blocking {
-        cmd.!!
+        TestRunner.run(id)
+        Boot.log.info("Done [Test] run for ID [%s]".format(id))
       }
     }
     Ok()
   }
 
   def handleResetRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     if (sessionBlocked(id)) return ErrorType.BLOCKED
@@ -370,7 +344,8 @@ object SessionController
   }
 
   def handleRemoveIDRequest(
-    id: String): Message =
+    id: String
+    ): Message =
   {
     if (!hasSession(id)) return ErrorType.NO_ID
     removeSession(id)

@@ -30,23 +30,26 @@ object MapController
 {
   val mazePool = new MazePool
 
-  var hideMazes = Config.MAZES
+  var hideMazes = Config.HIDE_MAZES
 
   def changeMap(
     m: String,
     session: Session,
     view: Option[SimulationView],
-    remove: Boolean = true): Boolean =
+    remove: Boolean = true
+    ): Boolean =
   {
-    val f = new File("maps/" + m + ".maze")
-    if (!f.isFile) return false
-    session.maze = IOUtils.readFromFile(f).asJson.convertTo[Maze]
-    view.foreach(_ rebuild remove)
-
-    if (remove) {
-      session.clearWay()
-      session.clearHistory()
+    val f = new File(MazePool.STD_MAPS_FOLDER + m + MazePool.STD_MAPS_SUFFIX)
+    f.isFile match {
+      case true =>
+        session.maze = IOUtils.readFromFile(f).parseJson.convertTo[Maze]
+        view.foreach(_ rebuild remove)
+        if (remove) {
+          session.clearWay()
+          session.clearHistory()
+        }
+        true
+      case _ => false
     }
-    true
   }
 }

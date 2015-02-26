@@ -18,18 +18,19 @@
 
 package tud.robolab.view
 
+import java.util.{Observable, Observer}
 import javax.swing._
 import java.awt._
 import java.awt.event.{ActionEvent, ActionListener}
-import tud.robolab.model.{MazePool, Observer}
+import tud.robolab.model.{Coordinate, MazePool, Session}
 import tud.robolab.controller.{MapController, SessionController}
-import tud.robolab.model.Session
 import javax.swing.event.{ListSelectionEvent, ListSelectionListener}
 
 class SimulationView(
   session: Session,
-  var isShown: Boolean = true) extends JPanel
-                                       with Observer[MazePool]
+  var isShown: Boolean = true
+  ) extends JPanel
+            with Observer
 {
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val listModel = new DefaultListModel[String]()
@@ -108,10 +109,7 @@ class SimulationView(
         if (!e.getValueIsAdjusting && list.getSelectedIndex >= 0) {
           val index = list.getSelectedIndex
           val point = session.path(index)
-          val maze = session.maze
-          maze.validPoints.foreach(_.robot = false)
-          session.maze(point.x)(point.y).foreach(_.robot = true)
-          content.repaint()
+          session.maze.setRobot(Coordinate(point.x, point.y))
         }
       }
     })
@@ -144,26 +142,7 @@ class SimulationView(
     validate()
   }
 
-  private def buildMazePanel(): JPanel =
-  {
-    val result = new JPanel()
-    result.setLayout(new GridLayout(session.maze.width, session.maze.height, 5, 5))
-    session.maze.points.view.zipWithIndex.foreach(xs => {
-      xs._1.view.zipWithIndex.foreach(p => {
-        result.add(new Tile(p._1.get, xs._2, p._2, readOnly = true))
-      })
-    })
-    result
-  }
-
-  override def receiveUpdate(subject: MazePool)
-  {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    subject.mazeNames.foreach(box.addItem)
-    box.addActionListener(listeners(0))
-  }
+  private def buildMazePanel(): JPanel = new MazeView(session.maze, readOnly = true)
 
   private class CustomCellRenderer extends ListCellRenderer[String]
   {
@@ -176,18 +155,32 @@ class SimulationView(
       cell: String,
       index: Int,
       isSelected: Boolean,
-      cellHasFocus: Boolean): Component =
+      cellHasFocus: Boolean
+      ): Component =
     {
       val component = peerRenderer.getListCellRendererComponent(list, cell, index, isSelected, cellHasFocus)
         .asInstanceOf[JComponent]
       component.setForeground(Color.black)
-      if (index % 2 == 0)
+      if (index % 2 == 0) {
         component.setBackground(color)
-      else
+      }
+      else {
         component.setBackground(Color.white)
+      }
       component
     }
   }
 
+  override def update(
+    o: Observable,
+    arg: scala.Any
+    ): Unit = o match {
+    case s: MazePool => val listeners = box.getActionListeners
+      box.removeActionListener(listeners(0))
+      box.removeAllItems()
+      s.mazeNames.foreach(box.addItem)
+      box.addActionListener(listeners(0))
+    case _ => // do nothing
+  }
 }
 

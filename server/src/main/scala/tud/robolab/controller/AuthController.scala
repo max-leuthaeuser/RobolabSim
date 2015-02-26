@@ -24,24 +24,47 @@ import ExecutionContext.Implicits.global
 import tud.robolab.utils.HashString
 import tud.robolab.Config
 
+/**
+ * Case class representing and authenticated user with password and username.
+ *
+ * @param username the username as String
+ * @param password the password as String
+ */
 case class AuthUser(
   username: String,
-  password: String)
+  password: String
+  )
 
+/**
+ * The authentication controller handling the basic authentication with
+ * SHA-512. See [[tud.robolab.utils.HashString]].
+ */
 object AuthController
 {
+  val ADMIN = "admin"
+
   val admin = AuthUser(
-    username = "admin",
+    username = ADMIN,
     password = Config.ADMIN
   )
 
+  /**
+   * Handling the user authentication based on the SHA-512 encrypted password.
+   *
+   * @param userPass user credentials
+   * @return a Future containing `admin` if the user could be authenticated as admin.
+   */
   def userPassAuthenticator(userPass: Option[UserPass]): Future[Option[String]] =
     Future {
       if (userPass.exists(up => {
         val user = up.user
         val pass = HashString.hash(up.pass)
-        (user equals admin.username) && (pass equals admin.password)
-      })) Some("admin")
-      else None
+        (user == admin.username) && (pass == admin.password)
+      })) {
+        Some(ADMIN)
+      }
+      else {
+        None
+      }
     }
 }

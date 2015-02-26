@@ -19,29 +19,30 @@
 package tud.robolab.view
 
 import java.io.File
+import java.util.{Observable, Observer}
 import javax.swing._
 import java.awt.{GridLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{ChangeEvent, ChangeListener}
-import tud.robolab.model.{MazePool, Observer, Maze}
+import tud.robolab.model.{MazePool, Maze}
 import tud.robolab.controller.MapController
 import tud.robolab.utils.IOUtils
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 
 class MazeGenerator extends JPanel
-                            with Observer[MazePool]
+                            with Observer
 {
   private var model: Maze = null
 
-  private var curr_width = 7
-  private var curr_height = 7
+  private var curr_width = Maze.DEFAULT_WIDTH
+  private var curr_height = Maze.DEFAULT_HEIGHT
 
   private val name = new JTextField("maze")
   private val box = new JComboBox(MapController.mazePool.mazeNames.toArray)
   private val spinnerx = new JSpinner(new SpinnerNumberModel(curr_width, 2, 30, 1))
   private val spinnery = new JSpinner(new SpinnerNumberModel(curr_height, 2, 30, 1))
-  private val numTokensLabel = new JLabel("#Tokens: 0")
+  private val numTokensLabel = TokenLabel()
 
   private val settings = buildSettingsPanel
 
@@ -67,19 +68,30 @@ class MazeGenerator extends JPanel
         val box = e.getSource.asInstanceOf[JComboBox[String]]
         if (box.getSelectedIndex != -1) {
           val n = box.getSelectedItem.asInstanceOf[String]
-          model = IOUtils.readFromFile(new File("maps/" + n + ".maze")).asJson.convertTo[Maze]
+          model = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + n + MazePool.STD_MAPS_SUFFIX)).parseJson
+            .convertTo[Maze]
           curr_width = model.width
           curr_height = model.height
           spinnerx.setValue(curr_width)
           spinnery.setValue(curr_height)
           name.setText(n)
-          numTokensLabel.setText("#Tokens: " + model.getNumberOfToken)
           rebuild()
         }
       }
     })
 
     result.add(box, BorderLayout.NORTH)
+    result.add(new JButton("Random")
+    {
+      addActionListener(new ActionListener
+      {
+        override def actionPerformed(e: ActionEvent): Unit =
+        {
+          MazeGenerator.this.model = Maze.random(curr_width, curr_height)
+          rebuild()
+        }
+      })
+    }, BorderLayout.SOUTH)
     result
   }
 
@@ -125,7 +137,7 @@ class MazeGenerator extends JPanel
       def actionPerformed(e: ActionEvent)
       {
         var filename = name.getText
-        val f = new File("maps/" + filename + ".maze")
+        val f = new File(MazePool.STD_MAPS_FOLDER + filename + MazePool.STD_MAPS_SUFFIX)
         if (!f.isFile) {
           IOUtils.writeToFile(f.getCanonicalPath, model.toJson.prettyPrint)
           Dialogs.info("Successfully written to file.")
@@ -134,16 +146,17 @@ class MazeGenerator extends JPanel
           Dialogs.info("File exists already! Choose another one.")
           IOUtils.letUserChooseFile(f.getCanonicalPath) match {
             case None => Dialogs.info("Aborted. No file was written.")
-            case Some(p) => {
+            case Some(p) =>
               var n = p
-              if (!p.endsWith(".maze")) n = n + ".maze"
+              if (!p.endsWith(MazePool.STD_MAPS_SUFFIX)) {
+                n = n + MazePool.STD_MAPS_SUFFIX
+              }
               IOUtils.writeToFile(n, model.toJson.prettyPrint)
               Dialogs.info("Successfully written to file.")
-              filename = new File(n).getName.replace(".maze", "")
-            }
+              filename = new File(n).getName.replace(MazePool.STD_MAPS_SUFFIX, "")
           }
         }
-        MapController.mazePool +(filename, model)
+        MapController.mazePool.addMaze(filename, model)
       }
     })
 
@@ -163,32 +176,24 @@ class MazeGenerator extends JPanel
 
   private def buildMazePanel(): JPanel =
   {
-    val result = new JPanel()
-    result.setLayout(new GridLayout(curr_width, curr_height, 5, 5))
-
-    if (model == null || curr_height != model.height || curr_width != model.width)
+    if (model == null || curr_height != model.height || curr_width != model.width) {
       model = Maze.empty(curr_width, curr_height)
-
-    model.points.view.zipWithIndex.foreach(xs => {
-      xs._1.view.zipWithIndex.foreach(p => {
-        val point = p._1.get
-        val tile = new Tile(point, xs._2, p._2)
-        point.addObserver(model)
-        point.addCallback(result.repaint)
-        point.addCallback(() => numTokensLabel.setText("#Tokens: " + model.getNumberOfToken))
-        result.add(tile)
-      })
-    })
-
-    result
+    }
+    numTokensLabel.setText("" + model.getNumberOfToken)
+    model.addObserver(numTokensLabel)
+    new MazeView(model)
   }
 
-  override def receiveUpdate(subject: MazePool)
-  {
-    val listeners = box.getActionListeners
-    box.removeActionListener(listeners(0))
-    box.removeAllItems()
-    subject.mazeNames.foreach(box.addItem)
-    box.addActionListener(listeners(0))
+  override def update(
+    o: Observable,
+    arg: scala.Any
+    ): Unit = o match {
+    case s: MazePool =>
+      val listeners = box.getActionListeners
+      box.removeActionListener(listeners(0))
+      box.removeAllItems()
+      s.mazeNames.foreach(box.addItem)
+      box.addActionListener(listeners(0))
+    case _ => // do nothing
   }
 }

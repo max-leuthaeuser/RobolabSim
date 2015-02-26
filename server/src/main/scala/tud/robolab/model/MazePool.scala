@@ -18,20 +18,29 @@
 
 package tud.robolab.model
 
+import java.util.Observable
+
 import spray.json._
 import tud.robolab.model.MazeJsonProtocol._
 import tud.robolab.utils.IOUtils
 import java.io.File
 import scala.collection.concurrent.TrieMap
 
+object MazePool
+{
+  val STD_MAPS_FOLDER = "maps/"
+  val STD_MAPS_SUFFIX = ".maze"
+}
+
 /** Holds all available mazes with their name. */
-class MazePool extends Subject[MazePool]
+class MazePool extends Observable
 {
   val pool = TrieMap[String, Maze]()
 
-  IOUtils.createDirectory(new File("maps/"))
-  IOUtils.getFileTreeFilter(new File("maps/"), ".maze").foreach(m => {
-    pool(m) = IOUtils.readFromFile(new File("maps/" + m + ".maze")).asJson.convertTo[Maze]
+  IOUtils.createDirectory(new File(MazePool.STD_MAPS_FOLDER))
+  IOUtils.getFileTreeFilter(new File(MazePool.STD_MAPS_FOLDER), MazePool.STD_MAPS_SUFFIX).foreach(m => {
+    pool(m) = IOUtils.readFromFile(new File(MazePool.STD_MAPS_FOLDER + m + MazePool.STD_MAPS_SUFFIX)).parseJson
+      .convertTo[Maze]
   })
 
   /**
@@ -50,11 +59,13 @@ class MazePool extends Subject[MazePool]
     * @param name the desired name of the maze
     * @param maze an instance of [[tud.robolab.model.Maze]]
     */
-  def +(
+  def addMaze(
     name: String,
-    maze: Maze)
+    maze: Maze
+    )
   {
     pool(name) = maze
+    setChanged()
     notifyObservers()
   }
 
@@ -62,9 +73,10 @@ class MazePool extends Subject[MazePool]
     *
     * @param name the name of the maze
     */
-  def -(name: String)
+  def removeMaze(name: String)
   {
     pool.remove(name)
+    setChanged()
     notifyObservers()
   }
 }
