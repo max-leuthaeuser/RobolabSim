@@ -1,4 +1,7 @@
 language: scala
-install:
+scala:
+    - 2.11.2
+before_install:
     - cd server/
+install:
     - sbt assembly
