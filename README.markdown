@@ -1,6 +1,8 @@
 RobolabSim
 ==========
 
+[![Build Status](https://travis-ci.org/max-leuthaeuser/RobolabSim.svg)](https://travis-ci.org/max-leuthaeuser/RobolabSim)
+
 Simulator for the course Robolab at TU Dresden.
 
 1. **Quickstart**
