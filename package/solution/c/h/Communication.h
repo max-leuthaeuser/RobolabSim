@@ -2,8 +2,7 @@
 #define COMMUNICATION_H_
 
 #include "Configuration.h"
-#include <Python.h>
 
-char* sendAndRecieve(const char* url);
+char* sendAndRecieve(const char* url, const char* query);
 
 #endif /* COMMUNICATION_H_ */

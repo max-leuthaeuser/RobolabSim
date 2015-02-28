@@ -3,9 +3,7 @@
 
 #include "Configuration.h"
 
-char *url_encode(char *str);
-char *url_decode(char *str);
-char *concat(char* a, char* b);
-bool contains(char* a, char* b);
+char *concat(const char* a, const char* b);
+bool contains(const char* a, const char* b);
 
 #endif /* URLCODE_H_ */

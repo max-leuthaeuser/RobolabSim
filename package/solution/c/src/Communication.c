@@ -1,74 +1,72 @@
-#include "../h/Communication.h"
+#include "Communication.h"
+#include "RobotProxy.h"
+#include "curl/curl.h"
 
-char* sendAndRecieve(const char* url) {
-	Py_Initialize();
+typedef struct {
+	char *pResultString;
+	size_t size;
 
-	PyObject *pArgs, *pValue, *pFunc;
-	PyObject *pGlobal = PyDict_New();
-	PyObject *pLocal;
+} CurlReturn;
 
-	PyRun_SimpleString("import types,sys");
 
-	//create the new module in python
-	PyRun_SimpleString("mymod = types.ModuleType(\"mymod\")");
+size_t PageReceive(void *buffer, size_t size, size_t nmemb, void *stream);
 
-	//add it to the sys modules so that it can be imported by other modules
-	PyRun_SimpleString("sys.modules[\"mymod\"] = mymod");
 
-	//import sys so that path will be available in mymod so that other/newly created modules can be imported
-	PyRun_SimpleString("exec 'import sys' in mymod.__dict__");
+char* sendAndRecieve(const char* url, const char* query) {
+	CURL *curl = curl_easy_init();
+	
+	if (curl != NULL) {
+		char* encodedQuery = curl_easy_escape(curl, query, 0);
+		char* concatUrl = concat(url, encodedQuery);
+		
+		CurlReturn pReturn;
 
-	//import it to the current python interpreter
-	PyObject *pNewMod = PyImport_Import(PyString_FromString("mymod"));
+		pReturn.pResultString = malloc(1);
+		pReturn.size = 0;
 
-	//Get the dictionary object from my module so I can pass this to PyRun_String
-	pLocal = PyModule_GetDict(pNewMod);
+		curl_easy_setopt(curl, CURLOPT_URL, concatUrl);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 0);
+		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, PageReceive);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &pReturn);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 
-	//import urllib2 to global namespace
-	PyMapping_SetItemString(pGlobal, "urllib2",
-			PyImport_ImportModule("urllib2"));
+		if (curl_easy_perform(curl) == CURLE_OK) {
+			curl_free(encodedQuery);
+			free(concatUrl);
+			
+			curl_easy_cleanup(curl);
 
-	//Define my function in the newly created module
-	pValue =
-			PyRun_String("def get(url):\n\treturn urllib2.urlopen(url).read()\n", Py_file_input, pGlobal, pLocal);
-	Py_DECREF(pValue);
+			return pReturn.pResultString;
+		}
 
-	//Get a pointer to the function I just defined
-	pFunc = PyObject_GetAttrString(pNewMod, "get");
-	if (pFunc == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
+		else if (pReturn.pResultString != NULL) {
+			free(pReturn.pResultString);
+		}
+		
+		curl_free(encodedQuery);
+		free(concatUrl);
 	}
 
-	//Build a tuple to hold my arguments (just the number 4 in this case)
-	pArgs = PyTuple_New(1);
-	pValue = PyString_FromString(url);
-	PyTuple_SetItem(pArgs, 0, pValue);
+	curl_easy_cleanup(curl);
 
-	//Call my function, passing it the number four
-	pValue = PyObject_CallObject(pFunc, pArgs);
-	if (pValue == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
+	return NULL;
+}
+
+
+size_t PageReceive(void *buffer, size_t size, size_t nmemb, void *stream) {
+	size_t realsize = size * nmemb;
+	CurlReturn *pReturn = (CurlReturn *)stream;
+
+	pReturn->pResultString = (char *)realloc(pReturn->pResultString, pReturn->size + realsize + 1);
+
+	if (pReturn->pResultString == NULL) {
+		return 0;
 	}
 
-	Py_DECREF(pArgs);
-	char* result = PyString_AsString(pValue);
-	if (result == NULL) {
-#ifdef DEBUG
-		PyErr_Print();
-#endif
-		return NULL;
-	}
+	memcpy(&(pReturn->pResultString[pReturn->size]), buffer, realsize);
+	pReturn->size += realsize;
+	pReturn->pResultString[pReturn->size] = 0;
 
-	Py_DECREF(pValue);
-	Py_XDECREF(pFunc);
-	Py_DECREF(pNewMod);
-	Py_Finalize();
-
-	return result;
+	return realsize;
 }

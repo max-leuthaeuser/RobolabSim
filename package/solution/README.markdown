@@ -2,43 +2,45 @@
 
 Follow these steps to get started:
 
-1. Install Python 2.7 from [here][python]. (use the 32-bit version !!)
+- Install requirements:
+	- For **Windows**:
+		- Download and install [Cygwin](https://cygwin.com/install.html) (You need it anyway). 
+		- When Cygwin asks about packages (Click on skip to install package):
+			- Search make -> **Devel/make**
+			- Search libcurl -> **Libs/libcurl-devel**
+			- Search gcc-core -> **Devel/gcc-core**
+		- After installation add the **`cygwin\bin`** folder to your Path variable.
+		- **Restart** your PC or kill the explorer.exe and restart it.
 
-   For Ubuntu install ```python``` and ```python-dev``` (```sudo apt-get install python python-dev```)
+	- For **Linux** and Apt-based systems:
+		- Run **`sudo apt-get update`** 
+		- Run **`sudo apt-get install build-essential`** (You need it anyway)
+		- Run **`sudo apt-get install libcurl4-openssl-dev`**
 
-2. For Windows only: Download and install [MinGW][gcc] and install the base package to get GCC on your system. And don't forget to add ```C:\MinGW\bin``` to your PATH variable.
+	- For **OSX**:
+		- Install **Xcode** from Apple Store (You need it anyway)
 
-3. Git-clone this repository.
+- Git-clone this repository.
 
-4. Edit ```h/Configuration.h``` with your group ID.
+- Change directory into your clone.
 
-5. Change directory into your clone and the ```src/``` directory.
+		$ cd RobolabSim/package/solution/
 
-        $ cd RobolabSim/package/solution/c/src/
+- Edit **`c/h/Configuration.h`** with your group ID.
 
-6. Compile it (**you need to have GCC and Python 2.7 installed, see steps 1 and 2!**).
+- Compile it:
+	- For **Windows**:
+		- Run **`build.bat`**
 
-    6.1. Linux:
-    
-        $ gcc -I/usr/include/python2.7 -o RobolabSimClient *.c -lpython2.7
+	- For **Linux** and **OSX**:
+		- Run **`build.sh`**
 
-    6.2. Windows:
-    
-        $ gcc -LC:/Python27/libs -IC:/Python27/include -o RobolabSimClient.exe *.c -lpython27
+- Start the application:
+	- For **Windows**:
+		- Run **`c/builds/win/RobolabSimClient.exe`**
 
-    6.3. MacOS X:
-    
-        $ gcc -ansi -lpython2.7 -I/usr/include/python2.7 -o RobolabSimClient *.c
+	- For **Linux** and Apt-based systems:
+		- Run **`c/builds/linux/RobolabSimClient`**
 
-7. Start the application:
-
-    7.1. Linux & MacOS X:
-        
-        $ ./RobolabSimClient
-        
-    7.2. Windows:
-        
-        $ ./RobolabSimClient.exe
-
-[python]: http://www.python.org/download/releases/2.7.6/ "Python"
-[gcc]: http://sourceforge.net/projects/mingw/files/ "MinGW"
+	- For **OSX**:
+		- Run **`c/builds/osx/RobolabSimClient`**
